@@ -192,6 +192,12 @@ const en: Dict = {
     "How often: for many people the effect fades gradually over roughly three to four months, so retreatment timing is a common topic — some wait longer, some don't repeat at all.",
   "gen.amount":
     "How much: the amount is decided individually by the qualified provider at the time of treatment. It varies widely from person to person and area to area — there's no standard dose that fits everyone.",
+  "gen.unitsTitle": "Units people commonly hear about",
+  "gen.units.forehead": "Forehead: published ranges often mention roughly 10–30 units in total.",
+  "gen.units.glabella": "Between the eyebrows: ranges around 10–25 units are commonly quoted.",
+  "gen.units.eyes": "Outer eye corners: often quoted around 5–15 units per side.",
+  "gen.unitsNote":
+    "These are broad ranges from public medical literature — not a recommendation for you. Your provider may suggest far less or more depending on your muscles, goals and history.",
   genNote:
     "General information many people find useful — not a recommendation and not a plan for you. Only a qualified provider can advise what's appropriate for your face.",
   disclaimer:
@@ -283,6 +289,12 @@ const de: Dict = {
     "Wie oft: bei vielen klingt die Wirkung über etwa drei bis vier Monate allmählich ab; deshalb wird der Zeitpunkt einer Wiederholung oft besprochen – manche warten länger, manche wiederholen nie.",
   "gen.amount":
     "Wie viel: die Menge legt die behandelnde Fachperson individuell fest. Sie variiert stark je nach Person und Bereich – eine Standarddosis, die für alle passt, gibt es nicht.",
+  "gen.unitsTitle": "Einheiten, von denen man oft hört",
+  "gen.units.forehead": "Stirn: veröffentlichte Bereiche nennen oft grob 10–30 Einheiten insgesamt.",
+  "gen.units.glabella": "Zwischen den Augenbrauen: häufig werden etwa 10–25 Einheiten genannt.",
+  "gen.units.eyes": "Äußere Augenwinkel: oft etwa 5–15 Einheiten pro Seite.",
+  "gen.unitsNote":
+    "Das sind grobe Bereiche aus öffentlicher Fachliteratur – keine Empfehlung für dich. Je nach Muskulatur, Zielen und Vorgeschichte kann die Fachperson deutlich weniger oder mehr vorschlagen.",
   genNote:
     "Allgemeine Informationen, die viele hilfreich finden – keine Empfehlung und kein Plan für dich. Nur qualifizierte Fachleute können einschätzen, was für dein Gesicht passt.",
   disclaimer:
