@@ -8,6 +8,8 @@ import { ScoreRing } from "@/components/ScoreRing";
 import { useI18n } from "@/lib/i18n";
 import { addEntry, baselineScore, loadEntries, loadProfile } from "@/lib/storage";
 import type { Analysis, Entry, FeelingKey, TriggerKey } from "@/lib/types";
+import { EmailGate } from "@/components/EmailGate";
+import { hasProvidedEmail, track } from "@/lib/experiment";
 
 export const Route = createFileRoute("/results")({
   head: () => ({
@@ -55,6 +57,8 @@ function ResultsPage() {
   const [feeling, setFeeling] = useState<FeelingKey | undefined>();
   const [triggers, setTriggers] = useState<TriggerKey[]>([]);
 
+  const [gated, setGated] = useState<boolean | null>(null);
+
   useEffect(() => {
     const raw = window.sessionStorage.getItem("rosea.pending");
     if (!raw) {
@@ -63,11 +67,17 @@ function ResultsPage() {
     }
     setPending(JSON.parse(raw) as Pending);
     setEntries(loadEntries());
+    setGated(!hasProvidedEmail());
   }, [navigate]);
+
+  useEffect(() => {
+    if (gated === false && pending) track("results_viewed", "redness");
+  }, [gated, pending]);
 
   const baseline = useMemo(() => baselineScore(entries), [entries]);
 
-  if (!pending) return null;
+  if (!pending || gated === null) return null;
+  if (gated) return <EmailGate experience="redness" onDone={() => setGated(false)} />;
   const a = pending.analysis;
 
   const changeText = !baseline
