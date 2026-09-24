@@ -12,12 +12,12 @@ import type { Analysis, Entry, FeelingKey, TriggerKey } from "@/lib/types";
 export const Route = createFileRoute("/results")({
   head: () => ({
     meta: [
-      { title: "Your skin today — Rosea" },
+      { title: "Your skin today — Rose AI" },
       {
         name: "description",
         content: "See today's redness score, where it shows most and what you can do today.",
       },
-      { property: "og:title", content: "Your skin today — Rosea" },
+      { property: "og:title", content: "Your skin today — Rose AI" },
       {
         property: "og:description",
         content: "A calm, non-diagnostic reading of today's visible facial redness.",

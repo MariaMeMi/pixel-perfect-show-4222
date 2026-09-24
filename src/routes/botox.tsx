@@ -27,12 +27,12 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/botox")({
   head: () => ({
     meta: [
-      { title: "Botox AI — explore visible facial lines | Rosea" },
+      { title: "Botox AI — explore visible facial lines | Rose AI" },
       {
         name: "description",
         content: "Educational observations about visible facial lines and questions to bring to a qualified provider.",
       },
-      { property: "og:title", content: "Botox AI — Rosea" },
+      { property: "og:title", content: "Botox AI — Rose AI" },
       { property: "og:description", content: "Explore your face and prepare for a professional consultation." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -269,7 +269,7 @@ function BackHome({ label }: { label: string }) {
 function Header({ t }: { t: (k: string) => string }) {
   return (
     <header>
-      <p className="eyebrow">Rosea</p>
+      <p className="eyebrow">Rose AI</p>
       <h1 className="mt-2 text-[2.25rem] leading-[1.1] text-foreground">{t("title")}</h1>
       <p className="mt-2 text-sm text-muted-foreground">{t("subtitle")}</p>
     </header>

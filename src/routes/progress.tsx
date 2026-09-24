@@ -10,12 +10,12 @@ import type { Entry } from "@/lib/types";
 export const Route = createFileRoute("/progress")({
   head: () => ({
     meta: [
-      { title: "Progress — Rosea" },
+      { title: "Progress — Rose AI" },
       {
         name: "description",
         content: "Your redness scores over 7, 30 and 90 days, with patterns and a photo timeline.",
       },
-      { property: "og:title", content: "Progress — Rosea" },
+      { property: "og:title", content: "Progress — Rose AI" },
       {
         property: "og:description",
         content: "Follow how your skin changes over time with gentle, private tracking.",

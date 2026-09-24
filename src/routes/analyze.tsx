@@ -8,12 +8,12 @@ import type { Analysis } from "@/lib/types";
 export const Route = createFileRoute("/analyze")({
   head: () => ({
     meta: [
-      { title: "Check my skin — Rosea" },
+      { title: "Check my skin — Rose AI" },
       {
         name: "description",
         content: "Take or upload a photo and see a gentle reading of today's visible redness.",
       },
-      { property: "og:title", content: "Check my skin — Rosea" },
+      { property: "og:title", content: "Check my skin — Rose AI" },
       {
         property: "og:description",
         content: "A guided selfie check that scores visible facial redness.",
