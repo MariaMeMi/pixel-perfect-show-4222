@@ -31,8 +31,8 @@ export type Entry = {
   id: string;
   date: string; // ISO
   analysis: Analysis;
-  photo?: string; // data URL, only when photo retention is on
-  feeling?: FeelingKey;
+  photo?: string | undefined; // data URL, only when photo retention is on
+  feeling?: FeelingKey | undefined;
   triggers: TriggerKey[];
 };
 
