@@ -65,23 +65,40 @@ function AnalyzePage() {
 
   useEffect(() => stopCamera, []);
 
+  // Attach the stream once the <video> is mounted (iOS Safari needs muted + playsinline set on the element).
+  useEffect(() => {
+    const v = videoRef.current;
+    const s = streamRef.current;
+    if (camera === "off" || !v || !s) return;
+    v.muted = true;
+    v.setAttribute("playsinline", "true");
+    v.setAttribute("webkit-playsinline", "true");
+    if (v.srcObject !== s) v.srcObject = s;
+    void v.play().catch(() => undefined);
+  }, [camera]);
+
+  function openNativeCamera() {
+    nativeRef.current?.click();
+  }
+
   async function startCamera() {
     if (camera !== "off") return;
+    if (!navigator.mediaDevices?.getUserMedia) {
+      openNativeCamera();
+      return;
+    }
     setCamera("starting");
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 1280 } },
+        video: { facingMode: "user" },
         audio: false,
       });
       streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play().catch(() => undefined);
-      }
       setCamera("on");
     } catch {
       setCamera("off");
-      toast.error(t("analyze.cameraError"));
+      // Embedded previews or blocked permissions: fall back to the phone's own camera.
+      openNativeCamera();
     }
   }
 
