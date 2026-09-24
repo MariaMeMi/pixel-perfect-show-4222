@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      email_leads: {
+        Row: {
+          created_at: string
+          email: string
+          experience_type: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          experience_type: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          experience_type?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      experiment_events: {
+        Row: {
+          created_at: string
+          event_name: string
+          experience_type: string
+          id: string
+          session_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_name: string
+          experience_type: string
+          id?: string
+          session_id: string
+        }
+        Update: {
+          created_at?: string
+          event_name?: string
+          experience_type?: string
+          id?: string
+          session_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
