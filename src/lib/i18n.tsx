@@ -167,7 +167,7 @@ const en = {
 export type TKey = keyof typeof en;
 
 const de: Partial<Record<TKey, string>> = {
-  "app.tagline": "Deine tägliche Hautbegleitung",
+  "app.tagline": "Deine tägliche Hautbegleitung bei Rosazea",
   "nav.home": "Start",
   "nav.analyze": "Analyse",
   "nav.progress": "Verlauf",
@@ -315,7 +315,7 @@ const de: Partial<Record<TKey, string>> = {
   "profile.confirmPhotos": "Alle gespeicherten Fotos löschen? Das lässt sich nicht rückgängig machen.",
   "profile.confirmHistory": "Gesamten Verlauf löschen? Das lässt sich nicht rückgängig machen.",
   "profile.medicalNote":
-    "Rosea ist eine Wellness- und Hautbegleitung. Es stellt keine Diagnose von Rosazea oder anderen Erkrankungen.",
+    "Rose AI ist eine Wellness- und Hautbegleitung. Es stellt keine Diagnose von Rosazea oder anderen Erkrankungen.",
 
   "common.cancel": "Abbrechen",
   "common.back": "Zurück",

@@ -19,13 +19,13 @@ import { bt } from "@/lib/botox";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Rosea — your everyday skin companion" },
+      { title: "Rose AI — your everyday skin companion for rosacea" },
       {
         name: "description",
         content:
           "Check your skin with a photo, understand today's redness and follow your progress over time.",
       },
-      { property: "og:title", content: "Rosea — your everyday skin companion" },
+      { property: "og:title", content: "Rose AI — your everyday skin companion for rosacea" },
       {
         property: "og:description",
         content: "A calm, private way to track facial redness day by day.",
