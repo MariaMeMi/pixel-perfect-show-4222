@@ -579,7 +579,7 @@ function Result({
         <div className="mx-auto h-72 w-56">
           <FaceLines analysis={analysis} active={active} onTap={setActive} />
         </div>
-        <div className="flex justify-center gap-2">
+        <div className="flex flex-wrap justify-center gap-2">
           {AREAS.map((a) => (
             <Chip key={a} label={t(`area.${a}`)} selected={active === a} onClick={() => setActive(a)} />
           ))}
