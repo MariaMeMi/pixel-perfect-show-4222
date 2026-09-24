@@ -39,7 +39,7 @@ export function FaceMap({ regions }: { regions: Record<RegionKey, number> }) {
               cy={s.cy}
               rx={s.rx}
               ry={s.ry}
-              fill="oklch(0.62 0.17 20)"
+              fill="#c95a52"
               opacity={intensity(regions[s.key] ?? 0)}
             />
           ))}
