@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Camera, ImageUp, Lock, Sun, Sparkles, UserRound, X } from "lucide-react";
 import { toast } from "sonner";
