@@ -216,6 +216,17 @@ function BotoxPage() {
         <p className="text-center text-[0.7rem] text-muted-foreground">{t("privacy")}</p>
       </section>
 
+      <section className="surface space-y-3 p-6">
+        <h2 className="text-lg text-foreground">{t("genTitle")}</h2>
+        {(["areas", "frequency", "amount"] as const).map((k) => (
+          <div key={k} className="flex gap-3">
+            <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+            <p className="text-sm leading-relaxed text-secondary-foreground">{t(`gen.${k}`)}</p>
+          </div>
+        ))}
+        <p className="text-xs leading-relaxed text-muted-foreground">{t("genNote")}</p>
+      </section>
+
       {state.analyses.length > 0 && (
         <section className="space-y-3">
           <h2 className="text-lg text-foreground">{t("history")}</h2>
