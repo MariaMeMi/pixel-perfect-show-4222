@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Check, Info, Leaf, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
@@ -232,6 +232,33 @@ function ResultsPage() {
           </ul>
         </section>
       ) : null}
+
+      <section className="surface space-y-4 p-6">
+        <h2 className="text-lg text-foreground">{t("results.care.title")}</h2>
+        <div className="space-y-3">
+          {(
+            [
+              ["results.care.light", "results.care.lightBody"],
+              ["results.care.creams", "results.care.creamsBody"],
+              ["results.care.doctor", "results.care.doctorBody"],
+            ] as const
+          ).map(([title, body]) => (
+            <div key={title} className="flex gap-3">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+              <p className="text-sm leading-relaxed text-secondary-foreground">
+                <span className="text-foreground">{t(title)}</span> — {t(body)}
+              </p>
+            </div>
+          ))}
+        </div>
+        <p className="text-xs leading-relaxed text-muted-foreground">{t("results.care.note")}</p>
+        <Link
+          to="/learn"
+          className="inline-block text-sm text-primary underline underline-offset-4"
+        >
+          {t("results.care.link")}
+        </Link>
+      </section>
 
       <p className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
         <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={1.7} />

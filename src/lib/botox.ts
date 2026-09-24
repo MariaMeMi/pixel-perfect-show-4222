@@ -185,6 +185,15 @@ const en: Dict = {
   newAnalysis: "New analysis",
   deleteAll: "Delete Botox AI data",
   deleted: "Botox AI data deleted",
+  genTitle: "General information about botulinum toxin",
+  "gen.areas":
+    "Where: the areas most often discussed are the forehead, between the eyebrows and the outer eye corners. Other areas exist too, and every face is different.",
+  "gen.frequency":
+    "How often: for many people the effect fades gradually over roughly three to four months, so retreatment timing is a common topic — some wait longer, some don't repeat at all.",
+  "gen.amount":
+    "How much: the amount is decided individually by the qualified provider at the time of treatment. It varies widely from person to person and area to area — there's no standard dose that fits everyone.",
+  genNote:
+    "General information many people find useful — not a recommendation and not a plan for you. Only a qualified provider can advise what's appropriate for your face.",
   disclaimer:
     "Educational observations only — not a diagnosis, treatment recommendation or assessment of suitability. Only a qualified professional can evaluate you.",
   privacy: "Your four photos are sent only for this analysis and are not saved.",
@@ -267,6 +276,15 @@ const de: Dict = {
   newAnalysis: "Neue Analyse",
   deleteAll: "Botox-AI-Daten löschen",
   deleted: "Botox-AI-Daten gelöscht",
+  genTitle: "Allgemeine Informationen zu Botulinumtoxin",
+  "gen.areas":
+    "Wo: am häufigsten besprochen werden Stirn, der Bereich zwischen den Augenbrauen und die äußeren Augenwinkel. Auch andere Bereiche gibt es – und jedes Gesicht ist anders.",
+  "gen.frequency":
+    "Wie oft: bei vielen klingt die Wirkung über etwa drei bis vier Monate allmählich ab; deshalb wird der Zeitpunkt einer Wiederholung oft besprochen – manche warten länger, manche wiederholen nie.",
+  "gen.amount":
+    "Wie viel: die Menge legt die behandelnde Fachperson individuell fest. Sie variiert stark je nach Person und Bereich – eine Standarddosis, die für alle passt, gibt es nicht.",
+  genNote:
+    "Allgemeine Informationen, die viele hilfreich finden – keine Empfehlung und kein Plan für dich. Nur qualifizierte Fachleute können einschätzen, was für dein Gesicht passt.",
   disclaimer:
     "Nur informative Beobachtungen – keine Diagnose, Behandlungsempfehlung oder Eignungsbeurteilung. Nur qualifizierte Fachleute können dich beurteilen.",
   privacy: "Deine vier Fotos werden nur für diese Analyse gesendet und nicht gespeichert.",
