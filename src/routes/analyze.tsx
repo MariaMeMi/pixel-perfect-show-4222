@@ -174,6 +174,14 @@ function AnalyzePage() {
           <div className="absolute inset-0 overflow-hidden rounded-[50%] border-2 border-dashed border-primary/40 bg-card/40">
             {photo ? (
               <img src={photo} alt="" className="h-full w-full object-cover" />
+            ) : camera !== "off" ? (
+              <video
+                ref={videoRef}
+                playsInline
+                muted
+                autoPlay
+                className="h-full w-full -scale-x-100 object-cover"
+              />
             ) : (
               <div className="flex h-full w-full items-center justify-center">
                 <UserRound className="h-20 w-20 text-primary/30" strokeWidth={1} />
