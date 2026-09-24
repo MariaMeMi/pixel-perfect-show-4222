@@ -16,6 +16,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as ResultsRouteImport } from './routes/results'
 import { Route as ApiAnalyzeRouteImport } from './routes/api/analyze'
+import { Route as ApiBotoxRouteImport } from './routes/api/botox'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,6 +53,11 @@ const ApiAnalyzeRoute = ApiAnalyzeRouteImport.update({
   path: '/api/analyze',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiBotoxRoute = ApiBotoxRouteImport.update({
+  id: '/api/botox',
+  path: '/api/botox',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
   '/api/analyze': typeof ApiAnalyzeRoute
+  '/api/botox': typeof ApiBotoxRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
   '/api/analyze': typeof ApiAnalyzeRoute
+  '/api/botox': typeof ApiBotoxRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
   '/api/analyze': typeof ApiAnalyzeRoute
+  '/api/botox': typeof ApiBotoxRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/results'
     | '/api/analyze'
+    | '/api/botox'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/results'
     | '/api/analyze'
+    | '/api/botox'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/results'
     | '/api/analyze'
+    | '/api/botox'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   ProgressRoute: typeof ProgressRoute
   ResultsRoute: typeof ResultsRoute
   ApiAnalyzeRoute: typeof ApiAnalyzeRoute
+  ApiBotoxRoute: typeof ApiBotoxRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAnalyzeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/botox': {
+      id: '/api/botox'
+      path: '/api/botox'
+      fullPath: '/api/botox'
+      preLoaderRoute: typeof ApiBotoxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProgressRoute: ProgressRoute,
   ResultsRoute: ResultsRoute,
   ApiAnalyzeRoute: ApiAnalyzeRoute,
+  ApiBotoxRoute: ApiBotoxRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
