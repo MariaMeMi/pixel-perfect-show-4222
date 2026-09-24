@@ -224,6 +224,17 @@ function BotoxPage() {
             <p className="text-sm leading-relaxed text-secondary-foreground">{t(`gen.${k}`)}</p>
           </div>
         ))}
+        <div className="rounded-2xl bg-background/60 p-4">
+          <p className="eyebrow">{t("gen.unitsTitle")}</p>
+          <ul className="mt-2 space-y-1.5">
+            {(["forehead", "glabella", "eyes"] as const).map((k) => (
+              <li key={k} className="text-sm leading-relaxed text-secondary-foreground">
+                {t(`gen.units.${k}`)}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{t("gen.unitsNote")}</p>
+        </div>
         <p className="text-xs leading-relaxed text-muted-foreground">{t("genNote")}</p>
       </section>
 
