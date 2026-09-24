@@ -1,24 +1,182 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowRight, Flame, Sparkles, TrendingDown, TrendingUp } from "lucide-react";
+import heroImg from "@/assets/hero-skin.jpg";
+import { Chip } from "@/components/Chip";
+import { useI18n } from "@/lib/i18n";
+import {
+  averageScore,
+  currentStreak,
+  entriesWithinDays,
+  latestEntry,
+  loadEntries,
+  loadProfile,
+} from "@/lib/storage";
+import { scoreLabelKey } from "@/components/ScoreRing";
+import type { Entry } from "@/lib/types";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Rosea — your everyday skin companion" },
+      {
+        name: "description",
+        content:
+          "Check your skin with a photo, understand today's redness and follow your progress over time.",
+      },
+      { property: "og:title", content: "Rosea — your everyday skin companion" },
+      {
+        property: "og:description",
+        content: "A calm, private way to track facial redness day by day.",
+      },
+    ],
+  }),
+  component: HomePage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function greetingKey() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "greeting.morning" as const;
+  if (hour < 18) return "greeting.afternoon" as const;
+  return "greeting.evening" as const;
+}
+
+function HomePage() {
+  const { t } = useI18n();
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    const sync = () => {
+      setEntries(loadEntries());
+      setName(loadProfile().name);
+    };
+    sync();
+    window.addEventListener("rosea:entries", sync);
+    window.addEventListener("rosea:profile", sync);
+    return () => {
+      window.removeEventListener("rosea:entries", sync);
+      window.removeEventListener("rosea:profile", sync);
+    };
+  }, []);
+
+  const last = latestEntry(entries);
+  const week = useMemo(() => entriesWithinDays(entries, 7), [entries]);
+  const prevWeek = useMemo(() => {
+    const all = entriesWithinDays(entries, 14);
+    return all.filter((e) => !week.includes(e));
+  }, [entries, week]);
+  const trend = week.length && prevWeek.length ? averageScore(week) - averageScore(prevWeek) : 0;
+  const streak = currentStreak(entries);
+  const recentTriggers = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const e of week) for (const tr of e.triggers) counts.set(tr, (counts.get(tr) ?? 0) + 1);
+    return [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
+  }, [week]);
+
+  const todayKey = new Date().toISOString().slice(0, 10);
+  const scannedToday = last?.date.slice(0, 10) === todayKey;
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="animate-rise space-y-7">
+      <header>
+        <p className="eyebrow">{t("app.name")}</p>
+        <h1 className="mt-2 text-[2.25rem] leading-[1.15] text-foreground">
+          {t(greetingKey())}
+          {name ? `, ${name}` : ""}
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">{t("home.question")}</p>
+      </header>
+
+      <Link
+        to="/analyze"
+        className="surface-lift relative block overflow-hidden active:scale-[0.99] transition-transform"
+      >
+        <img
+          src={heroImg}
+          alt=""
+          width={1024}
+          height={1280}
+          className="h-52 w-full object-cover object-[50%_35%]"
+        />
+        <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-card via-card/85 to-transparent p-5 pt-12">
+          <div>
+            <p className="eyebrow">{t("app.tagline")}</p>
+            <p className="mt-1 font-display text-2xl text-foreground">{t("home.cta")}</p>
+          </div>
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full gradient-rose text-primary-foreground">
+            <ArrowRight className="h-5 w-5" strokeWidth={1.7} />
+          </span>
+        </div>
+      </Link>
+
+      <section className="surface grid grid-cols-3 divide-x divide-border/70 p-5">
+        <div className="pr-3">
+          <p className="eyebrow">{t("home.today")}</p>
+          {scannedToday && last ? (
+            <>
+              <p className="mt-1 font-display text-3xl leading-none text-foreground">
+                {last.analysis.score}
+              </p>
+              <p className="mt-1 text-[0.7rem] leading-tight text-muted-foreground">
+                {t(scoreLabelKey(last.analysis.score))}
+              </p>
+            </>
+          ) : (
+            <p className="mt-2 text-[0.7rem] leading-tight text-muted-foreground">
+              {t("home.noScan")}
+            </p>
+          )}
+        </div>
+        <div className="px-3">
+          <p className="eyebrow">{t("home.trend")}</p>
+          <p className="mt-1 flex items-center gap-1 font-display text-3xl leading-none text-foreground">
+            {trend <= 0 ? (
+              <TrendingDown className="h-5 w-5 text-[var(--color-sage)]" strokeWidth={1.7} />
+            ) : (
+              <TrendingUp className="h-5 w-5 text-primary" strokeWidth={1.7} />
+            )}
+            {trend > 0 ? "+" : ""}
+            {trend}
+          </p>
+          <p className="mt-1 text-[0.7rem] leading-tight text-muted-foreground">7d</p>
+        </div>
+        <div className="pl-3">
+          <p className="eyebrow">{t("home.streak")}</p>
+          <p className="mt-1 flex items-center gap-1 font-display text-3xl leading-none text-foreground">
+            <Flame className="h-5 w-5 text-primary" strokeWidth={1.7} />
+            {streak}
+          </p>
+          <p className="mt-1 text-[0.7rem] leading-tight text-muted-foreground">{t("home.days")}</p>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-lg text-foreground">{t("home.recentTriggers")}</h2>
+        <p className="mt-1 text-xs text-muted-foreground">{t("home.recentTriggersNote")}</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {recentTriggers.length ? (
+            recentTriggers.map(([key, count]) => (
+              <Chip
+                key={key}
+                as="span"
+                selected
+                label={`${t(`trigger.${key}` as never)} · ${count}`}
+              />
+            ))
+          ) : (
+            <p className="text-sm text-muted-foreground">{t("home.noTriggers")}</p>
+          )}
+        </div>
+      </section>
+
+      <section className="surface gradient-dawn flex gap-3 p-5">
+        <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
+        <div>
+          <p className="text-sm font-medium text-foreground">{t("home.tipTitle")}</p>
+          <p className="mt-1 text-sm leading-relaxed text-secondary-foreground">{t("home.tip")}</p>
+        </div>
+      </section>
     </div>
   );
 }
