@@ -51,6 +51,7 @@ function AnalyzePage() {
   const { t, lang } = useI18n();
   const navigate = useNavigate();
   const uploadRef = useRef<HTMLInputElement>(null);
+  const nativeRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
@@ -65,23 +66,40 @@ function AnalyzePage() {
 
   useEffect(() => stopCamera, []);
 
+  // Attach the stream once the <video> is mounted (iOS Safari needs muted + playsinline set on the element).
+  useEffect(() => {
+    const v = videoRef.current;
+    const s = streamRef.current;
+    if (camera === "off" || !v || !s) return;
+    v.muted = true;
+    v.setAttribute("playsinline", "true");
+    v.setAttribute("webkit-playsinline", "true");
+    if (v.srcObject !== s) v.srcObject = s;
+    void v.play().catch(() => undefined);
+  }, [camera]);
+
+  function openNativeCamera() {
+    nativeRef.current?.click();
+  }
+
   async function startCamera() {
     if (camera !== "off") return;
+    if (!navigator.mediaDevices?.getUserMedia) {
+      openNativeCamera();
+      return;
+    }
     setCamera("starting");
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 1280 } },
+        video: { facingMode: "user" },
         audio: false,
       });
       streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play().catch(() => undefined);
-      }
       setCamera("on");
     } catch {
       setCamera("off");
-      toast.error(t("analyze.cameraError"));
+      // Embedded previews or blocked permissions: fall back to the phone's own camera.
+      openNativeCamera();
     }
   }
 
@@ -223,6 +241,18 @@ function AnalyzePage() {
         className="hidden"
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
+      <input
+        ref={nativeRef}
+        type="file"
+        accept="image/*"
+        capture="user"
+        className="hidden"
+        onChange={(e) => {
+          void handleFile(e.target.files?.[0]);
+          e.target.value = "";
+        }}
+      />
+
 
       <div className="space-y-3">
         {photo ? (
