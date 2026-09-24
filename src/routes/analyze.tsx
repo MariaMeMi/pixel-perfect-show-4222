@@ -207,14 +207,6 @@ function AnalyzePage() {
       </ul>
 
       <input
-        ref={cameraRef}
-        type="file"
-        accept="image/*"
-        capture="user"
-        className="hidden"
-        onChange={(e) => handleFile(e.target.files?.[0])}
-      />
-      <input
         ref={uploadRef}
         type="file"
         accept="image/*"
