@@ -54,6 +54,10 @@ const en = {
   "analyze.analyzingNote": "This takes a few seconds.",
   "analyze.privacy": "Your photo stays on this device. It is sent for analysis only and never stored by us.",
   "analyze.error": "We couldn't analyze that photo. Please try again.",
+  "analyze.shutter": "Take photo",
+  "analyze.closeCamera": "Close camera",
+  "analyze.cameraError": "We couldn't access your camera. Check your browser permission or upload a photo instead.",
+  "analyze.startingCamera": "Starting camera…",
 
   "results.title": "Your skin today",
   "results.score": "Redness score",
