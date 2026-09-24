@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
-import { Camera, ImageUp, Lock, Sun, Sparkles, UserRound } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Camera, ImageUp, Lock, Sun, Sparkles, UserRound, X } from "lucide-react";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
 import type { Analysis } from "@/lib/types";
@@ -50,10 +50,61 @@ async function downscale(file: File): Promise<string> {
 function AnalyzePage() {
   const { t, lang } = useI18n();
   const navigate = useNavigate();
-  const cameraRef = useRef<HTMLInputElement>(null);
   const uploadRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [camera, setCamera] = useState<"off" | "starting" | "on">("off");
+
+  function stopCamera() {
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+    setCamera("off");
+  }
+
+  useEffect(() => stopCamera, []);
+
+  async function startCamera() {
+    if (camera !== "off") return;
+    setCamera("starting");
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 1280 } },
+        audio: false,
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play().catch(() => undefined);
+      }
+      setCamera("on");
+    } catch {
+      setCamera("off");
+      toast.error(t("analyze.cameraError"));
+    }
+  }
+
+  function capture() {
+    const video = videoRef.current;
+    if (!video || !video.videoWidth) return;
+    const max = 1024;
+    const side = Math.min(video.videoWidth, video.videoHeight);
+    const sx = (video.videoWidth - side) / 2;
+    const sy = (video.videoHeight - side) / 2;
+    const scale = Math.min(1, max / side);
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(side * scale);
+    canvas.height = Math.round(side * scale);
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    // Mirror so the photo matches what the user saw in the viewfinder.
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, sx, sy, side, side, 0, 0, canvas.width, canvas.height);
+    setPhoto(canvas.toDataURL("image/jpeg", 0.86));
+    stopCamera();
+  }
 
   async function handleFile(file?: File | null) {
     if (!file) return;
@@ -123,6 +174,14 @@ function AnalyzePage() {
           <div className="absolute inset-0 overflow-hidden rounded-[50%] border-2 border-dashed border-primary/40 bg-card/40">
             {photo ? (
               <img src={photo} alt="" className="h-full w-full object-cover" />
+            ) : camera !== "off" ? (
+              <video
+                ref={videoRef}
+                playsInline
+                muted
+                autoPlay
+                className="h-full w-full -scale-x-100 object-cover"
+              />
             ) : (
               <div className="flex h-full w-full items-center justify-center">
                 <UserRound className="h-20 w-20 text-primary/30" strokeWidth={1} />
@@ -148,14 +207,6 @@ function AnalyzePage() {
       </ul>
 
       <input
-        ref={cameraRef}
-        type="file"
-        accept="image/*"
-        capture="user"
-        className="hidden"
-        onChange={(e) => handleFile(e.target.files?.[0])}
-      />
-      <input
         ref={uploadRef}
         type="file"
         accept="image/*"
@@ -179,10 +230,28 @@ function AnalyzePage() {
               {t("analyze.retake")}
             </button>
           </>
+        ) : camera !== "off" ? (
+          <>
+            <button
+              onClick={capture}
+              disabled={camera === "starting"}
+              className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-medium tracking-wide text-primary-foreground shadow-[var(--shadow-lift)] active:scale-[0.99] disabled:opacity-60"
+            >
+              <Camera className="h-4 w-4" strokeWidth={1.7} />
+              {camera === "starting" ? t("analyze.startingCamera") : t("analyze.shutter")}
+            </button>
+            <button
+              onClick={stopCamera}
+              className="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card py-4 text-sm text-secondary-foreground active:scale-[0.99]"
+            >
+              <X className="h-4 w-4" strokeWidth={1.7} />
+              {t("analyze.closeCamera")}
+            </button>
+          </>
         ) : (
           <>
             <button
-              onClick={() => cameraRef.current?.click()}
+              onClick={startCamera}
               className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-medium tracking-wide text-primary-foreground shadow-[var(--shadow-lift)] active:scale-[0.99]"
             >
               <Camera className="h-4 w-4" strokeWidth={1.7} />

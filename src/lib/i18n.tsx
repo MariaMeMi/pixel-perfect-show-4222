@@ -54,6 +54,10 @@ const en = {
   "analyze.analyzingNote": "This takes a few seconds.",
   "analyze.privacy": "Your photo stays on this device. It is sent for analysis only and never stored by us.",
   "analyze.error": "We couldn't analyze that photo. Please try again.",
+  "analyze.shutter": "Take photo",
+  "analyze.closeCamera": "Close camera",
+  "analyze.cameraError": "We couldn't access your camera. Check your browser permission or upload a photo instead.",
+  "analyze.startingCamera": "Starting camera…",
 
   "results.title": "Your skin today",
   "results.score": "Redness score",
@@ -206,6 +210,11 @@ const de: Partial<Record<TKey, string>> = {
   "analyze.privacy":
     "Dein Foto bleibt auf diesem Gerät. Es wird nur zur Analyse gesendet und von uns nicht gespeichert.",
   "analyze.error": "Dieses Foto konnte nicht analysiert werden. Bitte versuche es erneut.",
+  "analyze.shutter": "Foto aufnehmen",
+  "analyze.closeCamera": "Kamera schließen",
+  "analyze.cameraError":
+    "Wir konnten nicht auf deine Kamera zugreifen. Prüfe die Browser-Berechtigung oder lade stattdessen ein Foto hoch.",
+  "analyze.startingCamera": "Kamera wird gestartet…",
 
   "results.title": "Deine Haut heute",
   "results.score": "Rötungswert",
