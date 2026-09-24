@@ -631,6 +631,13 @@ function Result({
             <p className="eyebrow">{t("noticed")}</p>
             <p className="mt-1 text-sm leading-relaxed text-foreground">{analysis[active].noticed}</p>
           </div>
+          <div className="rounded-2xl bg-background/60 p-4">
+            <p className="eyebrow">{t("unitsLabel")}</p>
+            <p className="mt-1 text-sm leading-relaxed text-secondary-foreground">
+              {t(`gen.units.${active}`)}
+            </p>
+            <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{t("gen.unitsNote")}</p>
+          </div>
           <div>
             <p className="eyebrow">{t("why")}</p>
             <p className="mt-1 text-sm leading-relaxed text-secondary-foreground">{aboutArea(lang, active)}</p>

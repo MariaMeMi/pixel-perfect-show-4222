@@ -193,6 +193,7 @@ const en: Dict = {
   "gen.amount":
     "How much: the amount is decided individually by the qualified provider at the time of treatment. It varies widely from person to person and area to area — there's no standard dose that fits everyone.",
   "gen.unitsTitle": "Units people commonly hear about",
+  unitsLabel: "Units commonly quoted for this area",
   "gen.units.forehead": "Forehead: published ranges often mention roughly 10–30 units in total.",
   "gen.units.glabella": "Between the eyebrows: ranges around 10–25 units are commonly quoted.",
   "gen.units.eyes": "Outer eye corners: often quoted around 5–15 units per side.",
@@ -290,6 +291,7 @@ const de: Dict = {
   "gen.amount":
     "Wie viel: die Menge legt die behandelnde Fachperson individuell fest. Sie variiert stark je nach Person und Bereich – eine Standarddosis, die für alle passt, gibt es nicht.",
   "gen.unitsTitle": "Einheiten, von denen man oft hört",
+  unitsLabel: "Für diesen Bereich häufig genannte Einheiten",
   "gen.units.forehead": "Stirn: veröffentlichte Bereiche nennen oft grob 10–30 Einheiten insgesamt.",
   "gen.units.glabella": "Zwischen den Augenbrauen: häufig werden etwa 10–25 Einheiten genannt.",
   "gen.units.eyes": "Äußere Augenwinkel: oft etwa 5–15 Einheiten pro Seite.",
