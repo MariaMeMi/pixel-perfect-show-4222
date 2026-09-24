@@ -168,4 +168,52 @@ export const articles: Article[] = [
       ],
     },
   },
+  {
+    id: "light-therapy",
+    image: calmImg,
+    minutes: 4,
+    title: { en: "Light & laser: BBL and V-Beam", de: "Licht & Laser: BBL und V-Beam" },
+    teaser: {
+      en: "What clinics commonly discuss for persistent redness — in plain words.",
+      de: "Was Kliniken bei anhaltender Rötung oft besprechen – in einfachen Worten.",
+    },
+    body: {
+      en: [
+        "BBL (broadband light, a form of IPL) and V-Beam (a pulsed dye laser) are light-based treatments dermatology clinics commonly offer for persistent redness and visible small blood vessels. They gently target the tiny vessels under the skin's surface.",
+        "These are procedures, not skincare: they're performed by trained medical professionals, often as a series of sessions a few weeks apart. Skin type, sensitivity and your redness pattern all shape whether they're suitable at all.",
+        "Many people describe the sensation as a warm snap with little downtime, though temporary swelling or bruising can happen — and results differ a lot from person to person.",
+        "If you're curious, the right first step is a conversation with a dermatologist, not a booking. Bring your Rose AI progress view: a documented pattern of redness makes that conversation much more useful.",
+      ],
+      de: [
+        "BBL (Broadband Light, eine IPL-Form) und der V-Beam (Farbstofflaser) sind Lichtbehandlungen, die Hautkliniken häufig bei anhaltender Rötung und sichtbaren kleinen Äderchen anbieten. Sie zielen sanft auf die winzigen Gefäße unter der Hautoberfläche.",
+        "Es sind Eingriffe, keine Pflege: durchgeführt von medizinisch geschulten Fachleuten, oft als Serie von Sitzungen im Abstand einiger Wochen. Hauttyp, Empfindlichkeit und dein Rötungsmuster entscheiden, ob sie überhaupt infrage kommen.",
+        "Viele beschreiben das Gefühl als warmes Schnippen mit kaum Ausfallzeit; vorübergehende Schwellungen oder Blutergüsse sind möglich – und die Ergebnisse sind von Mensch zu Mensch sehr unterschiedlich.",
+        "Wenn dich das neugierig macht, ist der erste Schritt ein Gespräch in der Hautarztpraxis, keine Buchung. Nimm deinen Rose AI-Verlauf mit: eine dokumentierte Rötung macht dieses Gespräch viel hilfreicher.",
+      ],
+    },
+  },
+  {
+    id: "creams-care",
+    image: skincareImg,
+    minutes: 4,
+    title: { en: "Creams and medical care", de: "Cremes und medizinische Versorgung" },
+    teaser: {
+      en: "What helps day to day, and what only a doctor can prescribe.",
+      de: "Was täglich hilft – und was nur Ärzt:innen verschreiben können.",
+    },
+    body: {
+      en: [
+        "Over the counter, the most supportive ingredients for redness-prone skin are ceramides, glycerin, niacinamide and azelaic acid — all found in gentle, fragrance-free products from any pharmacy.",
+        "Stronger creams — like metronidazole, prescription-strength azelaic acid or ivermectin — are prescription-only. Dermatologists choose between them based on your skin, and they often need several weeks to show their full effect.",
+        "For flare-ups, doctors sometimes add short courses of oral medication. That's an individual decision made together with a professional, never something to arrange on your own.",
+        "None of this replaces a diagnosis. What you can do is arrive prepared: your scores, check-ins and photos turn \u201emy skin is red\u201c into \u201ehere's what my skin has been doing for 90 days\u201c.",
+      ],
+      de: [
+        "Rezeptfrei helfen für zu Rötung neigende Haut vor allem Ceramide, Glycerin, Niacinamid und Azelainsäure – in sanften, parfümfreien Produkten aus jeder Apotheke.",
+        "Stärkere Cremes – etwa Metronidazol, Azelainsäure in Rezeptstärke oder Ivermectin – gibt es nur auf Rezept. Dermatolog:innen wählen je nach Haut aus, und die Wirkung zeigt sich oft erst nach einigen Wochen.",
+        "Bei Schüben setzen Ärzt:innen manchmal kurzzeitig Medikamente zum Einnehmen ein. Das ist eine individuelle Entscheidung mit Fachleuten – nie etwas, das man allein arrangiert.",
+        "All das ersetzt keine Diagnose. Was du tun kannst: vorbereitet kommen. Deine Werte, Check-ins und Fotos machen aus \u201emeine Haut ist rot\u201c ein \u201ehier ist, was meine Haut 90 Tage lang gemacht hat\u201c.",
+      ],
+    },
+  },
 ];
