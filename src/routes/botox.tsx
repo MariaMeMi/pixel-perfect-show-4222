@@ -290,6 +290,7 @@ function Capture({
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const uploadRef = useRef<HTMLInputElement>(null);
+  const nativeRef = useRef<HTMLInputElement>(null);
   const [camera, setCamera] = useState(false);
   const [shot, setShot] = useState<string | null>(null);
   const [quality, setQuality] = useState<string | null>(null);
@@ -301,22 +302,27 @@ function Capture({
   };
   useEffect(() => stop, []);
 
+  useEffect(() => {
+    const v = videoRef.current;
+    const s = streamRef.current;
+    if (!camera || !v || !s) return;
+    v.muted = true;
+    v.setAttribute("playsinline", "true");
+    if (v.srcObject !== s) v.srcObject = s;
+    void v.play().catch(() => undefined);
+  }, [camera]);
+
   async function start() {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      nativeRef.current?.click();
+      return;
+    }
     try {
-      const s = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 1280 } },
-        audio: false,
-      });
+      const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
       streamRef.current = s;
       setCamera(true);
-      requestAnimationFrame(() => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = s;
-          void videoRef.current.play().catch(() => undefined);
-        }
-      });
     } catch {
-      toast.error(t("cameraError"));
+      nativeRef.current?.click();
     }
   }
 
@@ -395,6 +401,19 @@ function Capture({
         ref={uploadRef}
         type="file"
         accept="image/*"
+        className="hidden"
+        onChange={async (e) => {
+          const f = e.target.files?.[0];
+          e.target.value = "";
+          if (f) void accept(await fileToDataUrl(f));
+        }}
+      />
+
+      <input
+        ref={nativeRef}
+        type="file"
+        accept="image/*"
+        capture="user"
         className="hidden"
         onChange={async (e) => {
           const f = e.target.files?.[0];
