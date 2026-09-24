@@ -10,8 +10,8 @@ export type Lang = "en" | "de";
  * can be added incrementally by dropping another map in here.
  */
 const en = {
-  "app.name": "Rosea",
-  "app.tagline": "Your everyday skin companion",
+  "app.name": "Rose AI",
+  "app.tagline": "Your everyday skin companion for rosacea",
 
   "nav.home": "Home",
   "nav.analyze": "Analyze",
@@ -156,7 +156,7 @@ const en = {
   "profile.saved": "Saved",
   "profile.confirmPhotos": "Delete every saved photo? This can't be undone.",
   "profile.confirmHistory": "Delete your full history? This can't be undone.",
-  "profile.medicalNote": "Rosea is a wellness and skin-tracking assistant. It doesn't diagnose rosacea or any other condition.",
+  "profile.medicalNote": "Rose AI is a wellness and skin-tracking assistant. It doesn't diagnose rosacea or any other condition.",
 
   "common.cancel": "Cancel",
   "common.back": "Back",
