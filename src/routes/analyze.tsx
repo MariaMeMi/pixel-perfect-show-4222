@@ -230,10 +230,28 @@ function AnalyzePage() {
               {t("analyze.retake")}
             </button>
           </>
+        ) : camera !== "off" ? (
+          <>
+            <button
+              onClick={capture}
+              disabled={camera === "starting"}
+              className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-medium tracking-wide text-primary-foreground shadow-[var(--shadow-lift)] active:scale-[0.99] disabled:opacity-60"
+            >
+              <Camera className="h-4 w-4" strokeWidth={1.7} />
+              {camera === "starting" ? t("analyze.startingCamera") : t("analyze.shutter")}
+            </button>
+            <button
+              onClick={stopCamera}
+              className="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card py-4 text-sm text-secondary-foreground active:scale-[0.99]"
+            >
+              <X className="h-4 w-4" strokeWidth={1.7} />
+              {t("analyze.closeCamera")}
+            </button>
+          </>
         ) : (
           <>
             <button
-              onClick={() => cameraRef.current?.click()}
+              onClick={startCamera}
               className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-medium tracking-wide text-primary-foreground shadow-[var(--shadow-lift)] active:scale-[0.99]"
             >
               <Camera className="h-4 w-4" strokeWidth={1.7} />
