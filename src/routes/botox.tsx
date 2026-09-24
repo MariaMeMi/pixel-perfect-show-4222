@@ -23,6 +23,8 @@ import {
   type Milestone,
 } from "@/lib/botox";
 import { cn } from "@/lib/utils";
+import { EmailGate } from "@/components/EmailGate";
+import { hasProvidedEmail, track } from "@/lib/experiment";
 
 export const Route = createFileRoute("/botox")({
   head: () => ({
@@ -41,7 +43,7 @@ export const Route = createFileRoute("/botox")({
   component: BotoxPage,
 });
 
-type View = "hub" | "capture" | "analyzing" | "result";
+type View = "hub" | "capture" | "analyzing" | "gate" | "result";
 
 async function fileToDataUrl(file: File): Promise<string> {
   const url = await new Promise<string>((res, rej) => {
@@ -88,6 +90,7 @@ function BotoxPage() {
 
   async function runAnalysis(all: string[]) {
     setView("analyzing");
+    track("analysis_started", "botox_information");
     try {
       const res = await fetch("/api/botox", {
         method: "POST",
@@ -96,14 +99,21 @@ function BotoxPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Analysis failed");
+      track("analysis_completed", "botox_information");
       setCurrent({ ...data, id: crypto.randomUUID(), date: new Date().toISOString() });
       setPhotos([]);
-      setView("result");
+      setView(hasProvidedEmail() ? "result" : "gate");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Analysis failed");
       setView("capture");
     }
   }
+
+  const isRealResult = view === "result" && current && !current.sample;
+  const currentId = current?.id;
+  useEffect(() => {
+    if (isRealResult && currentId) track("results_viewed", "botox_information");
+  }, [isRealResult, currentId]);
 
   if (!accepted) {
     return (
@@ -127,6 +137,10 @@ function BotoxPage() {
         </section>
       </div>
     );
+  }
+
+  if (view === "gate" && current) {
+    return <EmailGate experience="botox_information" onDone={() => setView("result")} />;
   }
 
   if (view === "capture") {
@@ -224,17 +238,6 @@ function BotoxPage() {
             <p className="text-sm leading-relaxed text-secondary-foreground">{t(`gen.${k}`)}</p>
           </div>
         ))}
-        <div className="rounded-2xl bg-background/60 p-4">
-          <p className="eyebrow">{t("gen.unitsTitle")}</p>
-          <ul className="mt-2 space-y-1.5">
-            {(["forehead", "glabella", "eyes"] as const).map((k) => (
-              <li key={k} className="text-sm leading-relaxed text-secondary-foreground">
-                {t(`gen.units.${k}`)}
-              </li>
-            ))}
-          </ul>
-          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{t("gen.unitsNote")}</p>
-        </div>
         <p className="text-xs leading-relaxed text-muted-foreground">{t("genNote")}</p>
       </section>
 
@@ -630,13 +633,6 @@ function Result({
           <div>
             <p className="eyebrow">{t("noticed")}</p>
             <p className="mt-1 text-sm leading-relaxed text-foreground">{analysis[active].noticed}</p>
-          </div>
-          <div className="rounded-2xl bg-background/60 p-4">
-            <p className="eyebrow">{t("unitsLabel")}</p>
-            <p className="mt-1 text-sm leading-relaxed text-secondary-foreground">
-              {t(`gen.units.${active}`)}
-            </p>
-            <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{t("gen.unitsNote")}</p>
           </div>
           <div>
             <p className="eyebrow">{t("why")}</p>

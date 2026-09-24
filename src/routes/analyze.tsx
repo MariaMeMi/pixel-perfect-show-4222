@@ -4,6 +4,7 @@ import { Camera, ImageUp, Lock, Sun, Sparkles, UserRound, X } from "lucide-react
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
 import type { Analysis } from "@/lib/types";
+import { track } from "@/lib/experiment";
 
 export const Route = createFileRoute("/analyze")({
   head: () => ({
@@ -136,6 +137,7 @@ function AnalyzePage() {
   async function analyze() {
     if (!photo) return;
     setBusy(true);
+    track("analysis_started", "redness");
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",
@@ -148,6 +150,7 @@ function AnalyzePage() {
         setBusy(false);
         return;
       }
+      track("analysis_completed", "redness");
       window.sessionStorage.setItem(
         "rosea.pending",
         JSON.stringify({ analysis: data, photo, date: new Date().toISOString() }),
@@ -233,6 +236,15 @@ function AnalyzePage() {
           </li>
         ))}
       </ul>
+
+      <p className="text-[0.7rem] leading-relaxed text-muted-foreground">
+        {lang === "de"
+          ? "Dein Foto wird nur für die Auswertung sicher an unseren KI-Dienst gesendet und nicht auf unseren Servern gespeichert. Eine Kopie bleibt nur auf diesem Gerät, wenn du das im Profil erlaubst. "
+          : "Your photo is sent securely to our AI service only to create your reading and isn't stored on our servers. A copy stays on this device only if you allow it in Profile. "}
+        <Link to="/privacy" className="underline underline-offset-2">
+          {lang === "de" ? "Datenschutz" : "Privacy Policy"}
+        </Link>
+      </p>
 
       <input
         ref={uploadRef}
