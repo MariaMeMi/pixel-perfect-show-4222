@@ -51,6 +51,7 @@ function AnalyzePage() {
   const { t, lang } = useI18n();
   const navigate = useNavigate();
   const uploadRef = useRef<HTMLInputElement>(null);
+  const nativeRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [photo, setPhoto] = useState<string | null>(null);
@@ -240,6 +241,18 @@ function AnalyzePage() {
         className="hidden"
         onChange={(e) => handleFile(e.target.files?.[0])}
       />
+      <input
+        ref={nativeRef}
+        type="file"
+        accept="image/*"
+        capture="user"
+        className="hidden"
+        onChange={(e) => {
+          void handleFile(e.target.files?.[0]);
+          e.target.value = "";
+        }}
+      />
+
 
       <div className="space-y-3">
         {photo ? (
