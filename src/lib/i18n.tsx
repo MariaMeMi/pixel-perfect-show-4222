@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import type { ReactNode } from "react";
+import type { Context, ReactNode } from "react";
 import { loadProfile, saveProfile } from "./storage";
 
 export type Lang = "en" | "de";
