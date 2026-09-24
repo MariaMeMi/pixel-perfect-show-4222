@@ -81,8 +81,8 @@ function HomePage() {
   return (
     <div className="animate-rise space-y-7">
       <header>
-        <p className="eyebrow">{t("app.name")}</p>
-        <h1 className="mt-2 text-[2.25rem] leading-[1.15] text-foreground">
+        <p className="font-display text-3xl leading-none text-primary">{t("app.name")}</p>
+        <h1 className="mt-3 text-[2.25rem] leading-[1.15] text-foreground">
           {t(greetingKey())}
           {name ? `, ${name}` : ""}
         </h1>
