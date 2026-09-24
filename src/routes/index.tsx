@@ -102,7 +102,7 @@ function HomePage() {
         />
         <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-card via-card/85 to-transparent p-5 pt-12">
           <div>
-            <p className="eyebrow">{t("app.tagline")}</p>
+            <p className="eyebrow">{t("app.name")}</p>
             <p className="mt-1 font-display text-2xl text-foreground">{t("home.cta")}</p>
           </div>
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full gradient-rose text-primary-foreground">
