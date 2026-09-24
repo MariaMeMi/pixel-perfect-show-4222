@@ -7,13 +7,13 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/learn")({
   head: () => ({
     meta: [
-      { title: "Learn — Rosea" },
+      { title: "Learn — Rose AI" },
       {
         name: "description",
         content:
           "Short, calm guides on rosacea triggers, gentle skincare, sun protection and when to see a dermatologist.",
       },
-      { property: "og:title", content: "Learn — Rosea" },
+      { property: "og:title", content: "Learn — Rose AI" },
       {
         property: "og:description",
         content: "Simple, reassuring reads about redness-prone skin.",

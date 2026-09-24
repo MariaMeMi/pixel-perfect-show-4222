@@ -10,8 +10,8 @@ export type Lang = "en" | "de";
  * can be added incrementally by dropping another map in here.
  */
 const en = {
-  "app.name": "Rosea",
-  "app.tagline": "Your everyday skin companion",
+  "app.name": "Rose AI",
+  "app.tagline": "Your everyday skin companion for rosacea",
 
   "nav.home": "Home",
   "nav.analyze": "Analyze",
@@ -156,7 +156,7 @@ const en = {
   "profile.saved": "Saved",
   "profile.confirmPhotos": "Delete every saved photo? This can't be undone.",
   "profile.confirmHistory": "Delete your full history? This can't be undone.",
-  "profile.medicalNote": "Rosea is a wellness and skin-tracking assistant. It doesn't diagnose rosacea or any other condition.",
+  "profile.medicalNote": "Rose AI is a wellness and skin-tracking assistant. It doesn't diagnose rosacea or any other condition.",
 
   "common.cancel": "Cancel",
   "common.back": "Back",
@@ -167,7 +167,7 @@ const en = {
 export type TKey = keyof typeof en;
 
 const de: Partial<Record<TKey, string>> = {
-  "app.tagline": "Deine tägliche Hautbegleitung",
+  "app.tagline": "Deine tägliche Hautbegleitung bei Rosazea",
   "nav.home": "Start",
   "nav.analyze": "Analyse",
   "nav.progress": "Verlauf",
@@ -315,7 +315,7 @@ const de: Partial<Record<TKey, string>> = {
   "profile.confirmPhotos": "Alle gespeicherten Fotos löschen? Das lässt sich nicht rückgängig machen.",
   "profile.confirmHistory": "Gesamten Verlauf löschen? Das lässt sich nicht rückgängig machen.",
   "profile.medicalNote":
-    "Rosea ist eine Wellness- und Hautbegleitung. Es stellt keine Diagnose von Rosazea oder anderen Erkrankungen.",
+    "Rose AI ist eine Wellness- und Hautbegleitung. Es stellt keine Diagnose von Rosazea oder anderen Erkrankungen.",
 
   "common.cancel": "Abbrechen",
   "common.back": "Zurück",

@@ -80,7 +80,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { title: "Rosea — your skin companion" },
+      { title: "Rose AI — your skin companion" },
       {
         name: "description",
         content: "Track facial redness over time with gentle, photo-based skin check-ins.",

@@ -27,12 +27,12 @@ export const articles: Article[] = [
       en: [
         "Rosacea is a common, long-term skin condition that usually shows up on the central face: cheeks, nose, chin and forehead. It often begins as flushing that fades, and over time can settle into more lasting redness.",
         "It behaves in cycles. Calm weeks and flare weeks are both normal, which is exactly why tracking over time is more useful than judging a single day.",
-        "Only a dermatologist can confirm rosacea. Rosea helps you notice what your skin is doing, so a conversation with a professional starts from real information.",
+        "Only a dermatologist can confirm rosacea. Rose AI helps you notice what your skin is doing, so a conversation with a professional starts from real information.",
       ],
       de: [
         "Rosazea ist eine häufige, langanhaltende Hauterkrankung, die meist die Gesichtsmitte betrifft: Wangen, Nase, Kinn und Stirn. Oft beginnt sie mit flüchtigen Rötungen, die mit der Zeit bleiben können.",
         "Sie verläuft in Phasen. Ruhige Wochen und Schübe sind beide normal – deshalb sagt der Verlauf mehr aus als ein einzelner Tag.",
-        "Nur Dermatolog:innen können Rosazea feststellen. Rosea hilft dir zu beobachten, damit dein Gespräch auf echten Beobachtungen basiert.",
+        "Nur Dermatolog:innen können Rosazea feststellen. Rose AI hilft dir zu beobachten, damit dein Gespräch auf echten Beobachtungen basiert.",
       ],
     },
   },
@@ -158,13 +158,13 @@ export const articles: Article[] = [
     body: {
       en: [
         "Book an appointment if redness is persistent, if you notice bumps or pustules, if your eyes feel gritty or irritated, or if your skin is affecting how you feel day to day.",
-        "Bring your Rosea progress view. Dates, scores and a photo timeline give a far clearer picture than memory.",
-        "Effective prescription treatments exist. Rosea is a companion for tracking, never a replacement for medical care.",
+        "Bring your Rose AI progress view. Dates, scores and a photo timeline give a far clearer picture than memory.",
+        "Effective prescription treatments exist. Rose AI is a companion for tracking, never a replacement for medical care.",
       ],
       de: [
         "Vereinbare einen Termin, wenn die Rötung bleibt, Pusteln auftreten, die Augen brennen oder deine Haut dein Wohlbefinden belastet.",
-        "Nimm deinen Rosea-Verlauf mit. Daten, Werte und Fotos sagen mehr als Erinnerung.",
-        "Es gibt wirksame verschreibungspflichtige Behandlungen. Rosea begleitet dich beim Beobachten, ersetzt aber keine medizinische Versorgung.",
+        "Nimm deinen Rose AI-Verlauf mit. Daten, Werte und Fotos sagen mehr als Erinnerung.",
+        "Es gibt wirksame verschreibungspflichtige Behandlungen. Rose AI begleitet dich beim Beobachten, ersetzt aber keine medizinische Versorgung.",
       ],
     },
   },

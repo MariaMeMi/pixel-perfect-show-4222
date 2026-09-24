@@ -10,12 +10,12 @@ import type { Profile, TriggerKey } from "@/lib/types";
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "Profile & privacy — Rosea" },
+      { title: "Profile & privacy — Rose AI" },
       {
         name: "description",
         content: "Your skin profile, known triggers, routine, language and photo privacy controls.",
       },
-      { property: "og:title", content: "Profile & privacy — Rosea" },
+      { property: "og:title", content: "Profile & privacy — Rose AI" },
       {
         property: "og:description",
         content: "Manage your skin profile and decide exactly what stays on your device.",
