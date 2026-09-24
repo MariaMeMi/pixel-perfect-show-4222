@@ -11,11 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalyzeRouteImport } from './routes/analyze'
+import { Route as BotoxRouteImport } from './routes/botox'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as ResultsRouteImport } from './routes/results'
 import { Route as ApiAnalyzeRouteImport } from './routes/api/analyze'
+import { Route as ApiBotoxRouteImport } from './routes/api/botox'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -25,6 +27,11 @@ const IndexRoute = IndexRouteImport.update({
 const AnalyzeRoute = AnalyzeRouteImport.update({
   id: '/analyze',
   path: '/analyze',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BotoxRoute = BotoxRouteImport.update({
+  id: '/botox',
+  path: '/botox',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearnRoute = LearnRouteImport.update({
@@ -52,73 +59,92 @@ const ApiAnalyzeRoute = ApiAnalyzeRouteImport.update({
   path: '/api/analyze',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiBotoxRoute = ApiBotoxRouteImport.update({
+  id: '/api/botox',
+  path: '/api/botox',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analyze': typeof AnalyzeRoute
+  '/botox': typeof BotoxRoute
   '/learn': typeof LearnRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
   '/api/analyze': typeof ApiAnalyzeRoute
+  '/api/botox': typeof ApiBotoxRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analyze': typeof AnalyzeRoute
+  '/botox': typeof BotoxRoute
   '/learn': typeof LearnRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
   '/api/analyze': typeof ApiAnalyzeRoute
+  '/api/botox': typeof ApiBotoxRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/analyze': typeof AnalyzeRoute
+  '/botox': typeof BotoxRoute
   '/learn': typeof LearnRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
   '/api/analyze': typeof ApiAnalyzeRoute
+  '/api/botox': typeof ApiBotoxRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/analyze'
+    | '/botox'
     | '/learn'
     | '/profile'
     | '/progress'
     | '/results'
     | '/api/analyze'
+    | '/api/botox'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/analyze'
+    | '/botox'
     | '/learn'
     | '/profile'
     | '/progress'
     | '/results'
     | '/api/analyze'
+    | '/api/botox'
   id:
     | '__root__'
     | '/'
     | '/analyze'
+    | '/botox'
     | '/learn'
     | '/profile'
     | '/progress'
     | '/results'
     | '/api/analyze'
+    | '/api/botox'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalyzeRoute: typeof AnalyzeRoute
+  BotoxRoute: typeof BotoxRoute
   LearnRoute: typeof LearnRoute
   ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
   ResultsRoute: typeof ResultsRoute
   ApiAnalyzeRoute: typeof ApiAnalyzeRoute
+  ApiBotoxRoute: typeof ApiBotoxRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -135,6 +161,13 @@ declare module '@tanstack/react-router' {
       path: '/analyze'
       fullPath: '/analyze'
       preLoaderRoute: typeof AnalyzeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/botox': {
+      id: '/botox'
+      path: '/botox'
+      fullPath: '/botox'
+      preLoaderRoute: typeof BotoxRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/learn': {
@@ -172,17 +205,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAnalyzeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/botox': {
+      id: '/api/botox'
+      path: '/api/botox'
+      fullPath: '/api/botox'
+      preLoaderRoute: typeof ApiBotoxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyzeRoute: AnalyzeRoute,
+  BotoxRoute: BotoxRoute,
   LearnRoute: LearnRoute,
   ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
   ResultsRoute: ResultsRoute,
   ApiAnalyzeRoute: ApiAnalyzeRoute,
+  ApiBotoxRoute: ApiBotoxRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

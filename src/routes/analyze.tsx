@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Camera, ImageUp, Lock, Sun, Sparkles, UserRound, X } from "lucide-react";
 import { toast } from "sonner";
@@ -168,6 +168,16 @@ function AnalyzePage() {
         <h1 className="mt-2 text-[2rem] leading-tight text-foreground">{t("analyze.title")}</h1>
         <p className="mt-1 text-sm text-muted-foreground">{t("analyze.subtitle")}</p>
       </header>
+
+      <div className="grid grid-cols-2 gap-1 rounded-full border border-border bg-card p-1 text-sm">
+        <span className="rounded-full gradient-rose py-2 text-center font-medium text-primary-foreground">
+          {lang === "de" ? "Rötung AI" : "Redness AI"}
+        </span>
+        <Link to="/botox" className="rounded-full py-2 text-center text-muted-foreground">
+          Botox AI
+        </Link>
+      </div>
+
 
       <div className="surface-lift relative flex h-[22rem] items-center justify-center overflow-hidden gradient-dawn">
         <div className="relative h-[19rem] w-[14rem]">

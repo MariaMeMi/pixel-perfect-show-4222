@@ -14,6 +14,7 @@ import {
 } from "@/lib/storage";
 import { scoreLabelKey } from "@/components/ScoreRing";
 import type { Entry } from "@/lib/types";
+import { bt } from "@/lib/botox";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -110,6 +111,8 @@ function HomePage() {
         </div>
       </Link>
 
+      <BotoxCard />
+
       <section className="surface grid grid-cols-3 divide-x divide-border/70 p-5">
         <div className="pr-3">
           <p className="eyebrow">{t("home.today")}</p>
@@ -178,5 +181,20 @@ function HomePage() {
         </div>
       </section>
     </div>
+  );
+}
+
+function BotoxCard() {
+  const { lang } = useI18n();
+  const t = bt(lang);
+  return (
+    <Link to="/botox" className="surface gradient-dawn block p-5 active:scale-[0.99] transition-transform">
+      <p className="eyebrow">{t("tagline")}</p>
+      <p className="mt-1 font-display text-2xl text-foreground">{t("title")}</p>
+      <p className="mt-1 text-sm leading-relaxed text-secondary-foreground">{t("homeBody")}</p>
+      <span className="mt-4 inline-flex items-center gap-2 rounded-full gradient-rose px-4 py-2 text-sm text-primary-foreground">
+        {t("homeCta")} <ArrowRight className="h-4 w-4" strokeWidth={1.7} />
+      </span>
+    </Link>
   );
 }
