@@ -332,7 +332,7 @@ type I18nValue = {
 };
 
 // Keep one context instance across hot reloads so the provider and consumers always match.
-const g = globalThis as unknown as { __roseI18nCtx?: React.Context<I18nValue | null> };
+const g = globalThis as unknown as { __roseI18nCtx?: Context<I18nValue | null> };
 const I18nContext = g.__roseI18nCtx ?? (g.__roseI18nCtx = createContext<I18nValue | null>(null));
 
 export function I18nProvider({ children }: { children: ReactNode }) {
