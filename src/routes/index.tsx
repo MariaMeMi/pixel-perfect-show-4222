@@ -110,6 +110,8 @@ function HomePage() {
         </div>
       </Link>
 
+      <BotoxCard />
+
       <section className="surface grid grid-cols-3 divide-x divide-border/70 p-5">
         <div className="pr-3">
           <p className="eyebrow">{t("home.today")}</p>

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalyzeRouteImport } from './routes/analyze'
+import { Route as BotoxRouteImport } from './routes/botox'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgressRouteImport } from './routes/progress'
@@ -26,6 +27,11 @@ const IndexRoute = IndexRouteImport.update({
 const AnalyzeRoute = AnalyzeRouteImport.update({
   id: '/analyze',
   path: '/analyze',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BotoxRoute = BotoxRouteImport.update({
+  id: '/botox',
+  path: '/botox',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearnRoute = LearnRouteImport.update({
@@ -62,6 +68,7 @@ const ApiBotoxRoute = ApiBotoxRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analyze': typeof AnalyzeRoute
+  '/botox': typeof BotoxRoute
   '/learn': typeof LearnRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analyze': typeof AnalyzeRoute
+  '/botox': typeof BotoxRoute
   '/learn': typeof LearnRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/analyze': typeof AnalyzeRoute
+  '/botox': typeof BotoxRoute
   '/learn': typeof LearnRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/analyze'
+    | '/botox'
     | '/learn'
     | '/profile'
     | '/progress'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/analyze'
+    | '/botox'
     | '/learn'
     | '/profile'
     | '/progress'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/analyze'
+    | '/botox'
     | '/learn'
     | '/profile'
     | '/progress'
@@ -126,6 +138,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalyzeRoute: typeof AnalyzeRoute
+  BotoxRoute: typeof BotoxRoute
   LearnRoute: typeof LearnRoute
   ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
@@ -148,6 +161,13 @@ declare module '@tanstack/react-router' {
       path: '/analyze'
       fullPath: '/analyze'
       preLoaderRoute: typeof AnalyzeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/botox': {
+      id: '/botox'
+      path: '/botox'
+      fullPath: '/botox'
+      preLoaderRoute: typeof BotoxRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/learn': {
@@ -198,6 +218,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyzeRoute: AnalyzeRoute,
+  BotoxRoute: BotoxRoute,
   LearnRoute: LearnRoute,
   ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
