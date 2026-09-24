@@ -70,7 +70,7 @@ export const articles: Article[] = [
     body: {
       en: [
         "A calm routine usually means three steps: a gentle non-foaming cleanser, a fragrance-free moisturiser with ceramides or glycerin, and broad-spectrum SPF every morning.",
-        "Introduce one new product at a time and give it two to four weeks. That way, if your skin reacts, you know what to.",
+        "Introduce one new product at a time and give it two to four weeks. That way, if your skin reacts, you know what caused it.",
         "Skip scrubs, strong acids, alcohol-heavy toners and very hot water while your skin feels reactive.",
       ],
       de: [
