@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalyzeRouteImport } from './routes/analyze'
 import { Route as LearnRouteImport } from './routes/learn'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as ResultsRouteImport } from './routes/results'
 import { Route as ApiAnalyzeRouteImport } from './routes/api/analyze'
@@ -29,6 +30,11 @@ const AnalyzeRoute = AnalyzeRouteImport.update({
 const LearnRoute = LearnRouteImport.update({
   id: '/learn',
   path: '/learn',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProgressRoute = ProgressRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analyze': typeof AnalyzeRoute
   '/learn': typeof LearnRoute
+  '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
   '/api/analyze': typeof ApiAnalyzeRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analyze': typeof AnalyzeRoute
   '/learn': typeof LearnRoute
+  '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
   '/api/analyze': typeof ApiAnalyzeRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/analyze': typeof AnalyzeRoute
   '/learn': typeof LearnRoute
+  '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
   '/api/analyze': typeof ApiAnalyzeRoute
@@ -75,14 +84,28 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/analyze' | '/learn' | '/progress' | '/results' | '/api/analyze'
+    | '/'
+    | '/analyze'
+    | '/learn'
+    | '/profile'
+    | '/progress'
+    | '/results'
+    | '/api/analyze'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/analyze' | '/learn' | '/progress' | '/results' | '/api/analyze'
+  to:
+    | '/'
+    | '/analyze'
+    | '/learn'
+    | '/profile'
+    | '/progress'
+    | '/results'
+    | '/api/analyze'
   id:
     | '__root__'
     | '/'
     | '/analyze'
     | '/learn'
+    | '/profile'
     | '/progress'
     | '/results'
     | '/api/analyze'
@@ -92,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalyzeRoute: typeof AnalyzeRoute
   LearnRoute: typeof LearnRoute
+  ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
   ResultsRoute: typeof ResultsRoute
   ApiAnalyzeRoute: typeof ApiAnalyzeRoute
@@ -118,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/learn'
       fullPath: '/learn'
       preLoaderRoute: typeof LearnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/progress': {
@@ -148,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyzeRoute: AnalyzeRoute,
   LearnRoute: LearnRoute,
+  ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
   ResultsRoute: ResultsRoute,
   ApiAnalyzeRoute: ApiAnalyzeRoute,
