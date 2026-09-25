@@ -1,6 +1,6 @@
 import type { Analysis, Entry, Profile, RegionKey, TriggerKey } from "./types";
 
-const ENTRIES_KEY = "rosea.entries.v1";
+const ENTRIES_KEY = "rosea.entries.v2";
 const PROFILE_KEY = "rosea.profile.v1";
 
 export const defaultProfile: Profile = {
