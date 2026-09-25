@@ -9,7 +9,7 @@ import { useI18n } from "@/lib/i18n";
 import { addEntry, baselineScore, loadEntries, loadProfile } from "@/lib/storage";
 import type { Analysis, Entry, FeelingKey, TriggerKey } from "@/lib/types";
 import { EmailGate } from "@/components/EmailGate";
-import { hasProvidedEmail, track } from "@/lib/experiment";
+import { track } from "@/lib/experiment";
 
 export const Route = createFileRoute("/results")({
   head: () => ({
@@ -67,7 +67,7 @@ function ResultsPage() {
     }
     setPending(JSON.parse(raw) as Pending);
     setEntries(loadEntries());
-    setGated(!hasProvidedEmail());
+    setGated(true);
   }, [navigate]);
 
   useEffect(() => {
