@@ -24,7 +24,7 @@ import {
 } from "@/lib/botox";
 import { cn } from "@/lib/utils";
 import { EmailGate } from "@/components/EmailGate";
-import { hasProvidedEmail, track } from "@/lib/experiment";
+import { track } from "@/lib/experiment";
 
 export const Route = createFileRoute("/botox")({
   head: () => ({
@@ -102,7 +102,7 @@ function BotoxPage() {
       track("analysis_completed", "botox_information");
       setCurrent({ ...data, id: crypto.randomUUID(), date: new Date().toISOString() });
       setPhotos([]);
-      setView(hasProvidedEmail() ? "result" : "gate");
+      setView("gate");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Analysis failed");
       setView("capture");
