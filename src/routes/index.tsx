@@ -95,7 +95,7 @@ function HomePage() {
       </header>
 
       <Link
-        to="/analyze"
+        to="/onboarding"
         className="surface-lift relative block overflow-hidden active:scale-[0.99] transition-transform"
       >
         <img
