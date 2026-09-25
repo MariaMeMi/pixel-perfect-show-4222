@@ -1,6 +1,6 @@
 import type { Analysis, Entry, Profile, RegionKey, TriggerKey } from "./types";
 
-const ENTRIES_KEY = "rosea.entries.v1";
+const ENTRIES_KEY = "rosea.entries.v2";
 const PROFILE_KEY = "rosea.profile.v1";
 
 export const defaultProfile: Profile = {
@@ -28,90 +28,12 @@ export function labelForScore(score: number): "calm" | "mild" | "moderate" | "hi
   return "high";
 }
 
-/* ---------- seed data ---------- */
-
-function seededRandom(seed: number) {
-  let s = seed;
-  return () => {
-    s = (s * 1664525 + 1013904223) % 4294967296;
-    return s / 4294967296;
-  };
-}
-
-const SEED_TRIGGERS: TriggerKey[] = [
-  "sun",
-  "heat",
-  "stress",
-  "alcohol",
-  "spicy",
-  "exercise",
-  "hotDrinks",
-  "poorSleep",
-];
-
-function buildSeed(): Entry[] {
-  const rnd = seededRandom(42);
-  const entries: Entry[] = [];
-  const days = 76;
-  for (let i = days; i >= 1; i--) {
-    if (i % 3 === 2 && rnd() > 0.55) continue; // some missed days
-    const date = new Date();
-    date.setHours(8, 30, 0, 0);
-    date.setDate(date.getDate() - i);
-
-    const triggers: TriggerKey[] = [];
-    for (const t of SEED_TRIGGERS) {
-      if (rnd() > 0.82) triggers.push(t);
-    }
-
-    const trend = 62 - (days - i) * 0.12; // slow improvement
-    const heatBump = triggers.includes("heat") || triggers.includes("sun") ? 11 : 0;
-    const stressBump = triggers.includes("stress") ? 6 : 0;
-    const score = Math.max(
-      12,
-      Math.min(92, Math.round(trend + heatBump + stressBump + (rnd() - 0.5) * 14)),
-    );
-
-    const regions: Record<RegionKey, number> = {
-      leftCheek: Math.min(100, Math.round(score + (rnd() - 0.3) * 18)),
-      rightCheek: Math.min(100, Math.round(score + (rnd() - 0.35) * 18)),
-      nose: Math.min(100, Math.round(score + (rnd() - 0.2) * 16)),
-      forehead: Math.max(5, Math.round(score - 14 + rnd() * 10)),
-      chin: Math.max(5, Math.round(score - 18 + rnd() * 12)),
-    };
-
-    entries.push({
-      id: `seed-${i}`,
-      date: date.toISOString(),
-      triggers,
-      feeling: score > 60 ? "warm" : score > 40 ? "sensitive" : "normal",
-      analysis: {
-        score,
-        irritation: Math.max(4, Math.round(score * 0.72 + (rnd() - 0.5) * 12)),
-        regions,
-        summary: "Visible redness concentrated across the central face.",
-        observations: [
-          "Diffuse warmth across both cheeks",
-          "Slight shine and flushing around the nose",
-        ],
-        contributors: triggers.length ? [] : [],
-        tips: [],
-      },
-    });
-  }
-  return entries;
-}
-
 /* ---------- reads / writes ---------- */
 
 export function loadEntries(): Entry[] {
   if (!isBrowser()) return [];
   const raw = window.localStorage.getItem(ENTRIES_KEY);
-  if (!raw) {
-    const seed = buildSeed();
-    window.localStorage.setItem(ENTRIES_KEY, JSON.stringify(seed));
-    return seed;
-  }
+  if (!raw) return [];
   try {
     return JSON.parse(raw) as Entry[];
   } catch {
