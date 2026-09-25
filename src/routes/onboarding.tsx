@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Camera, Plus } from "lucide-react";
 import { Chip } from "@/components/Chip";
 
@@ -145,6 +145,39 @@ function Onboarding() {
   const [added, setAdded] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
   const set = (p: Partial<Data>) => setD((x) => ({ ...x, ...p }));
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const camOn = !!stream;
+  const savePhoto = (url: string) => set({ baselinePhoto: url, baselineDate: new Date().toISOString() });
+  const shrink = (src: string) => new Promise<string>((res) => {
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, 800 / Math.max(img.width, img.height));
+      const c = document.createElement("canvas"); c.width = img.width * k; c.height = img.height * k;
+      c.getContext("2d")!.drawImage(img, 0, 0, c.width, c.height); res(c.toDataURL("image/jpeg", 0.85));
+    };
+    img.onerror = () => res(src); img.src = src;
+  });
+  useEffect(() => {
+    const v = videoRef.current; if (!v || !stream) return;
+    v.muted = true; v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", "");
+    v.srcObject = stream; void v.play().catch(() => {});
+  }, [stream]);
+  useEffect(() => () => stream?.getTracks().forEach((t) => t.stop()), [stream]);
+  const stopCam = () => { stream?.getTracks().forEach((t) => t.stop()); setStream(null); };
+  const startCam = async () => {
+    try {
+      if (!navigator.mediaDevices?.getUserMedia) throw new Error("no camera");
+      setStream(await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false }));
+    } catch { fileRef.current?.click(); }
+  };
+  const snap = () => {
+    const v = videoRef.current; if (!v || !v.videoWidth) return;
+    const k = Math.min(1, 800 / Math.max(v.videoWidth, v.videoHeight));
+    const c = document.createElement("canvas"); c.width = v.videoWidth * k; c.height = v.videoHeight * k;
+    const ctx = c.getContext("2d")!; ctx.translate(c.width, 0); ctx.scale(-1, 1); ctx.drawImage(v, 0, 0, c.width, c.height);
+    savePhoto(c.toDataURL("image/jpeg", 0.85)); stopCam();
+  };
 
   const triedReal = d.tried.filter((t) => t !== NONE_TRIED && t !== "Other");
 
@@ -224,15 +257,26 @@ function Onboarding() {
       section: "Your baseline photo", title: "Let's create your baseline.", hint: "We'll use this so you can compare your skin with yourself over time.",
       valid: true,
       body: <div className="space-y-4">
-        <div className="mx-auto flex aspect-[3/4] w-56 items-center justify-center overflow-hidden rounded-[50%] border-2 border-dashed border-primary/40 bg-accent/40">
-          {d.baselinePhoto ? <img src={d.baselinePhoto} alt="Baseline" className="h-full w-full object-cover" /> : <Camera className="h-10 w-10 text-primary/60" strokeWidth={1.4} />}
+        <div className="relative mx-auto flex aspect-[3/4] w-56 items-center justify-center overflow-hidden rounded-[50%] border-2 border-dashed border-primary/40 bg-accent/40">
+          {camOn ? <video ref={videoRef} autoPlay muted playsInline className="h-full w-full -scale-x-100 object-cover" />
+            : d.baselinePhoto ? <img src={d.baselinePhoto} alt="Baseline" className="h-full w-full object-cover" /> : <Camera className="h-10 w-10 text-primary/60" strokeWidth={1.4} />}
         </div>
         <p className="text-center text-xs text-muted-foreground">Natural light · No filter · Face forward · Similar distance</p>
-        <input ref={fileRef} type="file" accept="image/*" capture="user" className="hidden" onChange={(e) => {
-          const f = e.target.files?.[0]; if (!f) return;
-          const r = new FileReader(); r.onload = () => set({ baselinePhoto: String(r.result), baselineDate: new Date().toISOString() }); r.readAsDataURL(f);
+        <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => {
+          const f = e.target.files?.[0]; e.target.value = ""; if (!f) return;
+          const r = new FileReader(); r.onload = () => void shrink(String(r.result)).then(savePhoto); r.readAsDataURL(f);
         }} />
-        <button type="button" onClick={() => fileRef.current?.click()} className="w-full rounded-full border border-primary/40 bg-card py-3 text-sm text-primary">{d.baselinePhoto ? "Retake baseline photo" : "Take baseline photo"}</button>
+        {camOn ? (
+          <div className="flex gap-2">
+            <button type="button" onClick={stopCam} className="flex-1 rounded-full border border-border bg-card py-3 text-sm text-muted-foreground">Cancel</button>
+            <button type="button" onClick={snap} className="flex-1 rounded-full gradient-rose py-3 text-sm text-primary-foreground">Capture</button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <button type="button" onClick={startCam} className="flex-1 rounded-full border border-primary/40 bg-card py-3 text-sm text-primary">{d.baselinePhoto ? "Retake photo" : "Take photo"}</button>
+            <button type="button" onClick={() => fileRef.current?.click()} className="flex-1 rounded-full border border-border bg-card py-3 text-sm text-foreground">Upload photo</button>
+          </div>
+        )}
         <p className="surface p-4 text-xs leading-relaxed text-muted-foreground">Your baseline photo stays on this device only — it isn't uploaded or shared. It's kept until you delete it, which you can do anytime in Profile → Privacy. You can also skip this and add one later.</p>
       </div>,
     },
