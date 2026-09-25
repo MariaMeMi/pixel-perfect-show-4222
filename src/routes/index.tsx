@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, Flame, Sparkles, TrendingDown, TrendingUp } from "lucide-react";
 import heroImg from "@/assets/hero-skin.jpg";
@@ -46,6 +46,11 @@ function HomePage() {
   const { t } = useI18n();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [name, setName] = useState("");
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!window.localStorage.getItem("rosea.onboarding.v1")) navigate({ to: "/onboarding" });
+  }, [navigate]);
 
   useEffect(() => {
     const sync = () => {
