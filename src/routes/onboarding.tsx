@@ -286,7 +286,7 @@ function Onboarding() {
     const final = { ...d, baselineDate: d.baselineDate ?? new Date().toISOString(), completedAt: new Date().toISOString() };
     try { localStorage.setItem(ONBOARDING_KEY, JSON.stringify(final)); }
     catch { localStorage.setItem(ONBOARDING_KEY, JSON.stringify({ ...final, baselinePhoto: undefined })); }
-    navigate({ to: "/" });
+    navigate({ to: "/analyze" });
   };
 
   if (step === steps.length) {
