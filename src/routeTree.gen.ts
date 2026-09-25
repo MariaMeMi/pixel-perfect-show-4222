@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalyzeRouteImport } from './routes/analyze'
 import { Route as BotoxRouteImport } from './routes/botox'
 import { Route as LearnRouteImport } from './routes/learn'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgressRouteImport } from './routes/progress'
@@ -38,6 +39,11 @@ const BotoxRoute = BotoxRouteImport.update({
 const LearnRoute = LearnRouteImport.update({
   id: '/learn',
   path: '/learn',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/analyze': typeof AnalyzeRoute
   '/botox': typeof BotoxRoute
   '/learn': typeof LearnRoute
+  '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/analyze': typeof AnalyzeRoute
   '/botox': typeof BotoxRoute
   '/learn': typeof LearnRoute
+  '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/analyze': typeof AnalyzeRoute
   '/botox': typeof BotoxRoute
   '/learn': typeof LearnRoute
+  '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -115,6 +124,7 @@ export interface FileRouteTypes {
     | '/analyze'
     | '/botox'
     | '/learn'
+    | '/onboarding'
     | '/privacy'
     | '/profile'
     | '/progress'
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/analyze'
     | '/botox'
     | '/learn'
+    | '/onboarding'
     | '/privacy'
     | '/profile'
     | '/progress'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/analyze'
     | '/botox'
     | '/learn'
+    | '/onboarding'
     | '/privacy'
     | '/profile'
     | '/progress'
@@ -152,6 +164,7 @@ export interface RootRouteChildren {
   AnalyzeRoute: typeof AnalyzeRoute
   BotoxRoute: typeof BotoxRoute
   LearnRoute: typeof LearnRoute
+  OnboardingRoute: typeof OnboardingRoute
   PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
@@ -188,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/learn'
       fullPath: '/learn'
       preLoaderRoute: typeof LearnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -240,6 +260,7 @@ const rootRouteChildren: RootRouteChildren = {
   AnalyzeRoute: AnalyzeRoute,
   BotoxRoute: BotoxRoute,
   LearnRoute: LearnRoute,
+  OnboardingRoute: OnboardingRoute,
   PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
