@@ -64,7 +64,7 @@ const Email = ({ lang = 'en', kind = 'redness', score, summary, points = [] }: P
 export const template = {
   component: Email,
   subject: (d: Record<string, any>) =>
-    d.lang === 'de' ? 'Deine Rose AI Ergebnisse 🌹' : 'Your Rose AI results 🌹',
+    d['lang'] === 'de' ? 'Deine Rose AI Ergebnisse 🌹' : 'Your Rose AI results 🌹',
   displayName: 'Analysis results',
   previewData: {
     lang: 'en',
