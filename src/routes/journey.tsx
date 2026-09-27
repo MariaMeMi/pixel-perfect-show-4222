@@ -108,8 +108,8 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
 
 async function drawCard(opts: {
   entries: Entry[];
-  left?: Entry;
-  right?: Entry;
+  left?: Entry | undefined;
+  right?: Entry | undefined;
   withPhotos: boolean;
   caption: string;
   c: (typeof C)["en"];
@@ -350,7 +350,7 @@ function JourneyPage() {
     );
   }
 
-  const Picker = ({ label, value, onPick }: { label: string; value?: string; onPick: (id: string) => void }) => (
+  const Picker = ({ label, value, onPick }: { label: string; value?: string | undefined; onPick: (id: string) => void }) => (
     <div>
       <p className="eyebrow">{label}</p>
       <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto pb-1">
