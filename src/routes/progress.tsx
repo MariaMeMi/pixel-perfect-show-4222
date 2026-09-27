@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { track } from "@/lib/experiment";
 import { useEffect, useMemo, useState } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Sparkles, Trash2 } from "lucide-react";
@@ -233,5 +234,38 @@ function ProgressPage() {
         </section>
       ) : null}
     </div>
+  );
+}
+
+function JourneyCta({ lang }: { lang: string }) {
+  const de = lang === "de";
+  const [celebrate, setCelebrate] = useState(false);
+  useEffect(() => {
+    if (sessionStorage.getItem("rose.journey.celebrate")) {
+      sessionStorage.removeItem("rose.journey.celebrate");
+      setCelebrate(true);
+    }
+    track("skin_journey_cta_viewed", "skin_journey");
+  }, []);
+  return (
+    <Link to="/journey" className="surface-lift gradient-dawn block p-5 active:scale-[0.99] transition-transform">
+      {celebrate ? (
+        <>
+          <p className="font-display text-2xl text-foreground">
+            {de ? "Deine erste Hautzeitleiste ist fertig 🎉" : "You’ve created your first skin timeline 🎉"}
+          </p>
+          <p className="mt-1 text-sm text-secondary-foreground">
+            {de
+              ? "Du hast jetzt genug Check-ins, um auf deine Reise zurückzublicken."
+              : "You now have enough check-ins to look back at your journey."}
+          </p>
+        </>
+      ) : null}
+      <span className="mt-3 inline-flex items-center gap-2 rounded-full gradient-rose px-4 py-2 text-sm text-primary-foreground">
+        {celebrate
+          ? de ? "Fortschrittskarte erstellen" : "Create my progress card"
+          : de ? "Meine Hautreise erstellen 🌹" : "Create My Skin Journey 🌹"}
+      </span>
+    </Link>
   );
 }
