@@ -3,7 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { useServerFn } from "@tanstack/react-start";
 import { submitEmail } from "@/lib/experiment.functions";
-import { markEmailProvided, track, type Experience } from "@/lib/experiment";
+import {
+  hasProvidedEmail,
+  markEmailProvided,
+  referredBy,
+  track,
+  type Experience,
+} from "@/lib/experiment";
 import { useI18n } from "@/lib/i18n";
 
 const COPY = {
@@ -51,10 +57,22 @@ export function EmailGate({ experience, onDone }: { experience: Experience; onDo
     setBusy(true);
     setError("");
     try {
-      const res = await submit({ data: { email: parsed.data, experience } });
+      const ref = referredBy();
+      const res = await submit({
+        data: {
+          email: parsed.data,
+          experience: experience === "botox_information" ? "botox_information" : "redness",
+          referredBy: ref,
+        },
+      });
       if (!res.ok) throw new Error();
+      const first = !hasProvidedEmail();
       markEmailProvided();
       track("email_submitted", experience);
+      if (ref && first) {
+        track("referral_signup", "skin_journey", ref);
+        track("referred_user_signed_up", "skin_journey", ref);
+      }
       onDone();
     } catch {
       setError(c.failed);
