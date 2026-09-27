@@ -35,7 +35,17 @@ const COPY = {
   },
 };
 
-export function EmailGate({ experience, onDone }: { experience: Experience; onDone: () => void }) {
+export type GateResults = { score?: number; summary?: string; points?: string[] };
+
+export function EmailGate({
+  experience,
+  onDone,
+  results,
+}: {
+  experience: Experience;
+  onDone: () => void;
+  results?: GateResults;
+}) {
   const { lang } = useI18n();
   const c = COPY[lang === "de" ? "de" : "en"];
   const submit = useServerFn(submitEmail);
@@ -63,6 +73,14 @@ export function EmailGate({ experience, onDone }: { experience: Experience; onDo
           email: parsed.data,
           experience: experience === "botox_information" ? "botox_information" : "redness",
           referredBy: ref,
+          lang: lang === "de" ? "de" : "en",
+          results: results
+            ? {
+                score: results.score,
+                summary: results.summary?.slice(0, 600),
+                points: results.points?.slice(0, 6).map((p) => p.slice(0, 300)),
+              }
+            : undefined,
         },
       });
       if (!res.ok) throw new Error();
