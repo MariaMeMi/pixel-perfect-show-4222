@@ -20,18 +20,21 @@ export type Database = {
           email: string
           experience_type: string
           id: string
+          referred_by: string | null
         }
         Insert: {
           created_at?: string
           email: string
           experience_type: string
           id?: string
+          referred_by?: string | null
         }
         Update: {
           created_at?: string
           email?: string
           experience_type?: string
           id?: string
+          referred_by?: string | null
         }
         Relationships: []
       }
@@ -41,6 +44,7 @@ export type Database = {
           event_name: string
           experience_type: string
           id: string
+          referral_code: string | null
           session_id: string
         }
         Insert: {
@@ -48,6 +52,7 @@ export type Database = {
           event_name: string
           experience_type: string
           id?: string
+          referral_code?: string | null
           session_id: string
         }
         Update: {
@@ -55,6 +60,7 @@ export type Database = {
           event_name?: string
           experience_type?: string
           id?: string
+          referral_code?: string | null
           session_id?: string
         }
         Relationships: []
