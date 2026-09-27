@@ -44,7 +44,7 @@ export function EmailGate({
 }: {
   experience: Experience;
   onDone: () => void;
-  results?: GateResults;
+  results?: GateResults | undefined;
 }) {
   const { lang } = useI18n();
   const c = COPY[lang === "de" ? "de" : "en"];
