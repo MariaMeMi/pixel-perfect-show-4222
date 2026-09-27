@@ -9,7 +9,7 @@ import { useI18n } from "@/lib/i18n";
 import { addEntry, baselineScore, loadEntries, loadProfile } from "@/lib/storage";
 import type { Analysis, Entry, FeelingKey, TriggerKey } from "@/lib/types";
 import { EmailGate } from "@/components/EmailGate";
-import { track } from "@/lib/experiment";
+import { noteReferredCheckin, track } from "@/lib/experiment";
 
 export const Route = createFileRoute("/results")({
   head: () => ({
@@ -102,7 +102,9 @@ function ResultsPage() {
       triggers,
     });
     window.sessionStorage.removeItem("rosea.pending");
+    noteReferredCheckin();
     toast.success(t("results.saved"));
+    if (loadEntries().length === 3) window.sessionStorage.setItem("rose.journey.celebrate", "1");
     navigate({ to: "/progress" });
   }
 
