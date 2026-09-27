@@ -140,7 +140,20 @@ function BotoxPage() {
   }
 
   if (view === "gate" && current) {
-    return <EmailGate experience="botox_information" onDone={() => setView("result")} />;
+    return (
+      <EmailGate
+        experience="botox_information"
+        onDone={() => setView("result")}
+        results={
+          current
+            ? {
+                summary: current.summary,
+                points: [current.forehead.noticed, current.glabella.noticed, current.eyes.noticed, current.symmetry],
+              }
+            : undefined
+        }
+      />
+    );
   }
 
   if (view === "capture") {

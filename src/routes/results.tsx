@@ -77,7 +77,17 @@ function ResultsPage() {
   const baseline = useMemo(() => baselineScore(entries), [entries]);
 
   if (!pending || gated === null) return null;
-  if (gated) return <EmailGate experience="redness" onDone={() => setGated(false)} />;
+  if (gated) return (
+      <EmailGate
+        experience="redness"
+        onDone={() => setGated(false)}
+        results={{
+          score: pending.analysis.score,
+          summary: pending.analysis.summary,
+          points: [...(pending.analysis.observations ?? []), ...(pending.analysis.tips ?? [])],
+        }}
+      />
+    );
   const a = pending.analysis;
 
   const changeText = !baseline

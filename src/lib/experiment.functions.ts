@@ -58,6 +58,14 @@ export const submitEmail = createServerFn({ method: "POST" })
         email: z.string().trim().toLowerCase().email().max(255),
         experience: z.enum(["redness", "botox_information"]),
         referredBy: refCode.optional(),
+        lang: z.enum(["en", "de"]).optional(),
+        results: z
+          .object({
+            score: z.number().min(0).max(100).optional(),
+            summary: z.string().max(600).optional(),
+            points: z.array(z.string().max(300)).max(6).optional(),
+          })
+          .optional(),
       })
       .parse(d),
   )
@@ -71,6 +79,17 @@ export const submitEmail = createServerFn({ method: "POST" })
     if (error) {
       console.error("submitEmail failed", error.message);
       return { ok: false };
+    }
+    if (data.results) {
+      try {
+        const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+        await sendTemplateEmail("results-ready", data.email, {
+          templateData: { lang: data.lang ?? "en", kind: data.experience, ...data.results },
+          idempotencyKey: `results-${data.experience}-${data.email}-${Date.now()}`,
+        });
+      } catch (e) {
+        console.error("results email failed", e);
+      }
     }
     return { ok: true };
   });
