@@ -4,3 +4,4 @@
 - [x] Add "Rose AI" around the Check my skin area on Home (as card label)
 
 - [ ] Email results to user after email gate + first photo (needs sender domain)
+- [x] My Skin Journey share card + referrals
