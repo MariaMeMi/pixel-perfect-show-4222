@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalyzeRouteImport } from './routes/analyze'
 import { Route as BotoxRouteImport } from './routes/botox'
+import { Route as JoinRouteImport } from './routes/join'
+import { Route as JourneyRouteImport } from './routes/journey'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -34,6 +36,16 @@ const AnalyzeRoute = AnalyzeRouteImport.update({
 const BotoxRoute = BotoxRouteImport.update({
   id: '/botox',
   path: '/botox',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JourneyRoute = JourneyRouteImport.update({
+  id: '/journey',
+  path: '/journey',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearnRoute = LearnRouteImport.update({
@@ -81,6 +93,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analyze': typeof AnalyzeRoute
   '/botox': typeof BotoxRoute
+  '/join': typeof JoinRoute
+  '/journey': typeof JourneyRoute
   '/learn': typeof LearnRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
@@ -94,6 +108,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analyze': typeof AnalyzeRoute
   '/botox': typeof BotoxRoute
+  '/join': typeof JoinRoute
+  '/journey': typeof JourneyRoute
   '/learn': typeof LearnRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
@@ -108,6 +124,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/analyze': typeof AnalyzeRoute
   '/botox': typeof BotoxRoute
+  '/join': typeof JoinRoute
+  '/journey': typeof JourneyRoute
   '/learn': typeof LearnRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
@@ -123,6 +141,8 @@ export interface FileRouteTypes {
     | '/'
     | '/analyze'
     | '/botox'
+    | '/join'
+    | '/journey'
     | '/learn'
     | '/onboarding'
     | '/privacy'
@@ -136,6 +156,8 @@ export interface FileRouteTypes {
     | '/'
     | '/analyze'
     | '/botox'
+    | '/join'
+    | '/journey'
     | '/learn'
     | '/onboarding'
     | '/privacy'
@@ -149,6 +171,8 @@ export interface FileRouteTypes {
     | '/'
     | '/analyze'
     | '/botox'
+    | '/join'
+    | '/journey'
     | '/learn'
     | '/onboarding'
     | '/privacy'
@@ -163,6 +187,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalyzeRoute: typeof AnalyzeRoute
   BotoxRoute: typeof BotoxRoute
+  JoinRoute: typeof JoinRoute
+  JourneyRoute: typeof JourneyRoute
   LearnRoute: typeof LearnRoute
   OnboardingRoute: typeof OnboardingRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -194,6 +220,20 @@ declare module '@tanstack/react-router' {
       path: '/botox'
       fullPath: '/botox'
       preLoaderRoute: typeof BotoxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/journey': {
+      id: '/journey'
+      path: '/journey'
+      fullPath: '/journey'
+      preLoaderRoute: typeof JourneyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/learn': {
@@ -259,6 +299,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyzeRoute: AnalyzeRoute,
   BotoxRoute: BotoxRoute,
+  JoinRoute: JoinRoute,
+  JourneyRoute: JourneyRoute,
   LearnRoute: LearnRoute,
   OnboardingRoute: OnboardingRoute,
   PrivacyRoute: PrivacyRoute,
