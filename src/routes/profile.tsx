@@ -63,6 +63,7 @@ const inputClass =
 function ProfilePage() {
   const { t, setLang } = useI18n();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const deleteAccountFn = useServerFn(deleteAccount);
   const [profile, setProfile] = useState<Profile>(defaultProfile);
   const [email, setEmail] = useState<string | null>(null);
