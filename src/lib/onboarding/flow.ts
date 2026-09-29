@@ -94,7 +94,7 @@ export type StepId =
   | "l_areas" | "l_doing"
   | "b_when" | "b_areas" | "b_product"
   | "d_experience" | "d_using"
-  | "reflection" | "baseline" | "building" | "profile";
+  | "reflection" | "baseline" | "building" | "gate" | "profile";
 
 export const wantsBotox = (d: OnboardingData) => d.goals.includes("botox") || d.lineDoing.includes(BOTOX_TREATMENT);
 
@@ -109,7 +109,7 @@ export function buildSteps(d: OnboardingData): StepId[] {
   if (d.goals.includes("lines")) s.push("l_areas", "l_doing");
   if (wantsBotox(d)) s.push("b_when", "b_areas", "b_product");
   if (d.goals.includes("dryness")) s.push("d_experience", "d_using");
-  s.push("reflection", "baseline", "building", "profile");
+  s.push("reflection", "baseline", "building", "gate", "profile");
   return s;
 }
 

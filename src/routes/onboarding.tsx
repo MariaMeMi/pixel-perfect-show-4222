@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Chips, OptionCard, ProgressBar, Question, SingleList } from "@/components/onboarding/ui";
 import { BaselineCapture } from "@/components/onboarding/BaselineCapture";
 import { track } from "@/lib/experiment";
+import { EmailGate } from "@/components/EmailGate";
 import { useI18n } from "@/lib/i18n";
 import { addEntry, loadProfile } from "@/lib/storage";
 import type { Analysis } from "@/lib/types";
@@ -31,6 +32,9 @@ export const Route = createFileRoute("/onboarding")({
   component: Onboarding,
 });
 
+type LineRes = { forehead: { level: string; noticed: string }; glabella: { level: string; noticed: string }; eyes: { level: string; noticed: string }; summary: string };
+const LINE_NAMES = { forehead: "Forehead lines", glabella: "Frown lines", eyes: "Crow's-feet area" };
+const LEVELS: Record<string, string> = { not_prominent: "Not prominent", visible_with_expression: "Visible with expression", visible_at_rest: "Visible at rest" };
 const BUILD_STEPS = ["Understanding your goals", "Organizing your skin history", "Adding your current routine/treatments", "Creating your photo baseline", "Preparing your personal timeline"];
 
 function Onboarding() {
@@ -40,6 +44,8 @@ function Onboarding() {
   const [i, setI] = useState(0);
   const [photo, setPhoto] = useState<string>();
   const [built, setBuilt] = useState(0);
+  const [redRes, setRedRes] = useState<Analysis>();
+  const [lineRes, setLineRes] = useState<LineRes>();
   const tracked = useRef(new Set<string>());
   const set = (p: Partial<OnboardingData>) => setD((x) => ({ ...x, ...p }));
   const once = (e: Parameters<typeof track>[0]) => { if (!tracked.current.has(e)) { tracked.current.add(e); track(e, "onboarding"); } };
@@ -72,23 +78,31 @@ function Onboarding() {
     const timer = window.setInterval(() => setBuilt((n) => Math.min(n + 1, BUILD_STEPS.length - 1)), 550);
     const date = new Date().toISOString();
     let entryId: string | undefined;
+    const wantLines = wantsBotox(d) || d.goals.includes("lines");
+    const linesP = wantLines
+      ? fetch("/api/botox", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ images: [photo, photo, photo, photo], lang }) })
+          .then(async (r) => { const j = await r.json(); if (r.ok && j.forehead) { setLineRes(j as LineRes); track("analysis_completed", "botox_information"); } })
+          .catch(() => undefined)
+      : Promise.resolve();
     try {
       const res = await fetch("/api/analyze", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: photo, lang }) });
       const a = (await res.json()) as Partial<Analysis> & { error?: string };
       if (res.ok && typeof a.score === "number") {
         track("baseline_photo_analysis_completed", "onboarding");
+        track("analysis_completed", "redness");
+        setRedRes(a as Analysis);
         entryId = `baseline-${Date.now()}`;
         addEntry({ id: entryId, date, analysis: a as Analysis, photo: retainPhotos ? photo : undefined, feeling: undefined, triggers: [] });
       } else toast.error("We couldn't read this photo, but your baseline photo is saved.");
     } catch { toast.error("We couldn't read this photo, but your baseline photo is saved."); }
-    await new Promise((r) => setTimeout(r, Math.max(0, BUILD_STEPS.length * 550 - 200)));
+    await Promise.all([linesP, new Promise((r) => setTimeout(r, Math.max(0, BUILD_STEPS.length * 550 - 200)))]);
     window.clearInterval(timer); setBuilt(BUILD_STEPS.length);
     const final: OnboardingData = { ...d, baselineEntryId: entryId, baselineDate: date, completedAt: date, baselinePhoto: !entryId && retainPhotos ? photo : undefined };
     try { localStorage.setItem(ONBOARDING_KEY, JSON.stringify(final)); }
     catch { localStorage.setItem(ONBOARDING_KEY, JSON.stringify({ ...final, baselinePhoto: undefined })); }
     setD(final);
     track("skin_profile_created", "onboarding"); track("onboarding_completed", "onboarding");
-    setTimeout(() => setI(buildSteps(final).indexOf("profile")), 400);
+    setTimeout(() => setI(buildSteps(final).indexOf("gate")), 400);
   }
 
   /* ---------- screens ---------- */
@@ -199,9 +213,27 @@ function Onboarding() {
           <span className="text-foreground">{s}</span>
         </li>))}</ul>
     </div>;
+  } else if (step === "gate") {
+    const exp = d.goals.includes("redness") || !lineRes ? "redness" : "botox_information";
+    body = <EmailGate experience={exp} onDone={() => { track("results_viewed", exp); setI(steps.indexOf("profile")); }}
+      results={redRes ? { score: redRes.score, summary: redRes.summary, points: [...(redRes.observations ?? []), ...(redRes.tips ?? [])] } : lineRes ? { summary: lineRes.summary } : undefined} />;
   } else if (step === "profile") {
     body = <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <p className="eyebrow">🌹 Your starting skin profile</p>
+      <p className="eyebrow">Your first results</p>
+      {redRes && <div className="surface mt-3 p-5">
+        <div className="flex items-center justify-between"><p className="font-display text-xl text-foreground">Rosacea AI · visible redness</p><p className="font-display text-3xl text-primary">{redRes.score}<span className="text-sm text-muted-foreground">/100</span></p></div>
+        <p className="mt-2 text-sm text-foreground">{redRes.summary}</p>
+        {redRes.observations?.length > 0 && <ul className="mt-3 space-y-1 text-sm text-muted-foreground">{redRes.observations.slice(0, 3).map((o) => <li key={o}>• {o}</li>)}</ul>}
+      </div>}
+      {lineRes && <div className="surface mt-3 p-5">
+        <p className="font-display text-xl text-foreground">Botox AI · visible lines at rest</p>
+        <div className="mt-3 space-y-2">{(["forehead", "glabella", "eyes"] as const).map((k) => <div key={k} className="flex items-center justify-between text-sm"><span className="text-foreground">{LINE_NAMES[k]}</span><span className="rounded-full bg-accent px-3 py-1 text-xs text-foreground">{LEVELS[lineRes[k].level] ?? lineRes[k].level}</span></div>)}</div>
+        <p className="mt-3 text-sm text-muted-foreground">{lineRes.summary}</p>
+        <p className="mt-2 text-xs text-muted-foreground">Based on one relaxed photo. For lines during expression, use the 4-photo Botox AI check. Areas you may want to discuss with a qualified provider — not a treatment recommendation.</p>
+        <button type="button" onClick={() => navigate({ to: "/botox" })} className="mt-3 text-sm font-medium text-primary">Open Botox AI →</button>
+      </div>}
+      {!redRes && !lineRes && <p className="mt-2 text-sm text-muted-foreground">We couldn't read your photo this time — your baseline photo is still saved.</p>}
+      <p className="eyebrow mt-8">🌹 Your starting skin profile</p>
       <div className="surface mt-4 divide-y divide-border">
         {profileSections(d).map((s) => <div key={s.label} className="p-4"><p className="eyebrow">{s.label}</p><ul className="mt-1.5 space-y-0.5">{s.items.map((x) => <li key={x} className="text-[15px] text-foreground">{x}</li>)}</ul></div>)}
         <div className="flex items-center gap-4 p-4">
@@ -218,7 +250,7 @@ function Onboarding() {
     </div>;
   }
 
-  const showNav = step !== "building" && step !== "profile";
+  const showNav = step !== "building" && step !== "profile" && step !== "gate";
   const progress = (i + 1) / steps.length;
 
   return (
