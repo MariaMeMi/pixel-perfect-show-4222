@@ -74,6 +74,27 @@ function ProfilePage() {
     supabase.auth.getSession().then(({ data }) => setEmail(data.session?.user.email ?? null));
   }, []);
 
+  async function onStartOver() {
+    if (!window.confirm(t("profile.confirmStartOver"))) return;
+    setBusy(true);
+    try {
+      await queryClient.cancelQueries();
+      queryClient.clear();
+      // Preserve any signed-in session; erase everything else on this device.
+      const keep: Array<[string, string]> = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && (k.startsWith("sb-") || k.includes("auth-token"))) keep.push([k, localStorage.getItem(k) ?? ""]);
+      }
+      localStorage.clear();
+      keep.forEach(([k, v]) => localStorage.setItem(k, v));
+      sessionStorage.clear();
+      navigate({ to: "/onboarding", replace: true });
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onDeleteAccount() {
     if (!window.confirm(t("profile.confirmAccount"))) return;
     setBusy(true);
