@@ -22,6 +22,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as ResultsRouteImport } from './routes/results'
 import { Route as RoutineRouteImport } from './routes/routine'
+import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ApiAnalyzeRouteImport } from './routes/api/analyze'
 import { Route as ApiBotoxRouteImport } from './routes/api/botox'
 import { Route as ApiRosieChatRouteImport } from './routes/api/rosie-chat'
@@ -92,6 +93,11 @@ const RoutineRoute = RoutineRouteImport.update({
   path: '/routine',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAnalyzeRoute = ApiAnalyzeRouteImport.update({
   id: '/api/analyze',
   path: '/api/analyze',
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
   '/routine': typeof RoutineRoute
+  '/welcome': typeof WelcomeRoute
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
@@ -147,6 +154,7 @@ export interface FileRoutesByTo {
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
   '/routine': typeof RoutineRoute
+  '/welcome': typeof WelcomeRoute
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
@@ -167,6 +175,7 @@ export interface FileRoutesById {
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
   '/routine': typeof RoutineRoute
+  '/welcome': typeof WelcomeRoute
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/results'
     | '/routine'
+    | '/welcome'
     | '/api/analyze'
     | '/api/botox'
     | '/api/rosie-chat'
@@ -207,6 +217,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/results'
     | '/routine'
+    | '/welcome'
     | '/api/analyze'
     | '/api/botox'
     | '/api/rosie-chat'
@@ -226,6 +237,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/results'
     | '/routine'
+    | '/welcome'
     | '/api/analyze'
     | '/api/botox'
     | '/api/rosie-chat'
@@ -246,6 +258,7 @@ export interface RootRouteChildren {
   ProgressRoute: typeof ProgressRoute
   ResultsRoute: typeof ResultsRoute
   RoutineRoute: typeof RoutineRoute
+  WelcomeRoute: typeof WelcomeRoute
   ApiAnalyzeRoute: typeof ApiAnalyzeRoute
   ApiBotoxRoute: typeof ApiBotoxRoute
   ApiRosieChatRoute: typeof ApiRosieChatRoute
@@ -345,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RoutineRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/analyze': {
       id: '/api/analyze'
       path: '/api/analyze'
@@ -390,6 +410,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProgressRoute: ProgressRoute,
   ResultsRoute: ResultsRoute,
   RoutineRoute: RoutineRoute,
+  WelcomeRoute: WelcomeRoute,
   ApiAnalyzeRoute: ApiAnalyzeRoute,
   ApiBotoxRoute: ApiBotoxRoute,
   ApiRosieChatRoute: ApiRosieChatRoute,

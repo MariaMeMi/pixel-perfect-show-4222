@@ -15,6 +15,16 @@ export function SaveDay1({ onDone, beforeRedirect }: { onDone: (email?: string) 
   const [busy, setBusy] = useState<string>();
   const [error, setError] = useState("");
 
+  // Already signed in (e.g. from the first-page welcome screen)? Skip straight ahead.
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!cancelled && data.session) onDone(data.session.user.email ?? undefined);
+    })();
+    return () => { cancelled = true; };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   async function social(provider: "google" | "apple") {
     setBusy(provider); setError("");
     beforeRedirect();

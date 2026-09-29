@@ -57,7 +57,7 @@ function HomePage() {
       catch { completed = false; }
     }
     if (!completed) {
-      void navigate({ to: "/onboarding", replace: true });
+      void navigate({ to: "/welcome", replace: true });
       return;
     }
     setReady(true);
