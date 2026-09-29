@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Camera, Home, LineChart, BookOpen, User } from "lucide-react";
+import { Camera, Home, LineChart, BookOpen, Sparkles, User } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { RosieChat } from "@/components/RosieChat";
@@ -8,6 +8,7 @@ import { RosieChat } from "@/components/RosieChat";
 const tabs = [
   { to: "/", icon: Home, key: "nav.home" },
   { to: "/analyze", icon: Camera, key: "nav.analyze" },
+  { to: "/my-routine", icon: Sparkles, key: "nav.routine" },
   { to: "/progress", icon: LineChart, key: "nav.progress" },
   { to: "/learn", icon: BookOpen, key: "nav.learn" },
   { to: "/profile", icon: User, key: "nav.profile" },
