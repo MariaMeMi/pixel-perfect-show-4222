@@ -37,7 +37,7 @@ export const Route = createFileRoute("/onboarding")({
 type LineRes = { forehead: { level: string; noticed: string }; glabella: { level: string; noticed: string }; eyes: { level: string; noticed: string }; summary: string };
 const LINE_NAMES = { forehead: "Forehead lines", glabella: "Frown lines", eyes: "Crow's-feet area" };
 const LEVELS: Record<string, string> = { not_prominent: "Not prominent", visible_with_expression: "Visible with expression", visible_at_rest: "Visible at rest" };
-const BUILD_STEPS = ["Understanding your goals", "Organizing your skin history", "Adding your current routine/treatments", "Creating your photo baseline", "Preparing your personal timeline"];
+const BUILD_STEPS = ["Reading your photo", "Saving your Day 1"];
 
 function Onboarding() {
   const navigate = useNavigate();
@@ -48,6 +48,7 @@ function Onboarding() {
   const [built, setBuilt] = useState(0);
   const [redRes, setRedRes] = useState<Analysis>();
   const [lineRes, setLineRes] = useState<LineRes>();
+  const [linePending, setLinePending] = useState(false);
   const [acctEmail, setAcctEmail] = useState<string>();
   const tracked = useRef(new Set<string>());
   const set = (p: Partial<OnboardingData>) => setD((x) => ({ ...x, ...p }));
@@ -98,14 +99,15 @@ function Onboarding() {
     const d = d0; const photo = photo0;
     if (!photo) return;
     setI(buildSteps(d).indexOf("building")); setBuilt(0);
-    const timer = window.setInterval(() => setBuilt((n) => Math.min(n + 1, BUILD_STEPS.length - 1)), 550);
     const date = new Date().toISOString();
     let entryId: string | undefined;
     const wantLines = wantsBotox(d) || d.goals.includes("lines");
+    setLinePending(wantLines);
     const linesP = wantLines
-      ? fetch("/api/botox", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ images: [photo, photo, photo, photo], lang }) })
+      ? fetch("/api/botox", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ images: [photo], lang }) })
           .then(async (r) => { const j = await r.json(); if (r.ok && j.forehead) { setLineRes(j as LineRes); track("analysis_completed", "botox_information"); } })
           .catch(() => undefined)
+           .finally(() => setLinePending(false))
       : Promise.resolve();
     try {
       const res = await fetch("/api/analyze", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: photo, lang }) });
@@ -118,14 +120,16 @@ function Onboarding() {
         addEntry({ id: entryId, date, analysis: a as Analysis, photo: retainPhotos ? photo : undefined, feeling: undefined, triggers: [] });
       } else toast.error("We couldn't read this photo, but your baseline photo is saved.");
     } catch { toast.error("We couldn't read this photo, but your baseline photo is saved."); }
-    await Promise.all([linesP, new Promise((r) => setTimeout(r, Math.max(0, BUILD_STEPS.length * 550 - 200)))]);
-    window.clearInterval(timer); setBuilt(BUILD_STEPS.length);
+    setBuilt(1);
+    // Redness results can be unlocked while the independent lines reading finishes.
+    // For a lines-only goal, wait for that reading so its results can be emailed.
+    if (wantLines && !d.goals.includes("redness")) await linesP;
     const final: OnboardingData = { ...d, baselineEntryId: entryId, baselineDate: date, completedAt: date, baselinePhoto: !entryId && retainPhotos ? photo : undefined };
     try { localStorage.setItem(ONBOARDING_KEY, JSON.stringify(final)); }
     catch { localStorage.setItem(ONBOARDING_KEY, JSON.stringify({ ...final, baselinePhoto: undefined })); }
     setD(final);
     track("skin_profile_created", "onboarding"); track("onboarding_completed", "onboarding");
-    setTimeout(() => setI(buildSteps(final).indexOf("gate")), 400);
+    setI(buildSteps(final).indexOf("gate"));
   }
 
   /* ---------- screens ---------- */
@@ -241,7 +245,7 @@ function Onboarding() {
         </li>))}</ul>
     </div>;
   } else if (step === "gate") {
-    const exp = d.goals.includes("redness") || !lineRes ? "redness" : "botox_information";
+     const exp = d.goals.includes("redness") || !(wantsBotox(d) || d.goals.includes("lines")) ? "redness" : "botox_information";
     body = <EmailGate experience={exp} defaultEmail={acctEmail} onDone={() => { track("results_viewed", exp); setI(steps.indexOf("profile")); }}
       results={redRes ? { score: redRes.score, summary: redRes.summary, points: [...(redRes.observations ?? []), ...(redRes.tips ?? [])] } : lineRes ? { summary: lineRes.summary } : undefined} />;
   } else if (step === "profile") {
@@ -259,7 +263,8 @@ function Onboarding() {
         <p className="mt-2 text-xs text-muted-foreground">Based on one relaxed photo. For lines during expression, use the 4-photo Botox AI check. Areas you may want to discuss with a qualified provider — not a treatment recommendation.</p>
         <button type="button" onClick={() => navigate({ to: "/botox" })} className="mt-3 text-sm font-medium text-primary">Open Botox AI →</button>
       </div>}
-      {!redRes && !lineRes && <p className="mt-2 text-sm text-muted-foreground">We couldn't read your photo this time — your baseline photo is still saved.</p>}
+      {linePending && <p className="mt-3 flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Reading visible lines from your photo…</p>}
+      {!redRes && !lineRes && !linePending && <p className="mt-2 text-sm text-muted-foreground">We couldn't read your photo this time — your baseline photo is still saved.</p>}
       <p className="eyebrow mt-8">🌹 Your starting skin profile</p>
       <div className="surface mt-4 divide-y divide-border">
         {profileSections(d).map((s) => <div key={s.label} className="p-4"><p className="eyebrow">{s.label}</p><ul className="mt-1.5 space-y-0.5">{s.items.map((x) => <li key={x} className="text-[15px] text-foreground">{x}</li>)}</ul></div>)}
