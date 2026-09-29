@@ -7,11 +7,11 @@ function shrink(src: string) {
   return new Promise<string>((res) => {
     const img = new Image();
     img.onload = () => {
-      const k = Math.min(1, 1024 / Math.max(img.width, img.height));
+      const k = Math.min(1, 640 / Math.max(img.width, img.height));
       const c = document.createElement("canvas");
       c.width = img.width * k; c.height = img.height * k;
       c.getContext("2d")!.drawImage(img, 0, 0, c.width, c.height);
-      res(c.toDataURL("image/jpeg", 0.85));
+      res(c.toDataURL("image/jpeg", 0.8));
     };
     img.onerror = () => res(src);
     img.src = src;
@@ -41,10 +41,10 @@ export function BaselineCapture({ photo, retainPhotos, onStart, onPhoto }: { pho
   };
   const snap = () => {
     const v = videoRef.current; if (!v || !v.videoWidth) return;
-    const k = Math.min(1, 1024 / Math.max(v.videoWidth, v.videoHeight));
+    const k = Math.min(1, 640 / Math.max(v.videoWidth, v.videoHeight));
     const c = document.createElement("canvas"); c.width = v.videoWidth * k; c.height = v.videoHeight * k;
     const ctx = c.getContext("2d")!; ctx.translate(c.width, 0); ctx.scale(-1, 1); ctx.drawImage(v, 0, 0, c.width, c.height);
-    onPhoto(c.toDataURL("image/jpeg", 0.85)); stop();
+    onPhoto(c.toDataURL("image/jpeg", 0.8)); stop();
   };
   const onFile = (f?: File) => {
     if (!f) return;
