@@ -15,6 +15,7 @@ import { Route as BotoxRouteImport } from './routes/botox'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as JourneyRouteImport } from './routes/journey'
 import { Route as LearnRouteImport } from './routes/learn'
+import { Route as MyRoutineRouteImport } from './routes/my-routine'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProfileRouteImport } from './routes/profile'
@@ -53,6 +54,11 @@ const JourneyRoute = JourneyRouteImport.update({
 const LearnRoute = LearnRouteImport.update({
   id: '/learn',
   path: '/learn',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyRoutineRoute = MyRoutineRouteImport.update({
+  id: '/my-routine',
+  path: '/my-routine',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/join': typeof JoinRoute
   '/journey': typeof JourneyRoute
   '/learn': typeof LearnRoute
+  '/my-routine': typeof MyRoutineRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/join': typeof JoinRoute
   '/journey': typeof JourneyRoute
   '/learn': typeof LearnRoute
+  '/my-routine': typeof MyRoutineRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/join': typeof JoinRoute
   '/journey': typeof JourneyRoute
   '/learn': typeof LearnRoute
+  '/my-routine': typeof MyRoutineRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/join'
     | '/journey'
     | '/learn'
+    | '/my-routine'
     | '/onboarding'
     | '/privacy'
     | '/profile'
@@ -180,6 +190,7 @@ export interface FileRouteTypes {
     | '/join'
     | '/journey'
     | '/learn'
+    | '/my-routine'
     | '/onboarding'
     | '/privacy'
     | '/profile'
@@ -197,6 +208,7 @@ export interface FileRouteTypes {
     | '/join'
     | '/journey'
     | '/learn'
+    | '/my-routine'
     | '/onboarding'
     | '/privacy'
     | '/profile'
@@ -215,6 +227,7 @@ export interface RootRouteChildren {
   JoinRoute: typeof JoinRoute
   JourneyRoute: typeof JourneyRoute
   LearnRoute: typeof LearnRoute
+  MyRoutineRoute: typeof MyRoutineRoute
   OnboardingRoute: typeof OnboardingRoute
   PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
@@ -268,6 +281,13 @@ declare module '@tanstack/react-router' {
       path: '/learn'
       fullPath: '/learn'
       preLoaderRoute: typeof LearnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-routine': {
+      id: '/my-routine'
+      path: '/my-routine'
+      fullPath: '/my-routine'
+      preLoaderRoute: typeof MyRoutineRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -343,6 +363,7 @@ const rootRouteChildren: RootRouteChildren = {
   JoinRoute: JoinRoute,
   JourneyRoute: JourneyRoute,
   LearnRoute: LearnRoute,
+  MyRoutineRoute: MyRoutineRoute,
   OnboardingRoute: OnboardingRoute,
   PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,

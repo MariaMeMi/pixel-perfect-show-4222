@@ -29,9 +29,9 @@ export type Product = {
 
 export type Step = { label: string; category?: string; why: string; rx?: boolean; optional?: boolean };
 export type Plan = {
-  urgent?: { emergency: boolean };
+  urgent?: { emergency: boolean } | undefined;
   today: string[]; priority: string; priorityText: string; routineStyle: string;
-  rescue: boolean; am: Step[]; pm: Step[]; rx?: string; vessels: boolean;
+  rescue: boolean; am: Step[]; pm: Step[]; rx?: string | undefined; vessels: boolean;
   advanced: { show: boolean; items: string[]; note: string }; hydrateFirst: boolean; tags: string[];
 };
 
