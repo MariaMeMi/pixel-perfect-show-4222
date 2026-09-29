@@ -71,7 +71,7 @@ export const Route = createFileRoute("/api/analyze")({
             model: "openai/gpt-6-astra",
             stream: true,
             instructions: SYSTEM,
-            reasoning: { effort: "minimal" },
+            reasoning: { effort: "none" },
             input: [
               {
                 role: "user",

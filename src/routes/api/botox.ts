@@ -71,7 +71,7 @@ export const Route = createFileRoute("/api/botox")({
             instructions: baselineOnly
               ? `${SYSTEM}\nFor this baseline, only ONE relaxed photo was provided. Describe visible lines at rest only. Never infer expression or symmetry of expression from this photo. Use visible_at_rest only when lines are clearly visible at rest; otherwise use not_prominent. State in the summary that expression cannot be assessed from one photo.`
               : SYSTEM,
-            reasoning: { effort: "minimal" },
+            reasoning: { effort: "none" },
             input: [
               {
                 role: "user",
