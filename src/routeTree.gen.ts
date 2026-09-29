@@ -20,6 +20,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as ResultsRouteImport } from './routes/results'
+import { Route as RoutineRouteImport } from './routes/routine'
 import { Route as ApiAnalyzeRouteImport } from './routes/api/analyze'
 import { Route as ApiBotoxRouteImport } from './routes/api/botox'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -79,6 +80,11 @@ const ResultsRoute = ResultsRouteImport.update({
   path: '/results',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RoutineRoute = RoutineRouteImport.update({
+  id: '/routine',
+  path: '/routine',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAnalyzeRoute = ApiAnalyzeRouteImport.update({
   id: '/api/analyze',
   path: '/api/analyze',
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
+  '/routine': typeof RoutineRoute
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -124,6 +131,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
+  '/routine': typeof RoutineRoute
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
+  '/routine': typeof RoutineRoute
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/progress'
     | '/results'
+    | '/routine'
     | '/api/analyze'
     | '/api/botox'
     | '/lovable/email/transactional/preview'
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/progress'
     | '/results'
+    | '/routine'
     | '/api/analyze'
     | '/api/botox'
     | '/lovable/email/transactional/preview'
@@ -191,6 +202,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/progress'
     | '/results'
+    | '/routine'
     | '/api/analyze'
     | '/api/botox'
     | '/lovable/email/transactional/preview'
@@ -208,6 +220,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
   ResultsRoute: typeof ResultsRoute
+  RoutineRoute: typeof RoutineRoute
   ApiAnalyzeRoute: typeof ApiAnalyzeRoute
   ApiBotoxRoute: typeof ApiBotoxRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
@@ -292,6 +305,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResultsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/routine': {
+      id: '/routine'
+      path: '/routine'
+      fullPath: '/routine'
+      preLoaderRoute: typeof RoutineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/analyze': {
       id: '/api/analyze'
       path: '/api/analyze'
@@ -328,6 +348,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
   ResultsRoute: ResultsRoute,
+  RoutineRoute: RoutineRoute,
   ApiAnalyzeRoute: ApiAnalyzeRoute,
   ApiBotoxRoute: ApiBotoxRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
