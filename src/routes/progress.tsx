@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n";
 import { buildInsights } from "@/lib/insights";
 import { averageScore, deletePhoto, entriesWithinDays, loadEntries } from "@/lib/storage";
 import type { Entry } from "@/lib/types";
+import { RoutineCta } from "@/components/RoutineCta";
 
 export const Route = createFileRoute("/progress")({
   head: () => ({
