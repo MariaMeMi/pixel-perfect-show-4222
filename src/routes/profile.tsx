@@ -300,6 +300,22 @@ function ProfilePage() {
         </Field>
       </section>
 
+      <section className="surface space-y-3 p-5">
+        <div className="flex items-center gap-2">
+          <RotateCcw className="h-4 w-4 text-primary" strokeWidth={1.7} />
+          <h2 className="text-lg text-foreground">{t("profile.startOver")}</h2>
+        </div>
+        <p className="text-xs leading-relaxed text-muted-foreground">{t("profile.startOverDesc")}</p>
+        <button
+          onClick={onStartOver}
+          disabled={busy}
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-background py-3 text-sm text-secondary-foreground disabled:opacity-50"
+        >
+          <RotateCcw className="h-4 w-4" strokeWidth={1.7} />
+          {t("profile.startOver")}
+        </button>
+      </section>
+
       {email && (
         <section className="surface space-y-4 p-5">
           <h2 className="text-lg text-foreground">{t("profile.account")}</h2>
