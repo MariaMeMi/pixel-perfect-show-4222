@@ -171,6 +171,9 @@ const en = {
   "profile.signOut": "Sign out",
   "profile.deleteAccount": "Delete my account",
   "profile.confirmAccount": "Permanently delete your account and all server-side data? This can't be undone.",
+  "profile.startOver": "Start over",
+  "profile.startOverDesc": "Erases your answers, photos and history on this device and begins onboarding again.",
+  "profile.confirmStartOver": "Start over from the beginning? Your answers, photos and history on this device will be erased.",
   "profile.accountDeleted": "Your account has been deleted.",
   "profile.medicalNote": "Rose AI is a wellness and skin-tracking assistant. It doesn't diagnose rosacea or any other condition.",
 
@@ -345,6 +348,9 @@ const de: Partial<Record<TKey, string>> = {
   "profile.signOut": "Abmelden",
   "profile.deleteAccount": "Konto löschen",
   "profile.confirmAccount": "Konto und alle serverseitigen Daten endgültig löschen? Das lässt sich nicht rückgängig machen.",
+  "profile.startOver": "Neu beginnen",
+  "profile.startOverDesc": "Löscht deine Antworten, Fotos und den Verlauf auf diesem Gerät und startet das Onboarding erneut.",
+  "profile.confirmStartOver": "Von vorne beginnen? Deine Antworten, Fotos und dein Verlauf auf diesem Gerät werden gelöscht.",
   "profile.accountDeleted": "Dein Konto wurde gelöscht.",
   "profile.medicalNote":
     "Rose AI ist eine Wellness- und Hautbegleitung. Es stellt keine Diagnose von Rosazea oder anderen Erkrankungen.",

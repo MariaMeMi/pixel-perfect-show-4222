@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
-import { HeartPulse, ImageOff, Languages, LogOut, ShieldCheck, Trash2, UserX } from "lucide-react";
+import { HeartPulse, ImageOff, Languages, LogOut, RotateCcw, ShieldCheck, Trash2, UserX } from "lucide-react";
 import { toast } from "sonner";
 import { Chip } from "@/components/Chip";
 import { useI18n } from "@/lib/i18n";
@@ -73,6 +73,27 @@ function ProfilePage() {
     setProfile(loadProfile());
     supabase.auth.getSession().then(({ data }) => setEmail(data.session?.user.email ?? null));
   }, []);
+
+  async function onStartOver() {
+    if (!window.confirm(t("profile.confirmStartOver"))) return;
+    setBusy(true);
+    try {
+      await queryClient.cancelQueries();
+      queryClient.clear();
+      // Preserve any signed-in session; erase everything else on this device.
+      const keep: Array<[string, string]> = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && (k.startsWith("sb-") || k.includes("auth-token"))) keep.push([k, localStorage.getItem(k) ?? ""]);
+      }
+      localStorage.clear();
+      keep.forEach(([k, v]) => localStorage.setItem(k, v));
+      sessionStorage.clear();
+      navigate({ to: "/onboarding", replace: true });
+    } finally {
+      setBusy(false);
+    }
+  }
 
   async function onDeleteAccount() {
     if (!window.confirm(t("profile.confirmAccount"))) return;
@@ -277,6 +298,22 @@ function ProfilePage() {
             ))}
           </select>
         </Field>
+      </section>
+
+      <section className="surface space-y-3 p-5">
+        <div className="flex items-center gap-2">
+          <RotateCcw className="h-4 w-4 text-primary" strokeWidth={1.7} />
+          <h2 className="text-lg text-foreground">{t("profile.startOver")}</h2>
+        </div>
+        <p className="text-xs leading-relaxed text-muted-foreground">{t("profile.startOverDesc")}</p>
+        <button
+          onClick={onStartOver}
+          disabled={busy}
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-background py-3 text-sm text-secondary-foreground disabled:opacity-50"
+        >
+          <RotateCcw className="h-4 w-4" strokeWidth={1.7} />
+          {t("profile.startOver")}
+        </button>
       </section>
 
       {email && (
