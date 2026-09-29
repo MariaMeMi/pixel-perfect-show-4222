@@ -19,7 +19,7 @@ function shrink(src: string) {
 }
 
 /** Baseline step: explains why + privacy first, then camera or upload. */
-export function BaselineCapture({ photo, retainPhotos, onStart, onPhoto }: { photo?: string; retainPhotos: boolean; onStart: () => void; onPhoto: (url: string) => void }) {
+export function BaselineCapture({ photo, retainPhotos, onStart, onPhoto }: { photo?: string | undefined; retainPhotos: boolean; onStart: () => void; onPhoto: (url: string) => void }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);

@@ -29,8 +29,8 @@ export type OnboardingData = {
   dryExperience: string[];
   dryUsing: string[];
   // baseline
-  baselineEntryId?: string;
-  baselinePhoto?: string; // only kept here when it could not be saved as a check-in
+  baselineEntryId?: string | undefined;
+  baselinePhoto?: string | undefined; // only kept here when it could not be saved as a check-in
   baselineDate?: string;
   completedAt?: string;
 };
@@ -61,7 +61,7 @@ export const TREATMENTS: { group: string; items: string[] }[] = [
 /** Items that get their own follow-up screen. */
 export const followUpTreatments = (tried: string[]) =>
   tried.filter((t) => ![NONE_TRIED, "Other", "I don't remember the name"].includes(t));
-export const short = (t: string) => t.split(" / ")[0];
+export const short = (t: string): string => t.split(" / ")[0] ?? t;
 
 export const RATINGS: [Rating, string][] = [["much_better", "Much better"], ["little_better", "A little better"], ["no_change", "No noticeable change"], ["little_worse", "A little worse"], ["much_worse", "Much worse"], ["not_sure", "Not sure"]];
 export const STOP_REASONS = ["Didn't help", "Made my skin worse", "Irritation / side effects", "Too expensive", "Doctor recommended stopping", "Finished treatment", "Other"];
