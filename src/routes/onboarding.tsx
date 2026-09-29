@@ -111,7 +111,16 @@ function Onboarding() {
     setLinePending(wantLines);
     const linesP = wantLines
       ? fetch("/api/botox", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ images: [photo], lang }) })
-          .then(async (r) => { const j = await r.json(); if (r.ok && j.forehead) { setLineRes(j as LineRes); track("analysis_completed", "botox_information"); } })
+           .then(async (r) => {
+             const j = await r.json();
+             if (r.ok && j.forehead && j.glabella && j.eyes) {
+               const baseline = j as LineRes;
+               // A relaxed photo cannot establish whether a line appears with expression.
+               const atRest = (area: LineArea) => ({ ...baseline[area], level: baseline[area].level === "visible_at_rest" ? "visible_at_rest" as const : "not_prominent" as const });
+               setLineRes({ ...baseline, forehead: atRest("forehead"), glabella: atRest("glabella"), eyes: atRest("eyes") });
+               track("analysis_completed", "botox_information");
+             }
+           })
           .catch(() => undefined)
            .finally(() => setLinePending(false))
       : Promise.resolve();
