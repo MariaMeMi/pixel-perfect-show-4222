@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
+import { useQueryClient } from "@tanstack/react-query";
 import { HeartPulse, ImageOff, Languages, LogOut, ShieldCheck, Trash2, UserX } from "lucide-react";
 import { toast } from "sonner";
 import { Chip } from "@/components/Chip";
