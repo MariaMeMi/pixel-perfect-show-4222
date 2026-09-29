@@ -1,9 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { HeartPulse, ImageOff, Languages, ShieldCheck, Trash2 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { HeartPulse, ImageOff, Languages, LogOut, ShieldCheck, Trash2, UserX } from "lucide-react";
 import { toast } from "sonner";
 import { Chip } from "@/components/Chip";
 import { useI18n } from "@/lib/i18n";
+import { supabase } from "@/integrations/supabase/client";
+import { deleteAccount } from "@/lib/account.functions";
 import { clearHistory, deleteAllPhotos, defaultProfile, loadProfile, saveProfile } from "@/lib/storage";
 import type { Profile, TriggerKey } from "@/lib/types";
 
