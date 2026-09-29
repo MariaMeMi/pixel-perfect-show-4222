@@ -69,6 +69,7 @@ function ProgressPage() {
         <p className="mt-1 text-sm text-muted-foreground">{t("progress.subtitle")}</p>
       </header>
 
+      <RoutineCta />
       {entries.length >= 3 ? <JourneyCta lang={lang} /> : null}
 
       <div className="flex gap-2 rounded-full bg-secondary p-1">
