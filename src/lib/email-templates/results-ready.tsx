@@ -52,7 +52,7 @@ const Email = ({ lang = 'en', kind = 'redness', score, summary, points = [] }: P
           {summary ? <Text style={text}>{summary}</Text> : null}
           {points.length ? (
             <>
-              <Text style={eyebrow}>{t.notes}</Text>
+              <Text style={eyebrow}>{kind === 'routine' ? t.routineNotes : t.notes}</Text>
               {points.slice(0, 6).map((p, i) => (
                 <Text key={i} style={text}>• {p}</Text>
               ))}
