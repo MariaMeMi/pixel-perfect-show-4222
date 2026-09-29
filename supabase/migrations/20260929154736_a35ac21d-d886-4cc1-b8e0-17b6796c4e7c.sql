@@ -1,0 +1,2 @@
+ALTER TABLE public.experiment_events DROP CONSTRAINT IF EXISTS experiment_events_experience_type_check;
+ALTER TABLE public.experiment_events ADD CONSTRAINT experiment_events_experience_type_check CHECK (experience_type IN ('redness','botox_information','skin_journey','onboarding'));

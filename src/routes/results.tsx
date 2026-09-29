@@ -114,6 +114,7 @@ function ResultsPage() {
     window.sessionStorage.removeItem("rosea.pending");
     noteReferredCheckin();
     toast.success(t("results.saved"));
+    { const n = loadEntries().length; if (n === 2) track("second_checkin_completed", "onboarding"); if (n === 3) track("third_checkin_completed", "onboarding"); }
     if (loadEntries().length === 3) window.sessionStorage.setItem("rose.journey.celebrate", "1");
     navigate({ to: "/progress" });
   }

@@ -30,6 +30,7 @@ const RANGES = [7, 30, 90] as const;
 
 function ProgressPage() {
   const { t, lang } = useI18n();
+  useEffect(() => { track("timeline_viewed", "onboarding"); }, []);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [range, setRange] = useState<(typeof RANGES)[number]>(30);
   const [slider, setSlider] = useState(50);

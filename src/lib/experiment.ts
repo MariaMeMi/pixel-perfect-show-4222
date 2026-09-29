@@ -1,6 +1,6 @@
 import { trackEvent, type EVENTS } from "./experiment.functions";
 
-export type Experience = "redness" | "botox_information" | "skin_journey";
+export type Experience = "redness" | "botox_information" | "skin_journey" | "onboarding";
 export type ExperimentEvent = (typeof EVENTS)[number];
 
 const SESSION_KEY = "rose.exp.session";

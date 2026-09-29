@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-const experience = z.enum(["redness", "botox_information", "skin_journey"]);
+const experience = z.enum(["redness", "botox_information", "skin_journey", "onboarding"]);
 const refCode = z.string().regex(/^[A-Za-z0-9]{6,16}$/);
 
 export const EVENTS = [
@@ -26,6 +26,22 @@ export const EVENTS = [
   "referred_user_signed_up",
   "referral_first_checkin",
   "referred_user_completed_first_checkin",
+  "onboarding_started",
+  "goal_selected",
+  "redness_branch_started",
+  "wrinkle_branch_started",
+  "botox_branch_started",
+  "dryness_branch_started",
+  "treatment_history_completed",
+  "reflection_screen_viewed",
+  "baseline_photo_started",
+  "baseline_photo_uploaded",
+  "baseline_photo_analysis_completed",
+  "skin_profile_created",
+  "onboarding_completed",
+  "timeline_viewed",
+  "second_checkin_completed",
+  "third_checkin_completed",
 ] as const;
 
 export const trackEvent = createServerFn({ method: "POST" })

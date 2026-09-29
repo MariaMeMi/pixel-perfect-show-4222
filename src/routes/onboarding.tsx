@@ -1,15 +1,29 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Camera, Plus } from "lucide-react";
-import { Chip } from "@/components/Chip";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, Check, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { Chips, OptionCard, ProgressBar, Question, SingleList } from "@/components/onboarding/ui";
+import { BaselineCapture } from "@/components/onboarding/BaselineCapture";
+import { track } from "@/lib/experiment";
+import { useI18n } from "@/lib/i18n";
+import { addEntry, loadProfile } from "@/lib/storage";
+import type { Analysis } from "@/lib/types";
+import {
+  BOTOX_AREAS, BOTOX_PRODUCTS, BOTOX_WHEN, DIAGNOSED, DRY_EXPERIENCE, DRY_USING, GOALS, INFLUENCES, LINE_AREAS,
+  LINE_DOING, NONE_TRIED, NOT_SURE, ONBOARDING_KEY, RATINGS, STOP_REASONS, SYMPTOMS, TREATMENTS, UNDERSTAND,
+  buildSteps, closingLine, emptyData, profileSections, toggle, wantsBotox,
+  type GoalKey, type OnboardingData, type StepId, type TreatmentResult,
+} from "@/lib/onboarding/flow";
+
+export { ONBOARDING_KEY };
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
-      { title: "Get started — Rose AI" },
-      { name: "description", content: "Set up your Rose AI skin timeline in a few short steps." },
-      { property: "og:title", content: "Get started — Rose AI" },
-      { property: "og:description", content: "Create your personal rosacea baseline with Rose AI." },
+      { title: "Let's get to know your skin — Rose AI" },
+      { name: "description", content: "Tell Rose AI what you'd like to understand and create your personal skin starting point in about 2 minutes." },
+      { property: "og:title", content: "Let's get to know your skin — Rose AI" },
+      { property: "og:description", content: "Create your personal skin baseline and start your skin timeline with Rose AI." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -17,316 +31,205 @@ export const Route = createFileRoute("/onboarding")({
   component: Onboarding,
 });
 
-export const ONBOARDING_KEY = "rosea.onboarding.v1";
-
-type Rating = "much_better" | "little_better" | "no_change" | "little_worse" | "much_worse" | "not_sure";
-type TreatmentResult = { rating?: Rating; stillUsing?: boolean; stopReasons: string[] };
-
-type Data = {
-  goals: string[];
-  goalOther: string;
-  diagnosed: string;
-  diagnosedAgo: string;
-  symptoms: string[];
-  symptomOther: string;
-  redness: number;
-  discomfort: number;
-  tried: string[];
-  triedOther: string;
-  results: Record<string, TreatmentResult>;
-  current: string[];
-  influences: string[];
-  influenceOther: string;
-  confidence: string;
-  tracking: string[];
-  frequency: string;
-  baselinePhoto?: string;
-  baselineDate?: string;
-  completedAt?: string;
-};
-
-const empty: Data = {
-  goals: [], goalOther: "", diagnosed: "", diagnosedAgo: "", symptoms: [], symptomOther: "",
-  redness: 0, discomfort: 0, tried: [], triedOther: "", results: {}, current: [],
-  influences: [], influenceOther: "", confidence: "", tracking: [], frequency: "",
-};
-
-const GOALS = [
-  "What might be associated with my flare-ups",
-  "Whether my skin is getting better or worse",
-  "Whether my current routine/treatment seems to be helping",
-  "How my skin changes over time",
-  "Keep a history to discuss with my dermatologist",
-  "Something else",
-];
-const DIAG = ["Yes, by a dermatologist", "Yes, by another healthcare professional", "No", "I'm not sure"];
-const AGO = ["Less than 1 year", "1–3 years", "3–5 years", "5+ years"];
-const SYMPTOMS = [
-  "Persistent facial redness", "Flushing that comes and goes", "Visible blood vessels", "Bumps or pimples",
-  "Burning or stinging", "Dryness / tightness", "Itching", "Swelling", "Eye irritation / dryness",
-  "Thickening of the skin", "Something else",
-];
-const TREATMENTS: { group: string; items: string[] }[] = [
-  { group: "Prescription treatments", items: ["Ivermectin / Soolantra", "Azelaic acid / Finacea", "Metronidazole / MetroGel", "Doxycycline", "Minocycline", "Brimonidine / Mirvaso", "Oxymetazoline / Rhofade", "Other prescription treatment", "I don't remember the name"] },
-  { group: "Laser / light / procedures", items: ["IPL", "VBeam / pulsed-dye laser (PDL)", "KTP laser", "Other laser/light treatment", "Other procedure"] },
-  { group: "Skincare / lifestyle", items: ["Moisturizer / barrier-supporting skincare", "Gentle cleanser", "Sunscreen / SPF", "Avoiding suspected triggers", "Diet changes"] },
-];
-const NONE_TRIED = "I haven't tried anything yet";
-const RATINGS: [Rating, string][] = [
-  ["much_better", "Much better"], ["little_better", "A little better"], ["no_change", "No noticeable change"],
-  ["little_worse", "A little worse"], ["much_worse", "Much worse"], ["not_sure", "Not sure"],
-];
-const STOP = ["Didn't help", "Made my skin worse", "Side effects / irritation", "Too expensive", "Doctor recommended stopping", "Finished treatment", "Other"];
-const INFLUENCES = [
-  "Sun", "Hot weather", "Cold weather", "Temperature changes", "Stress", "Exercise", "Alcohol", "Spicy food",
-  "Hot drinks", "Certain foods", "Skincare products", "Poor sleep", "Menstrual/hormonal changes", "Medication",
-  "Travel", "I'm not sure yet", "Something else",
-];
-const CONFIDENCE = ["I have no idea", "I have some suspicions", "I know a few patterns", "I'm fairly confident about my triggers"];
-const TRACKING = ["Photos", "Notes", "Journal", "Spreadsheet", "Another app", "I rely on memory", "I don't track it"];
-const FREQ = ["Every day", "A few times per week", "Once per week", "Only during a flare-up", "Only when something changes", "I'm not sure yet"];
-
-const short = (s: string) => s.split(" / ").pop()!.replace(/ \(.*\)/, "");
-
-function toggle(list: string[], v: string, max?: number) {
-  if (list.includes(v)) return list.filter((x) => x !== v);
-  if (max && list.length >= max) return list;
-  return [...list, v];
-}
-
-function Option({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`w-full rounded-2xl border px-4 py-3 text-left text-sm transition-all active:scale-[0.99] ${
-        selected ? "border-primary/40 bg-accent text-accent-foreground" : "border-border bg-card text-foreground"
-      }`}
-    >
-      {label}
-    </button>
-  );
-}
-
-function Scale({ label, value, onChange }: { label: string; value: number; onChange: (n: number) => void }) {
-  return (
-    <div>
-      <p className="text-sm font-medium text-foreground">{label}</p>
-      <div className="mt-2 flex gap-2">
-        {[1, 2, 3, 4, 5].map((n) => (
-          <button
-            key={n}
-            type="button"
-            onClick={() => onChange(n)}
-            className={`h-11 flex-1 rounded-xl border text-sm ${value === n ? "border-primary/40 bg-accent text-accent-foreground" : "border-border bg-card text-muted-foreground"}`}
-          >
-            {n}
-          </button>
-        ))}
-      </div>
-      <div className="mt-1 flex justify-between text-[0.7rem] text-muted-foreground"><span>None</span><span>Severe</span></div>
-    </div>
-  );
-}
-
-const Other = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => (
-  <input
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    placeholder="Tell us more…"
-    className="mt-2 w-full rounded-2xl border border-border bg-card px-4 py-3 text-sm text-foreground outline-none focus:border-primary/50"
-  />
-);
+const BUILD_STEPS = ["Understanding your goals", "Organizing your skin history", "Adding your current routine/treatments", "Creating your photo baseline", "Preparing your personal timeline"];
 
 function Onboarding() {
   const navigate = useNavigate();
-  const [d, setD] = useState<Data>(empty);
-  const [step, setStep] = useState(0);
-  const [added, setAdded] = useState("");
-  const fileRef = useRef<HTMLInputElement>(null);
-  const set = (p: Partial<Data>) => setD((x) => ({ ...x, ...p }));
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [stream, setStream] = useState<MediaStream | null>(null);
-  const camOn = !!stream;
-  const savePhoto = (url: string) => set({ baselinePhoto: url, baselineDate: new Date().toISOString() });
-  const shrink = (src: string) => new Promise<string>((res) => {
-    const img = new Image();
-    img.onload = () => {
-      const k = Math.min(1, 800 / Math.max(img.width, img.height));
-      const c = document.createElement("canvas"); c.width = img.width * k; c.height = img.height * k;
-      c.getContext("2d")!.drawImage(img, 0, 0, c.width, c.height); res(c.toDataURL("image/jpeg", 0.85));
-    };
-    img.onerror = () => res(src); img.src = src;
-  });
+  const { lang } = useI18n();
+  const [d, setD] = useState<OnboardingData>(emptyData);
+  const [i, setI] = useState(0);
+  const [photo, setPhoto] = useState<string>();
+  const [built, setBuilt] = useState(0);
+  const tracked = useRef(new Set<string>());
+  const set = (p: Partial<OnboardingData>) => setD((x) => ({ ...x, ...p }));
+  const once = (e: Parameters<typeof track>[0]) => { if (!tracked.current.has(e)) { tracked.current.add(e); track(e, "onboarding"); } };
+
+  const steps = useMemo(() => buildSteps(d), [d]);
+  const step = steps[Math.min(i, steps.length - 1)] as StepId;
+  const retainPhotos = useMemo(() => (typeof window === "undefined" ? true : loadProfile().retainPhotos), []);
+
   useEffect(() => {
-    const v = videoRef.current; if (!v || !stream) return;
-    v.muted = true; v.setAttribute("playsinline", ""); v.setAttribute("webkit-playsinline", "");
-    v.srcObject = stream; void v.play().catch(() => {});
-  }, [stream]);
-  useEffect(() => () => stream?.getTracks().forEach((t) => t.stop()), [stream]);
-  const stopCam = () => { stream?.getTracks().forEach((t) => t.stop()); setStream(null); };
-  const startCam = async () => {
+    if (step === "r_diagnosed") once("redness_branch_started");
+    if (step === "l_areas") once("wrinkle_branch_started");
+    if (step === "b_when") once("botox_branch_started");
+    if (step === "d_experience") once("dryness_branch_started");
+    if (step === "reflection") once("reflection_screen_viewed");
+    window.scrollTo({ top: 0 });
+  }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const next = () => {
+    if (step === "welcome") once("onboarding_started");
+    if (step === "goals") once("goal_selected");
+    if (step === "r_influences" || (step === "r_tried" && d.tried.includes(NONE_TRIED))) once("treatment_history_completed");
+    setI((n) => Math.min(n + 1, steps.length - 1));
+  };
+  const back = () => (i === 0 ? navigate({ to: "/" }) : setI((n) => n - 1));
+
+  /* ---------- baseline: reuse the existing redness reading, then save as Day 1 ---------- */
+  async function createBaseline() {
+    if (!photo) return;
+    setI(steps.indexOf("building")); setBuilt(0);
+    const timer = window.setInterval(() => setBuilt((n) => Math.min(n + 1, BUILD_STEPS.length - 1)), 550);
+    const date = new Date().toISOString();
+    let entryId: string | undefined;
     try {
-      if (!navigator.mediaDevices?.getUserMedia) throw new Error("no camera");
-      setStream(await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false }));
-    } catch { fileRef.current?.click(); }
-  };
-  const snap = () => {
-    const v = videoRef.current; if (!v || !v.videoWidth) return;
-    const k = Math.min(1, 800 / Math.max(v.videoWidth, v.videoHeight));
-    const c = document.createElement("canvas"); c.width = v.videoWidth * k; c.height = v.videoHeight * k;
-    const ctx = c.getContext("2d")!; ctx.translate(c.width, 0); ctx.scale(-1, 1); ctx.drawImage(v, 0, 0, c.width, c.height);
-    savePhoto(c.toDataURL("image/jpeg", 0.85)); stopCam();
-  };
-
-  const triedReal = d.tried.filter((t) => t !== NONE_TRIED && t !== "Other");
-
-  const steps: { section: string; title: string; hint?: string; valid: boolean; body: React.ReactNode }[] = [
-    {
-      section: "Your goals", title: "What would you like Rose AI to help you understand?", hint: "Choose up to 2.",
-      valid: d.goals.length > 0,
-      body: <div className="space-y-2">{GOALS.map((g) => <Option key={g} label={g} selected={d.goals.includes(g)} onClick={() => set({ goals: toggle(d.goals, g, 2) })} />)}{d.goals.includes("Something else") && <Other value={d.goalOther} onChange={(v) => set({ goalOther: v })} />}</div>,
-    },
-    {
-      section: "About you", title: "Have you been diagnosed with rosacea?",
-      valid: !!d.diagnosed && (!d.diagnosed.startsWith("Yes") || !!d.diagnosedAgo),
-      body: <div className="space-y-2">{DIAG.map((o) => <Option key={o} label={o} selected={d.diagnosed === o} onClick={() => set({ diagnosed: o })} />)}
-        {d.diagnosed.startsWith("Yes") && <div className="pt-4"><p className="mb-2 text-sm font-medium text-foreground">How long ago were you diagnosed?</p><div className="flex flex-wrap gap-2">{AGO.map((o) => <Chip key={o} label={o} selected={d.diagnosedAgo === o} onClick={() => set({ diagnosedAgo: o })} />)}</div></div>}</div>,
-    },
-    {
-      section: "About you", title: "What do you currently experience?", hint: "Select all that apply.",
-      valid: d.symptoms.length > 0,
-      body: <div><div className="flex flex-wrap gap-2">{SYMPTOMS.map((s) => <Chip key={s} label={s} selected={d.symptoms.includes(s)} onClick={() => set({ symptoms: toggle(d.symptoms, s) })} />)}</div>{d.symptoms.includes("Something else") && <Other value={d.symptomOther} onChange={(v) => set({ symptomOther: v })} />}</div>,
-    },
-    {
-      section: "About you", title: "How would you describe your skin today?", hint: "This becomes your self-reported baseline.",
-      valid: d.redness > 0 && d.discomfort > 0,
-      body: <div className="space-y-6"><Scale label="Redness" value={d.redness} onChange={(n) => set({ redness: n })} /><Scale label="Discomfort" value={d.discomfort} onChange={(n) => set({ discomfort: n })} /></div>,
-    },
-    {
-      section: "Your history", title: "What have you tried for your rosacea or redness?", hint: "Select everything you've tried.",
-      valid: d.tried.length > 0,
-      body: <div className="space-y-5">{TREATMENTS.map((g) => <div key={g.group}><p className="eyebrow mb-2">{g.group}</p><div className="flex flex-wrap gap-2">{g.items.map((i) => <Chip key={i} label={i} selected={d.tried.includes(i)} onClick={() => set({ tried: toggle(d.tried.filter((x) => x !== NONE_TRIED), i) })} />)}</div></div>)}
-        <div className="flex flex-wrap gap-2"><Chip label="Other" selected={d.tried.includes("Other")} onClick={() => set({ tried: toggle(d.tried.filter((x) => x !== NONE_TRIED), "Other") })} /><Chip label={NONE_TRIED} selected={d.tried.includes(NONE_TRIED)} onClick={() => set({ tried: d.tried.includes(NONE_TRIED) ? [] : [NONE_TRIED] })} /></div>
-        {d.tried.includes("Other") && <Other value={d.triedOther} onChange={(v) => set({ triedOther: v })} />}</div>,
-    },
-    {
-      section: "Your history", title: "How did each treatment work for you?",
-      valid: true,
-      body: triedReal.length === 0 ? <p className="text-sm text-muted-foreground">Nothing to rate — tap Continue.</p> : <div className="space-y-4">{triedReal.map((t) => {
-        const r = d.results[t] ?? { stopReasons: [] };
-        const up = (p: Partial<TreatmentResult>) => set({ results: { ...d.results, [t]: { ...r, ...p } } });
-        return <div key={t} className="surface space-y-3 p-4">
-          <p className="font-display text-xl text-foreground">{t}</p>
-          <p className="text-xs text-muted-foreground">How did your skin change while you were using it?</p>
-          <div className="flex flex-wrap gap-2">{RATINGS.map(([k, l]) => <Chip key={k} label={l} selected={r.rating === k} onClick={() => up({ rating: k })} />)}</div>
-          <p className="text-xs text-muted-foreground">Are you still using it?</p>
-          <div className="flex gap-2"><Chip label="Yes" selected={r.stillUsing === true} onClick={() => up({ stillUsing: true })} /><Chip label="No" selected={r.stillUsing === false} onClick={() => up({ stillUsing: false })} /></div>
-          {r.stillUsing === false && <><p className="text-xs text-muted-foreground">Why did you stop?</p><div className="flex flex-wrap gap-2">{STOP.map((s) => <Chip key={s} label={s} selected={r.stopReasons.includes(s)} onClick={() => up({ stopReasons: toggle(r.stopReasons, s) })} />)}</div></>}
-        </div>;
-      })}</div>,
-    },
-    {
-      section: "Your history", title: "What are you currently using?", hint: "This becomes your Day 1 routine baseline.",
-      valid: true,
-      body: <div className="space-y-3"><div className="flex flex-wrap gap-2">{[...new Set([...triedReal, ...d.current])].map((t) => <Chip key={t} label={short(t)} selected={d.current.includes(t)} onClick={() => set({ current: toggle(d.current, t) })} />)}</div>
-        <div className="flex gap-2"><input value={added} onChange={(e) => setAdded(e.target.value)} placeholder="Add another" className="flex-1 rounded-2xl border border-border bg-card px-4 py-3 text-sm text-foreground outline-none" />
-          <button type="button" onClick={() => { if (added.trim()) { set({ current: [...d.current, added.trim()] }); setAdded(""); } }} className="flex h-12 w-12 items-center justify-center rounded-2xl gradient-rose text-primary-foreground"><Plus className="h-5 w-5" /></button></div></div>,
-    },
-    {
-      section: "Possible influences", title: "What seems to affect your skin?", hint: "Select anything you've noticed — these aren't confirmed triggers.",
-      valid: d.influences.length > 0,
-      body: <div><div className="flex flex-wrap gap-2">{INFLUENCES.map((s) => <Chip key={s} label={s} selected={d.influences.includes(s)} onClick={() => set({ influences: toggle(d.influences, s) })} />)}</div>{d.influences.includes("Something else") && <Other value={d.influenceOther} onChange={(v) => set({ influenceOther: v })} />}</div>,
-    },
-    {
-      section: "Possible influences", title: "How confident are you about what affects your skin?",
-      valid: !!d.confidence,
-      body: <div className="space-y-2">{CONFIDENCE.map((o) => <Option key={o} label={o} selected={d.confidence === o} onClick={() => set({ confidence: o })} />)}</div>,
-    },
-    {
-      section: "How you track today", title: "How do you currently track changes in your skin?", hint: "Select all that apply.",
-      valid: d.tracking.length > 0,
-      body: <div className="flex flex-wrap gap-2">{TRACKING.map((s) => <Chip key={s} label={s} selected={d.tracking.includes(s)} onClick={() => set({ tracking: toggle(d.tracking, s) })} />)}</div>,
-    },
-    {
-      section: "How you track today", title: "How often would you realistically check in?",
-      valid: !!d.frequency,
-      body: <div className="space-y-2">{FREQ.map((o) => <Option key={o} label={o} selected={d.frequency === o} onClick={() => set({ frequency: o })} />)}</div>,
-    },
-    {
-      section: "Your baseline photo", title: "Let's create your baseline.", hint: "We'll use this so you can compare your skin with yourself over time.",
-      valid: true,
-      body: <div className="space-y-4">
-        <div className="relative mx-auto flex aspect-[3/4] w-56 items-center justify-center overflow-hidden rounded-[50%] border-2 border-dashed border-primary/40 bg-accent/40">
-          {camOn ? <video ref={videoRef} autoPlay muted playsInline className="h-full w-full -scale-x-100 object-cover" />
-            : d.baselinePhoto ? <img src={d.baselinePhoto} alt="Baseline" className="h-full w-full object-cover" /> : <Camera className="h-10 w-10 text-primary/60" strokeWidth={1.4} />}
-        </div>
-        <p className="text-center text-xs text-muted-foreground">Natural light · No filter · Face forward · Similar distance</p>
-        <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => {
-          const f = e.target.files?.[0]; e.target.value = ""; if (!f) return;
-          const r = new FileReader(); r.onload = () => void shrink(String(r.result)).then(savePhoto); r.readAsDataURL(f);
-        }} />
-        {camOn ? (
-          <div className="flex gap-2">
-            <button type="button" onClick={stopCam} className="flex-1 rounded-full border border-border bg-card py-3 text-sm text-muted-foreground">Cancel</button>
-            <button type="button" onClick={snap} className="flex-1 rounded-full gradient-rose py-3 text-sm text-primary-foreground">Capture</button>
-          </div>
-        ) : (
-          <div className="flex gap-2">
-            <button type="button" onClick={startCam} className="flex-1 rounded-full border border-primary/40 bg-card py-3 text-sm text-primary">{d.baselinePhoto ? "Retake photo" : "Take photo"}</button>
-            <button type="button" onClick={() => fileRef.current?.click()} className="flex-1 rounded-full border border-border bg-card py-3 text-sm text-foreground">Upload photo</button>
-          </div>
-        )}
-        <p className="surface p-4 text-xs leading-relaxed text-muted-foreground">Your baseline photo stays on this device only — it isn't uploaded or shared. It's kept until you delete it, which you can do anytime in Profile → Privacy. You can also skip this and add one later.</p>
-      </div>,
-    },
-  ];
-
-  const finish = () => {
-    const final = { ...d, baselineDate: d.baselineDate ?? new Date().toISOString(), completedAt: new Date().toISOString() };
+      const res = await fetch("/api/analyze", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: photo, lang }) });
+      const a = (await res.json()) as Partial<Analysis> & { error?: string };
+      if (res.ok && typeof a.score === "number") {
+        track("baseline_photo_analysis_completed", "onboarding");
+        entryId = `baseline-${Date.now()}`;
+        addEntry({ id: entryId, date, analysis: a as Analysis, photo: retainPhotos ? photo : undefined, feeling: undefined, triggers: [] });
+      } else toast.error("We couldn't read this photo, but your baseline photo is saved.");
+    } catch { toast.error("We couldn't read this photo, but your baseline photo is saved."); }
+    await new Promise((r) => setTimeout(r, Math.max(0, BUILD_STEPS.length * 550 - 200)));
+    window.clearInterval(timer); setBuilt(BUILD_STEPS.length);
+    const final: OnboardingData = { ...d, baselineEntryId: entryId, baselineDate: date, completedAt: date, baselinePhoto: !entryId && retainPhotos ? photo : undefined };
     try { localStorage.setItem(ONBOARDING_KEY, JSON.stringify(final)); }
     catch { localStorage.setItem(ONBOARDING_KEY, JSON.stringify({ ...final, baselinePhoto: undefined })); }
-    navigate({ to: "/analyze" });
-  };
-
-  if (step === steps.length) {
-    const rows: [string, string][] = [
-      ["Your goals", d.goals.map((g) => (g === "Something else" ? d.goalOther || g : g)).join(" + ")],
-      ["Currently using", d.current.map(short).join(" · ") || "Nothing yet"],
-      ["Possible influences", d.influences.filter((i) => i !== "Something else").join(" · ") || "Not sure yet"],
-      ["Baseline", new Date(d.baselineDate ?? Date.now()).toLocaleDateString("en-US", { month: "long", day: "numeric" })],
-    ];
-    return (
-      <div className="animate-rise space-y-6">
-        <p className="font-display text-3xl text-primary">Finished 🌹</p>
-        <h1 className="text-[2rem] leading-tight text-foreground">Your Rose AI timeline starts today.</h1>
-        <div className="surface divide-y divide-border/70">
-          {rows.map(([k, v]) => <div key={k} className="p-4"><p className="eyebrow">{k}</p><p className="mt-1 text-sm text-foreground">{v}</p></div>)}
-        </div>
-        <p className="text-sm text-secondary-foreground">Rose AI will help you organize your observations and compare changes over time.</p>
-        <button type="button" onClick={finish} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-primary-foreground">Start my timeline <ArrowRight className="h-4 w-4" /></button>
-        <p className="text-[0.7rem] leading-relaxed text-muted-foreground">Rose AI helps you track and organize information about your skin. It does not diagnose rosacea, identify the medical cause of symptoms, or replace advice from a qualified healthcare professional.</p>
-      </div>
-    );
+    setD(final);
+    track("skin_profile_created", "onboarding"); track("onboarding_completed", "onboarding");
+    setTimeout(() => setI(buildSteps(final).indexOf("profile")), 400);
   }
 
-  const s = steps[step]!;
+  /* ---------- screens ---------- */
+  const tg = (key: keyof OnboardingData, v: string, exclusive: string[] = []) => set({ [key]: toggle(d[key] as string[], v, exclusive) } as Partial<OnboardingData>);
+  let body: React.ReactNode = null;
+  let valid = true;
+  let cta = "Continue";
+
+  if (step === "welcome") {
+    cta = "Get started";
+    body = (
+      <div className="flex min-h-[55vh] flex-col justify-center text-center animate-in fade-in duration-500">
+        <p className="eyebrow">Rose AI</p>
+        <h1 className="mt-3 font-display text-4xl leading-tight text-foreground">Let's get to know your skin 🌹</h1>
+        <p className="mx-auto mt-4 max-w-xs text-muted-foreground">Tell Rose AI what you'd like to understand, and we'll create your personal starting point.</p>
+        <p className="mt-6 text-xs text-muted-foreground">About 2 minutes</p>
+      </div>
+    );
+  } else if (step === "goals") {
+    valid = d.goals.length > 0;
+    body = <Question title="What would you like to understand about your skin?" hint="Choose everything that matters to you.">
+      <div className="space-y-2">{GOALS.map((g) => <OptionCard key={g.key} icon={g.icon} label={g.title} text={g.text} selected={d.goals.includes(g.key)} onClick={() => set({ goals: toggle(d.goals, g.key) as GoalKey[] })} />)}</div>
+    </Question>;
+  } else if (step === "r_diagnosed") {
+    valid = !!d.diagnosed;
+    body = <Question title="Have you been diagnosed with rosacea?"><SingleList options={DIAGNOSED} value={d.diagnosed} onChange={(v) => set({ diagnosed: v })} /></Question>;
+  } else if (step === "r_symptoms") {
+    valid = d.symptoms.length > 0;
+    body = <Question title="What does your skin experience?" hint="Select all that apply."><Chips options={SYMPTOMS} value={d.symptoms} onToggle={(v) => tg("symptoms", v)} /></Question>;
+  } else if (step === "r_understand") {
+    valid = !!d.understand;
+    body = <Question title="What would you most like to understand?"><SingleList options={UNDERSTAND} value={d.understand} onChange={(v) => set({ understand: v })} /></Question>;
+  } else if (step === "r_tried") {
+    valid = d.tried.length > 0;
+    body = <Question title="What have you already tried?" hint="Select everything that applies.">
+      <div className="space-y-5">
+        {TREATMENTS.map((g) => <div key={g.group}><p className="eyebrow mb-2">{g.group}</p><Chips options={g.items} value={d.tried} onToggle={(v) => tg("tried", v, [NONE_TRIED])} /></div>)}
+        <Chips options={[NONE_TRIED]} value={d.tried} onToggle={(v) => tg("tried", v, [NONE_TRIED])} />
+      </div>
+    </Question>;
+  } else if (step.startsWith("r_follow:")) {
+    const t = step.slice(9);
+    const r: TreatmentResult = d.results[t] ?? { stopReasons: [] };
+    const up = (p: Partial<TreatmentResult>) => set({ results: { ...d.results, [t]: { ...r, ...p } } });
+    valid = r.stillUsing !== undefined && !!r.rating;
+    body = <Question title={`You mentioned ${t.split(" / ")[0]}.`} hint="This is your own experience — Rose AI doesn't judge whether a treatment worked.">
+      <div className="space-y-5">
+        <div><p className="mb-2 text-sm font-medium text-foreground">Are you currently using it?</p>
+          <div className="flex gap-2">{(["Yes", "No"] as const).map((o) => <button key={o} type="button" onClick={() => up({ stillUsing: o === "Yes" })} className={`flex-1 rounded-full border py-3 text-sm ${r.stillUsing === (o === "Yes") ? "border-primary bg-accent text-foreground" : "border-border bg-card text-muted-foreground"}`}>{o}</button>)}</div></div>
+        <div><p className="mb-2 text-sm font-medium text-foreground">What did you notice while using it?</p>
+          <Chips options={RATINGS.map((x) => x[1])} value={r.rating ? [RATINGS.find((x) => x[0] === r.rating)![1]] : []} onToggle={(l) => up({ rating: RATINGS.find((x) => x[1] === l)![0] })} /></div>
+        {r.stillUsing === false && <div><p className="mb-2 text-sm font-medium text-foreground">Why did you stop?</p><Chips options={STOP_REASONS} value={r.stopReasons} onToggle={(v) => up({ stopReasons: toggle(r.stopReasons, v) })} /></div>}
+      </div>
+    </Question>;
+  } else if (step === "r_influences") {
+    valid = d.influences.length > 0;
+    body = <Question title="Have you noticed anything that seems to affect your skin?" hint="You don't need to know for sure. Rose AI can help you organize your observations over time.">
+      <Chips options={[...INFLUENCES, NOT_SURE]} value={d.influences} onToggle={(v) => tg("influences", v, [NOT_SURE])} />
+      {d.influences.includes(NOT_SURE) && <div className="surface mt-5 p-4 text-sm text-foreground animate-in fade-in">That's completely fine. You don't need to know your patterns yet — Rose AI is designed to help you organize what you notice over time.</div>}
+    </Question>;
+  } else if (step === "l_areas") {
+    valid = d.lineAreas.length > 0;
+    body = <Question title="What would you like to track?" hint="Select all that apply."><Chips options={LINE_AREAS} value={d.lineAreas} onToggle={(v) => tg("lineAreas", v)} /></Question>;
+  } else if (step === "l_doing") {
+    valid = d.lineDoing.length > 0;
+    body = <Question title="Are you currently doing anything for these concerns?" hint="Select all that apply. We just note what you already do."><Chips options={LINE_DOING} value={d.lineDoing} onToggle={(v) => tg("lineDoing", v, ["Nothing currently"])} /></Question>;
+  } else if (step === "b_when") {
+    valid = !!d.botoxWhen;
+    body = <Question title="When was your most recent Botox or neuromodulator treatment?"><SingleList options={BOTOX_WHEN} value={d.botoxWhen} onChange={(v) => set({ botoxWhen: v })} /></Question>;
+  } else if (step === "b_areas") {
+    valid = d.botoxAreas.length > 0;
+    body = <Question title="Which areas are you tracking?"><Chips options={BOTOX_AREAS} value={d.botoxAreas} onToggle={(v) => tg("botoxAreas", v)} /></Question>;
+  } else if (step === "b_product") {
+    cta = d.botoxProduct ? "Continue" : "Skip";
+    body = <Question title="Do you know which product was used?" hint="Optional."><Chips options={BOTOX_PRODUCTS} value={d.botoxProduct ? [d.botoxProduct] : []} onToggle={(v) => set({ botoxProduct: d.botoxProduct === v ? "" : v })} /></Question>;
+  } else if (step === "d_experience") {
+    valid = d.dryExperience.length > 0;
+    body = <Question title="What are you experiencing?" hint="Select all that apply."><Chips options={DRY_EXPERIENCE} value={d.dryExperience} onToggle={(v) => tg("dryExperience", v)} /></Question>;
+  } else if (step === "d_using") {
+    valid = d.dryUsing.length > 0;
+    body = <Question title="What are you currently using?"><Chips options={DRY_USING} value={d.dryUsing} onToggle={(v) => tg("dryUsing", v, ["Nothing currently"])} /></Question>;
+  } else if (step === "reflection") {
+    cta = "Create my baseline";
+    const secs = profileSections(d).filter((s) => ["Your goal", "You're tracking", "Most recent treatment"].includes(s.label));
+    body = <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <h1 className="font-display text-3xl leading-tight text-foreground">We're getting to know your skin 🌹</h1>
+      <div className="surface mt-6 space-y-5 p-5">
+        {secs.map((s) => <div key={s.label}><p className="eyebrow">{s.label}</p><p className="mt-1 font-display text-xl text-foreground">{s.items.join(" + ")}</p></div>)}
+      </div>
+      <p className="mt-5 text-sm text-muted-foreground">
+        {d.goals.includes("dryness") && d.goals.length === 1 ? "Rose AI will help you compare how your skin looks and how you report it feels over time."
+          : wantsBotox(d) && d.goals.length === 1 ? "Rose AI will help you document visible changes over time."
+          : "Rose AI will use your future check-ins to build a personal timeline around that goal."}
+      </p>
+    </div>;
+  } else if (step === "baseline") {
+    cta = "Use this photo";
+    valid = !!photo;
+    body = <Question title="Let's create your baseline 📸" hint="Your first photo gives Rose AI a starting point for comparing visible changes over time.">
+      <BaselineCapture photo={photo} retainPhotos={retainPhotos} onStart={() => once("baseline_photo_started")} onPhoto={(u) => { setPhoto(u); once("baseline_photo_uploaded"); }} />
+    </Question>;
+  } else if (step === "building") {
+    body = <div className="flex min-h-[55vh] flex-col justify-center">
+      <h1 className="font-display text-3xl text-foreground">Creating your starting skin profile…</h1>
+      <ul className="mt-8 space-y-4">{BUILD_STEPS.map((s, k) => (
+        <li key={s} className={`flex items-center gap-3 text-sm transition-opacity duration-300 ${k <= built ? "opacity-100" : "opacity-30"}`}>
+          <span className="flex h-6 w-6 items-center justify-center rounded-full gradient-rose text-primary-foreground">{k < built ? <Check className="h-3.5 w-3.5" /> : k === built ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}</span>
+          <span className="text-foreground">{s}</span>
+        </li>))}</ul>
+    </div>;
+  } else if (step === "profile") {
+    body = <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <p className="eyebrow">🌹 Your starting skin profile</p>
+      <div className="surface mt-4 divide-y divide-border">
+        {profileSections(d).map((s) => <div key={s.label} className="p-4"><p className="eyebrow">{s.label}</p><ul className="mt-1.5 space-y-0.5">{s.items.map((x) => <li key={x} className="text-[15px] text-foreground">{x}</li>)}</ul></div>)}
+        <div className="flex items-center gap-4 p-4">
+          {photo && <img src={photo} alt="Your baseline photo" className="h-16 w-16 rounded-2xl object-cover" />}
+          <div><p className="eyebrow">Baseline</p><p className="text-[15px] text-foreground">Day 1 · Created today</p></div>
+        </div>
+      </div>
+      <p className="mt-5 text-sm text-muted-foreground">{closingLine(d)}</p>
+      <p className="mt-3 text-xs text-muted-foreground">Rose AI organizes what you record. It doesn't diagnose any condition or replace a qualified professional.</p>
+      <div className="mt-6 flex flex-col gap-2">
+        <button type="button" onClick={() => navigate({ to: "/progress" })} className="rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground">Start my skin timeline</button>
+        <button type="button" onClick={() => navigate({ to: "/profile" })} className="rounded-full border border-border bg-card py-3.5 text-sm font-medium text-foreground">Edit my profile</button>
+      </div>
+    </div>;
+  }
+
+  const showNav = step !== "building" && step !== "profile";
+  const progress = (i + 1) / steps.length;
+
   return (
-    <div className="animate-rise space-y-6">
-      <div className="flex items-center gap-3">
-        <button type="button" aria-label="Back" onClick={() => setStep(Math.max(0, step - 1))} className={`text-muted-foreground ${step === 0 ? "invisible" : ""}`}><ArrowLeft className="h-5 w-5" /></button>
-        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted"><div className="h-full gradient-rose transition-all" style={{ width: `${((step + 1) / steps.length) * 100}%` }} /></div>
-        <span className="text-xs text-muted-foreground">{step + 1}/{steps.length}</span>
-      </div>
-      <div>
-        <p className="eyebrow">{s.section}</p>
-        <h1 className="mt-2 text-[1.75rem] leading-tight text-foreground">{s.title}</h1>
-        {s.hint && <p className="mt-1 text-sm text-muted-foreground">{s.hint}</p>}
-      </div>
-      {s.body}
-      <button type="button" disabled={!s.valid} onClick={() => setStep(step + 1)} className="w-full rounded-full gradient-rose py-4 text-primary-foreground disabled:opacity-40">
-        {step === steps.length - 1 && !d.baselinePhoto ? "Skip for now" : "Continue"}
-      </button>
+    <div className="mx-auto flex min-h-[80vh] max-w-md flex-col pb-6">
+      {showNav && <div className="mb-6 flex items-center gap-3 pt-2">
+        <button type="button" onClick={back} aria-label="Back" className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-foreground"><ArrowLeft className="h-4 w-4" /></button>
+        <div className="flex-1"><ProgressBar value={progress} /></div>
+      </div>}
+      <div className="flex-1">{body}</div>
+      {showNav && <button type="button" disabled={!valid} onClick={step === "baseline" ? createBaseline : next}
+        className="mt-8 rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground transition-opacity disabled:opacity-40">{cta}</button>}
     </div>
   );
 }
