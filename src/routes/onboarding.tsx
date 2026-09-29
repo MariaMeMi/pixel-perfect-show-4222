@@ -80,7 +80,7 @@ function Onboarding() {
     if (step === "r_influences" || (step === "r_tried" && d.tried.includes(NONE_TRIED))) once("treatment_history_completed");
     setI((n) => Math.min(n + 1, steps.length - 1));
   };
-  const back = () => (i === 0 ? navigate({ to: "/" }) : setI((n) => n - 1));
+  const back = () => setI((n) => Math.max(0, n - 1));
 
   /* ---------- baseline: reuse the existing redness reading, then save as Day 1 ---------- */
   // Resume after a full-page Google/Apple redirect
@@ -323,8 +323,8 @@ function Onboarding() {
 
   return (
     <div className="mx-auto flex min-h-[80vh] max-w-md flex-col pb-6">
-      {showNav && <div className="mb-6 flex items-center gap-3 pt-2">
-        <button type="button" onClick={back} aria-label="Back" className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-foreground"><ArrowLeft className="h-4 w-4" /></button>
+       {showNav && <div className="mb-6 flex items-center gap-3 pt-2">
+         {i > 0 ? <button type="button" onClick={back} aria-label="Back" className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-foreground"><ArrowLeft className="h-4 w-4" /></button> : <div className="h-9 w-9" aria-hidden="true" />}
         <div className="flex-1"><ProgressBar value={progress} /></div>
       </div>}
       <RosieGuide step={step} />
