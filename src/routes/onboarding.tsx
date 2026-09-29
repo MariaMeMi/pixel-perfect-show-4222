@@ -4,6 +4,7 @@ import { ArrowLeft, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Chips, OptionCard, ProgressBar, Question, SingleList } from "@/components/onboarding/ui";
 import { BaselineCapture } from "@/components/onboarding/BaselineCapture";
+import { Button } from "@/components/ui/button";
 import { track } from "@/lib/experiment";
 import { EmailGate } from "@/components/EmailGate";
 import { RESUME_KEY, SaveDay1 } from "@/components/onboarding/SaveDay1";
@@ -276,8 +277,9 @@ function Onboarding() {
       <p className="mt-5 text-sm text-muted-foreground">{closingLine(d)}</p>
       <p className="mt-3 text-xs text-muted-foreground">Rose AI organizes what you record. It doesn't diagnose any condition or replace a qualified professional.</p>
       <div className="mt-6 flex flex-col gap-2">
-        <button type="button" onClick={() => navigate({ to: "/progress" })} className="rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground">Start my skin timeline</button>
-        <button type="button" onClick={() => navigate({ to: "/profile" })} className="rounded-full border border-border bg-card py-3.5 text-sm font-medium text-foreground">Edit my profile</button>
+         <Button type="button" onClick={() => navigate({ to: "/routine" })} className="h-auto w-full rounded-full gradient-rose py-4 text-sm text-primary-foreground">Build My Routine</Button>
+         <Button type="button" variant="outline" onClick={() => navigate({ to: "/progress" })} className="h-auto w-full rounded-full py-3.5 text-sm">Start my skin timeline</Button>
+         <Button type="button" variant="ghost" onClick={() => navigate({ to: "/profile" })} className="h-auto w-full rounded-full py-3.5 text-sm">Edit my profile</Button>
       </div>
     </div>;
   }

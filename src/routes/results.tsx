@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Chip } from "@/components/Chip";
 import { FaceMap } from "@/components/FaceMap";
 import { ScoreRing } from "@/components/ScoreRing";
+import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n";
 import { addEntry, baselineScore, loadEntries, loadProfile } from "@/lib/storage";
 import type { Analysis, Entry, FeelingKey, TriggerKey } from "@/lib/types";
@@ -100,7 +101,7 @@ function ResultsPage() {
           : t("results.lower", { v: Math.abs(diff) });
       })();
 
-  function save() {
+  function save(destination: "/progress" | "/routine" = "/progress") {
     if (!pending) return;
     const profile = loadProfile();
     addEntry({
@@ -116,7 +117,7 @@ function ResultsPage() {
     toast.success(t("results.saved"));
     { const n = loadEntries().length; if (n === 2) track("second_checkin_completed", "onboarding"); if (n === 3) track("third_checkin_completed", "onboarding"); }
     if (loadEntries().length === 3) window.sessionStorage.setItem("rose.journey.celebrate", "1");
-    navigate({ to: "/progress" });
+    navigate({ to: destination });
   }
 
   if (step === "checkin") {
@@ -159,13 +160,13 @@ function ResultsPage() {
 
         <div className="space-y-3">
           <button
-            onClick={save}
+            onClick={() => save()}
             className="w-full rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground shadow-[var(--shadow-lift)] active:scale-[0.99]"
           >
             {t("checkin.finish")}
           </button>
           <button
-            onClick={save}
+            onClick={() => save()}
             className="w-full rounded-full border border-border bg-card py-4 text-sm text-muted-foreground active:scale-[0.99]"
           >
             {t("checkin.skip")}
@@ -294,6 +295,9 @@ function ResultsPage() {
       >
         {t("results.save")}
       </button>
+      <Button type="button" variant="outline" onClick={() => save("/routine")} className="h-auto w-full rounded-full py-4 text-sm">
+        Save &amp; build my routine
+      </Button>
     </div>
   );
 }
