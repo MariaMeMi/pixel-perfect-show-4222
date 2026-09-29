@@ -1,9 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { HeartPulse, ImageOff, Languages, ShieldCheck, Trash2 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { HeartPulse, ImageOff, Languages, LogOut, ShieldCheck, Trash2, UserX } from "lucide-react";
 import { toast } from "sonner";
 import { Chip } from "@/components/Chip";
 import { useI18n } from "@/lib/i18n";
+import { supabase } from "@/integrations/supabase/client";
+import { deleteAccount } from "@/lib/account.functions";
 import { clearHistory, deleteAllPhotos, defaultProfile, loadProfile, saveProfile } from "@/lib/storage";
 import type { Profile, TriggerKey } from "@/lib/types";
 
@@ -58,11 +61,32 @@ const inputClass =
 
 function ProfilePage() {
   const { t, setLang } = useI18n();
+  const navigate = useNavigate();
+  const deleteAccountFn = useServerFn(deleteAccount);
   const [profile, setProfile] = useState<Profile>(defaultProfile);
+  const [email, setEmail] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     setProfile(loadProfile());
+    supabase.auth.getSession().then(({ data }) => setEmail(data.session?.user.email ?? null));
   }, []);
+
+  async function onDeleteAccount() {
+    if (!window.confirm(t("profile.confirmAccount"))) return;
+    setBusy(true);
+    try {
+      await deleteAccountFn({});
+      await supabase.auth.signOut();
+      localStorage.clear();
+      toast.success(t("profile.accountDeleted"));
+      navigate({ to: "/welcome", replace: true });
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   function update(patch: Partial<Profile>) {
     const next = { ...profile, ...patch };
@@ -252,6 +276,33 @@ function ProfilePage() {
           </select>
         </Field>
       </section>
+
+      {email && (
+        <section className="surface space-y-4 p-5">
+          <h2 className="text-lg text-foreground">{t("profile.account")}</h2>
+          <p className="text-xs text-muted-foreground">
+            {t("profile.signedInAs")} <span className="text-foreground">{email}</span>
+          </p>
+          <button
+            onClick={async () => {
+              await supabase.auth.signOut();
+              navigate({ to: "/welcome", replace: true });
+            }}
+            className="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-background py-3 text-sm text-secondary-foreground"
+          >
+            <LogOut className="h-4 w-4" strokeWidth={1.7} />
+            {t("profile.signOut")}
+          </button>
+          <button
+            onClick={onDeleteAccount}
+            disabled={busy}
+            className="flex w-full items-center justify-center gap-2 rounded-full border border-destructive/30 bg-background py-3 text-sm text-destructive disabled:opacity-50"
+          >
+            <UserX className="h-4 w-4" strokeWidth={1.7} />
+            {t("profile.deleteAccount")}
+          </button>
+        </section>
+      )}
 
       <p className="pb-2 text-xs leading-relaxed text-muted-foreground">
         {t("profile.medicalNote")}
