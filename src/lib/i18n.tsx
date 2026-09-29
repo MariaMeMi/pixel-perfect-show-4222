@@ -171,6 +171,9 @@ const en = {
   "profile.signOut": "Sign out",
   "profile.deleteAccount": "Delete my account",
   "profile.confirmAccount": "Permanently delete your account and all server-side data? This can't be undone.",
+  "profile.startOver": "Start over",
+  "profile.startOverDesc": "Erases your answers, photos and history on this device and begins onboarding again.",
+  "profile.confirmStartOver": "Start over from the beginning? Your answers, photos and history on this device will be erased.",
   "profile.accountDeleted": "Your account has been deleted.",
   "profile.medicalNote": "Rose AI is a wellness and skin-tracking assistant. It doesn't diagnose rosacea or any other condition.",
 
