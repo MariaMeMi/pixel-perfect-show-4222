@@ -61,11 +61,32 @@ const inputClass =
 
 function ProfilePage() {
   const { t, setLang } = useI18n();
+  const navigate = useNavigate();
+  const deleteAccountFn = useServerFn(deleteAccount);
   const [profile, setProfile] = useState<Profile>(defaultProfile);
+  const [email, setEmail] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     setProfile(loadProfile());
+    supabase.auth.getSession().then(({ data }) => setEmail(data.session?.user.email ?? null));
   }, []);
+
+  async function onDeleteAccount() {
+    if (!window.confirm(t("profile.confirmAccount"))) return;
+    setBusy(true);
+    try {
+      await deleteAccountFn({});
+      await supabase.auth.signOut();
+      localStorage.clear();
+      toast.success(t("profile.accountDeleted"));
+      navigate({ to: "/welcome", replace: true });
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
 
   function update(patch: Partial<Profile>) {
     const next = { ...profile, ...patch };
