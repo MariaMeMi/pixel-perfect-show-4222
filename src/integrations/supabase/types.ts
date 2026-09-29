@@ -65,6 +65,72 @@ export type Database = {
         }
         Relationships: []
       }
+      products: {
+        Row: {
+          active: boolean
+          affiliate_url: string | null
+          approx_price: number | null
+          best_for: string
+          brand: string
+          category: string
+          concerns: string[]
+          created_at: string
+          fragrance_free: boolean | null
+          id: string
+          image_url: string | null
+          key_ingredients: string[]
+          name: string
+          normal_url: string | null
+          price_tier: number
+          purpose: string
+          rank: number
+          sponsored: boolean
+          why: string
+        }
+        Insert: {
+          active?: boolean
+          affiliate_url?: string | null
+          approx_price?: number | null
+          best_for?: string
+          brand: string
+          category: string
+          concerns?: string[]
+          created_at?: string
+          fragrance_free?: boolean | null
+          id?: string
+          image_url?: string | null
+          key_ingredients?: string[]
+          name: string
+          normal_url?: string | null
+          price_tier: number
+          purpose?: string
+          rank?: number
+          sponsored?: boolean
+          why?: string
+        }
+        Update: {
+          active?: boolean
+          affiliate_url?: string | null
+          approx_price?: number | null
+          best_for?: string
+          brand?: string
+          category?: string
+          concerns?: string[]
+          created_at?: string
+          fragrance_free?: boolean | null
+          id?: string
+          image_url?: string | null
+          key_ingredients?: string[]
+          name?: string
+          normal_url?: string | null
+          price_tier?: number
+          purpose?: string
+          rank?: number
+          sponsored?: boolean
+          why?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
