@@ -277,6 +277,33 @@ function ProfilePage() {
         </Field>
       </section>
 
+      {email && (
+        <section className="surface space-y-4 p-5">
+          <h2 className="text-lg text-foreground">{t("profile.account")}</h2>
+          <p className="text-xs text-muted-foreground">
+            {t("profile.signedInAs")} <span className="text-foreground">{email}</span>
+          </p>
+          <button
+            onClick={async () => {
+              await supabase.auth.signOut();
+              navigate({ to: "/welcome", replace: true });
+            }}
+            className="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-background py-3 text-sm text-secondary-foreground"
+          >
+            <LogOut className="h-4 w-4" strokeWidth={1.7} />
+            {t("profile.signOut")}
+          </button>
+          <button
+            onClick={onDeleteAccount}
+            disabled={busy}
+            className="flex w-full items-center justify-center gap-2 rounded-full border border-destructive/30 bg-background py-3 text-sm text-destructive disabled:opacity-50"
+          >
+            <UserX className="h-4 w-4" strokeWidth={1.7} />
+            {t("profile.deleteAccount")}
+          </button>
+        </section>
+      )}
+
       <p className="pb-2 text-xs leading-relaxed text-muted-foreground">
         {t("profile.medicalNote")}
       </p>
