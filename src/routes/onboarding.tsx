@@ -6,8 +6,10 @@ import { Chips, OptionCard, ProgressBar, Question, SingleList } from "@/componen
 import { BaselineCapture } from "@/components/onboarding/BaselineCapture";
 import { track } from "@/lib/experiment";
 import { EmailGate } from "@/components/EmailGate";
+import { RESUME_KEY, SaveDay1 } from "@/components/onboarding/SaveDay1";
 import { useI18n } from "@/lib/i18n";
 import { addEntry, loadProfile } from "@/lib/storage";
+import { supabase } from "@/integrations/supabase/client";
 import type { Analysis } from "@/lib/types";
 import {
   BOTOX_AREAS, BOTOX_PRODUCTS, BOTOX_WHEN, DIAGNOSED, DRY_EXPERIENCE, DRY_USING, GOALS, INFLUENCES, LINE_AREAS,
@@ -46,6 +48,7 @@ function Onboarding() {
   const [built, setBuilt] = useState(0);
   const [redRes, setRedRes] = useState<Analysis>();
   const [lineRes, setLineRes] = useState<LineRes>();
+  const [acctEmail, setAcctEmail] = useState<string>();
   const tracked = useRef(new Set<string>());
   const set = (p: Partial<OnboardingData>) => setD((x) => ({ ...x, ...p }));
   const once = (e: Parameters<typeof track>[0]) => { if (!tracked.current.has(e)) { tracked.current.add(e); track(e, "onboarding"); } };
@@ -72,9 +75,29 @@ function Onboarding() {
   const back = () => (i === 0 ? navigate({ to: "/" }) : setI((n) => n - 1));
 
   /* ---------- baseline: reuse the existing redness reading, then save as Day 1 ---------- */
-  async function createBaseline() {
+  // Resume after a full-page Google/Apple redirect
+  useEffect(() => {
+    const raw = sessionStorage.getItem(RESUME_KEY);
+    if (!raw) return;
+    sessionStorage.removeItem(RESUME_KEY);
+    try {
+      const saved = JSON.parse(raw) as { d: OnboardingData; photo: string };
+      setD(saved.d); setPhoto(saved.photo);
+      void (async () => {
+        for (let k = 0; k < 10; k++) {
+          const { data } = await supabase.auth.getSession();
+          if (data.session) { setAcctEmail(data.session.user.email ?? undefined); break; }
+          await new Promise((r) => setTimeout(r, 300));
+        }
+        void createBaseline(saved.d, saved.photo);
+      })();
+    } catch { /* ignore */ }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function createBaseline(d0: OnboardingData = d, photo0: string | undefined = photo) {
+    const d = d0; const photo = photo0;
     if (!photo) return;
-    setI(steps.indexOf("building")); setBuilt(0);
+    setI(buildSteps(d).indexOf("building")); setBuilt(0);
     const timer = window.setInterval(() => setBuilt((n) => Math.min(n + 1, BUILD_STEPS.length - 1)), 550);
     const date = new Date().toISOString();
     let entryId: string | undefined;
@@ -204,6 +227,10 @@ function Onboarding() {
     body = <Question title="Let's create your baseline 📸" hint="Your first photo gives Rose AI a starting point for comparing visible changes over time.">
       <BaselineCapture photo={photo} retainPhotos={retainPhotos} onStart={() => once("baseline_photo_started")} onPhoto={(u) => { setPhoto(u); once("baseline_photo_uploaded"); }} />
     </Question>;
+  } else if (step === "signup") {
+    body = <SaveDay1
+      beforeRedirect={() => { try { sessionStorage.setItem(RESUME_KEY, JSON.stringify({ d, photo })); } catch { /* too large */ } }}
+      onDone={(em) => { setAcctEmail(em); void createBaseline(); }} />;
   } else if (step === "building") {
     body = <div className="flex min-h-[55vh] flex-col justify-center">
       <h1 className="font-display text-3xl text-foreground">Creating your starting skin profile…</h1>
@@ -215,7 +242,7 @@ function Onboarding() {
     </div>;
   } else if (step === "gate") {
     const exp = d.goals.includes("redness") || !lineRes ? "redness" : "botox_information";
-    body = <EmailGate experience={exp} onDone={() => { track("results_viewed", exp); setI(steps.indexOf("profile")); }}
+    body = <EmailGate experience={exp} defaultEmail={acctEmail} onDone={() => { track("results_viewed", exp); setI(steps.indexOf("profile")); }}
       results={redRes ? { score: redRes.score, summary: redRes.summary, points: [...(redRes.observations ?? []), ...(redRes.tips ?? [])] } : lineRes ? { summary: lineRes.summary } : undefined} />;
   } else if (step === "profile") {
     body = <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
@@ -250,7 +277,7 @@ function Onboarding() {
     </div>;
   }
 
-  const showNav = step !== "building" && step !== "profile" && step !== "gate";
+  const showNav = step !== "building" && step !== "signup" && step !== "profile" && step !== "gate";
   const progress = (i + 1) / steps.length;
 
   return (
@@ -260,7 +287,7 @@ function Onboarding() {
         <div className="flex-1"><ProgressBar value={progress} /></div>
       </div>}
       <div className="flex-1">{body}</div>
-      {showNav && <button type="button" disabled={!valid} onClick={step === "baseline" ? createBaseline : next}
+      {showNav && <button type="button" disabled={!valid} onClick={next}
         className="mt-8 rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground transition-opacity disabled:opacity-40">{cta}</button>}
     </div>
   );

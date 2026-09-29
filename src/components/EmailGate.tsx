@@ -41,7 +41,9 @@ export function EmailGate({
   experience,
   onDone,
   results,
+  defaultEmail,
 }: {
+  defaultEmail?: string | undefined;
   experience: Experience;
   onDone: () => void;
   results?: GateResults | undefined;
@@ -49,7 +51,7 @@ export function EmailGate({
   const { lang } = useI18n();
   const c = COPY[lang === "de" ? "de" : "en"];
   const submit = useServerFn(submitEmail);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(defaultEmail ?? "");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const viewed = useRef(false);
