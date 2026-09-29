@@ -6,3 +6,5 @@
 - [x] Email results to user after email gate + first photo (needs sender domain)
 - [x] My Skin Journey share card + referrals
 - [x] Show redness and visible-lines face maps in first onboarding results
+- [x] Add Rosie as an original rose-blossom cartoon onboarding guide and account-synced support companion
+- [x] Make photo frames tappable camera shutters and remove separate capture buttons

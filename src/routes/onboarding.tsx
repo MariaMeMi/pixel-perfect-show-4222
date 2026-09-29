@@ -14,6 +14,7 @@ import { RESUME_KEY, SaveDay1 } from "@/components/onboarding/SaveDay1";
 import { useI18n } from "@/lib/i18n";
 import { addEntry, loadProfile } from "@/lib/storage";
 import { supabase } from "@/integrations/supabase/client";
+import { RosieGuide } from "@/components/RosieGuide";
 import type { Analysis } from "@/lib/types";
 import type { LineArea, LineLevel } from "@/lib/botox";
 import {
@@ -326,6 +327,7 @@ function Onboarding() {
         <button type="button" onClick={back} aria-label="Back" className="flex h-9 w-9 items-center justify-center rounded-full bg-card text-foreground"><ArrowLeft className="h-4 w-4" /></button>
         <div className="flex-1"><ProgressBar value={progress} /></div>
       </div>}
+      <RosieGuide step={step} />
       <div className="flex-1">{body}</div>
       {showNav && <button type="button" disabled={!valid} onClick={next}
         className="mt-8 rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground transition-opacity disabled:opacity-40">{cta}</button>}

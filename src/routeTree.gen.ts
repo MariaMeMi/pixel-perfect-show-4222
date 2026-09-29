@@ -24,6 +24,7 @@ import { Route as ResultsRouteImport } from './routes/results'
 import { Route as RoutineRouteImport } from './routes/routine'
 import { Route as ApiAnalyzeRouteImport } from './routes/api/analyze'
 import { Route as ApiBotoxRouteImport } from './routes/api/botox'
+import { Route as ApiRosieChatRouteImport } from './routes/api/rosie-chat'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 
 const IndexRoute = IndexRouteImport.update({
@@ -101,6 +102,11 @@ const ApiBotoxRoute = ApiBotoxRouteImport.update({
   path: '/api/botox',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiRosieChatRoute = ApiRosieChatRouteImport.update({
+  id: '/api/rosie-chat',
+  path: '/api/rosie-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LovableEmailTransactionalPreviewRoute =
   LovableEmailTransactionalPreviewRouteImport.update({
     id: '/lovable/email/transactional/preview',
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/routine': typeof RoutineRoute
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
+  '/api/rosie-chat': typeof ApiRosieChatRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesByTo {
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/routine': typeof RoutineRoute
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
+  '/api/rosie-chat': typeof ApiRosieChatRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesById {
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/routine': typeof RoutineRoute
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
+  '/api/rosie-chat': typeof ApiRosieChatRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRouteTypes {
@@ -181,6 +190,7 @@ export interface FileRouteTypes {
     | '/routine'
     | '/api/analyze'
     | '/api/botox'
+    | '/api/rosie-chat'
     | '/lovable/email/transactional/preview'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/routine'
     | '/api/analyze'
     | '/api/botox'
+    | '/api/rosie-chat'
     | '/lovable/email/transactional/preview'
   id:
     | '__root__'
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/routine'
     | '/api/analyze'
     | '/api/botox'
+    | '/api/rosie-chat'
     | '/lovable/email/transactional/preview'
   fileRoutesById: FileRoutesById
 }
@@ -236,6 +248,7 @@ export interface RootRouteChildren {
   RoutineRoute: typeof RoutineRoute
   ApiAnalyzeRoute: typeof ApiAnalyzeRoute
   ApiBotoxRoute: typeof ApiBotoxRoute
+  ApiRosieChatRoute: typeof ApiRosieChatRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
@@ -346,6 +359,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiBotoxRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/rosie-chat': {
+      id: '/api/rosie-chat'
+      path: '/api/rosie-chat'
+      fullPath: '/api/rosie-chat'
+      preLoaderRoute: typeof ApiRosieChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/transactional/preview': {
       id: '/lovable/email/transactional/preview'
       path: '/lovable/email/transactional/preview'
@@ -372,6 +392,7 @@ const rootRouteChildren: RootRouteChildren = {
   RoutineRoute: RoutineRoute,
   ApiAnalyzeRoute: ApiAnalyzeRoute,
   ApiBotoxRoute: ApiBotoxRoute,
+  ApiRosieChatRoute: ApiRosieChatRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport

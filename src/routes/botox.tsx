@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Camera, Check, Copy, ImageUp, Plus, ShieldCheck, Sparkles, Trash2, X } from "lucide-react";
+import { ArrowLeft, Check, Copy, ImageUp, Plus, ShieldCheck, Sparkles, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { Chip } from "@/components/Chip";
 import { FaceLines } from "@/components/FaceLines";
@@ -404,7 +404,12 @@ function Capture({
         </div>
       </div>
 
-      <div className="surface relative mx-auto aspect-square w-full overflow-hidden">
+      <button
+        type="button"
+        onClick={shot ? undefined : camera ? capture : start}
+        aria-label={camera ? t("takePhoto") : t("takePhoto")}
+        className="surface relative mx-auto block aspect-square w-full overflow-hidden transition-transform active:scale-[0.99]"
+      >
         {shot ? (
           <img src={shot} alt="" className="h-full w-full object-cover" />
         ) : camera ? (
@@ -415,7 +420,8 @@ function Capture({
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div className="h-[78%] w-[58%] rounded-[50%] border-2 border-dashed border-card/90 shadow-[0_0_0_999px_oklch(0.98_0.01_80/35%)]" />
         </div>
-      </div>
+        {!shot && <span className="absolute inset-x-0 bottom-5 mx-auto w-fit rounded-full bg-card/90 px-4 py-2 text-xs font-medium text-foreground shadow-sm">{camera ? t("takePhoto") : t("takePhoto")}</span>}
+      </button>
 
       {!shot && (
         <ul className="space-y-1 text-xs text-muted-foreground">
@@ -487,31 +493,17 @@ function Capture({
           </button>
         </div>
       ) : camera ? (
-        <div className="flex items-center justify-center gap-6">
+        <div className="flex items-center justify-center">
           <button type="button" onClick={stop} aria-label={t("closeCamera")} className="rounded-full bg-card p-3 text-muted-foreground">
             <X className="h-5 w-5" />
           </button>
-          <button
-            type="button"
-            onClick={capture}
-            aria-label={t("takePhoto")}
-            className="h-16 w-16 rounded-full border-4 border-card gradient-rose shadow-lg"
-          />
-          <span className="w-11" />
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={start}
-            className="flex items-center justify-center gap-2 rounded-full gradient-rose py-3.5 text-sm font-medium text-primary-foreground"
-          >
-            <Camera className="h-4 w-4" /> {t("takePhoto")}
-          </button>
+        <div>
           <button
             type="button"
             onClick={() => uploadRef.current?.click()}
-            className="flex items-center justify-center gap-2 rounded-full border border-border bg-card py-3.5 text-sm text-foreground"
+            className="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card py-3.5 text-sm text-foreground"
           >
             <ImageUp className="h-4 w-4" /> {t("upload")}
           </button>

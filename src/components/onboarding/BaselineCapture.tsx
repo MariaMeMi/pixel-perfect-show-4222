@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Camera, Check, Lock, Upload } from "lucide-react";
+import { Camera, Check, Lock, Upload, X } from "lucide-react";
 
 const TIPS = ["Even, consistent lighting", "Face forward", "Similar distance from camera", "No filters", "Minimal or no makeup, if you're comfortable"];
 
@@ -55,11 +55,19 @@ export function BaselineCapture({ photo, retainPhotos, onStart, onPhoto }: { pho
 
   return (
     <div className="space-y-5">
-      <div className="relative mx-auto h-64 w-48 overflow-hidden rounded-[50%] border-2 border-dashed border-primary/40 gradient-dawn">
+      <button
+        type="button"
+        onClick={stream ? snap : start}
+        aria-label={stream ? "Take photo" : photo ? "Retake photo" : "Open camera"}
+        className="relative mx-auto block h-64 w-48 overflow-hidden rounded-[50%] border-2 border-dashed border-primary/40 gradient-dawn transition-transform active:scale-[0.98]"
+      >
         {stream ? <video ref={videoRef} className="h-full w-full -scale-x-100 object-cover" autoPlay muted playsInline />
           : photo ? <img src={photo} alt="Your baseline photo" className="h-full w-full object-cover" />
           : <div className="flex h-full items-center justify-center text-primary/60"><Camera className="h-10 w-10" /></div>}
-      </div>
+        <span className="absolute inset-x-0 bottom-5 mx-auto w-fit rounded-full bg-card/90 px-3 py-1.5 text-xs font-medium text-foreground shadow-sm">
+          {stream ? "Tap frame to capture" : photo ? "Tap frame to retake" : "Tap frame to open camera"}
+        </span>
+      </button>
 
       {!photo && !stream && (
         <ul className="space-y-1.5">{TIPS.map((t) => <li key={t} className="flex items-center gap-2 text-sm text-foreground"><Check className="h-4 w-4 text-primary" />{t}</li>)}</ul>
@@ -75,13 +83,9 @@ export function BaselineCapture({ photo, retainPhotos, onStart, onPhoto }: { pho
 
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { onFile(e.target.files?.[0]); e.target.value = ""; }} />
       {stream ? (
-        <div className="flex gap-2">
-          <button type="button" onClick={stop} className="flex-1 rounded-full border border-border bg-card py-3.5 text-sm font-medium text-foreground">Cancel</button>
-          <button type="button" onClick={snap} className="flex-1 rounded-full gradient-rose py-3.5 text-sm font-medium text-primary-foreground">Capture</button>
-        </div>
+        <button type="button" onClick={stop} className="mx-auto flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium text-foreground"><X className="h-4 w-4" />Cancel camera</button>
       ) : (
         <div className="flex flex-col gap-2">
-          <button type="button" onClick={start} className="flex items-center justify-center gap-2 rounded-full gradient-rose py-3.5 text-sm font-medium text-primary-foreground"><Camera className="h-4 w-4" />{photo ? "Retake photo" : "Take my baseline photo"}</button>
           <button type="button" onClick={() => { onStart(); fileRef.current?.click(); }} className="flex items-center justify-center gap-2 rounded-full border border-border bg-card py-3.5 text-sm font-medium text-foreground"><Upload className="h-4 w-4" />Upload a photo</button>
         </div>
       )}
