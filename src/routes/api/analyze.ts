@@ -83,7 +83,7 @@ export const Route = createFileRoute("/api/analyze")({
                         ? "Beschreibe die sichtbare Gesichtsrötung auf diesem Foto und fülle das Schema aus. Antworte auf Deutsch."
                         : "Describe the visible facial redness in this photo and fill in the schema. Answer in English.",
                   },
-                  { type: "input_image", image_url: image },
+                  { type: "input_image", image_url: image, detail: "low" },
                 ],
               },
             ],

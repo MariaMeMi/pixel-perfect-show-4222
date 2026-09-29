@@ -88,7 +88,7 @@ export const Route = createFileRoute("/api/botox")({
                   },
                   ...images.flatMap((img, i) => [
                     { type: "input_text", text: `Photo ${i + 1}: ${labels[i]}` },
-                    { type: "input_image", image_url: img },
+                    { type: "input_image", image_url: img, detail: "low" },
                   ]),
                 ],
               },
