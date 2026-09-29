@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Camera, Check, Copy, ImageUp, Plus, ShieldCheck, Sparkles, Trash2, X } from "lucide-react";
+import { ArrowLeft, Check, Copy, ImageUp, Plus, ShieldCheck, Sparkles, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { Chip } from "@/components/Chip";
 import { FaceLines } from "@/components/FaceLines";
