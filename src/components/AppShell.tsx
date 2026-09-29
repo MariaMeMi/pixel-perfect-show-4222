@@ -8,6 +8,7 @@ import { RosieChat } from "@/components/RosieChat";
 const tabs = [
   { to: "/", icon: Home, key: "nav.home" },
   { to: "/analyze", icon: Camera, key: "nav.analyze" },
+  { to: "/my-routine", icon: Sparkles, key: "nav.routine" },
   { to: "/progress", icon: LineChart, key: "nav.progress" },
   { to: "/learn", icon: BookOpen, key: "nav.learn" },
   { to: "/profile", icon: User, key: "nav.profile" },

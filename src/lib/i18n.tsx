@@ -15,6 +15,7 @@ const en = {
 
   "nav.home": "Home",
   "nav.analyze": "Analyze",
+  "nav.routine": "Routine",
   "nav.progress": "Progress",
   "nav.learn": "Learn",
   "nav.profile": "Profile",
@@ -179,6 +180,7 @@ const de: Partial<Record<TKey, string>> = {
   "app.tagline": "Deine tägliche Hautbegleitung bei Rosazea",
   "nav.home": "Start",
   "nav.analyze": "Analyse",
+  "nav.routine": "Routine",
   "nav.progress": "Verlauf",
   "nav.learn": "Wissen",
   "nav.profile": "Profil",
