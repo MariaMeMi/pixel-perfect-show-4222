@@ -1,7 +1,7 @@
 // Onboarding data model, option lists and branch rules.
 // Each branch is a list of step ids so branches can be reordered / A-B tested independently.
 
-export const ONBOARDING_KEY = "rosea.onboarding.v1";
+export const ONBOARDING_KEY = "rosea.onboarding.v2";
 
 export type GoalKey = "redness" | "dryness" | "lines" | "botox" | "overall";
 

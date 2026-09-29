@@ -49,7 +49,7 @@ function HomePage() {
 
   const navigate = useNavigate();
   useEffect(() => {
-    if (!window.localStorage.getItem("rosea.onboarding.v1")) navigate({ to: "/onboarding" });
+    if (!window.localStorage.getItem("rosea.onboarding.v2")) navigate({ to: "/onboarding" });
   }, [navigate]);
 
   useEffect(() => {
