@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
+import { useQueryClient } from "@tanstack/react-query";
 import { HeartPulse, ImageOff, Languages, LogOut, ShieldCheck, Trash2, UserX } from "lucide-react";
 import { toast } from "sonner";
 import { Chip } from "@/components/Chip";
@@ -62,6 +63,7 @@ const inputClass =
 function ProfilePage() {
   const { t, setLang } = useI18n();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const deleteAccountFn = useServerFn(deleteAccount);
   const [profile, setProfile] = useState<Profile>(defaultProfile);
   const [email, setEmail] = useState<string | null>(null);
@@ -285,6 +287,8 @@ function ProfilePage() {
           </p>
           <button
             onClick={async () => {
+              await queryClient.cancelQueries();
+              queryClient.clear();
               await supabase.auth.signOut();
               navigate({ to: "/welcome", replace: true });
             }}
