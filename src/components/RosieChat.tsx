@@ -107,10 +107,10 @@ export function RosieChat() {
         </Button>
       </DrawerTrigger>
       <DrawerContent className="mx-auto h-[88dvh] max-w-[30rem] overflow-hidden">
-        <DrawerHeader className="flex-row items-center gap-3 border-b border-border text-left">
+        <DrawerHeader className="relative flex-row items-center gap-3 border-b border-border pr-14 text-left">
           <img src={rosieImage} alt="" width={1024} height={1024} loading="lazy" className="h-12 w-12 object-contain" />
           <div className="min-w-0 flex-1"><DrawerTitle className="font-display text-2xl">Rosie AI</DrawerTitle><DrawerDescription>Your warm Rose AI guide</DrawerDescription></div>
-          <DrawerClose asChild><Button type="button" variant="ghost" size="icon" aria-label="Close Rosie"><X /></Button></DrawerClose>
+          <DrawerClose asChild><Button type="button" variant="ghost" size="icon" aria-label="Close Rosie" className="absolute right-3 top-1/2 -translate-y-1/2"><X /></Button></DrawerClose>
         </DrawerHeader>
         {messages ? <RosieConversation initialMessages={messages} /> : <div className="flex flex-1 items-center justify-center"><Shimmer>Opening your conversation…</Shimmer></div>}
       </DrawerContent>
