@@ -5,3 +5,4 @@
 
 - [x] Email results to user after email gate + first photo (needs sender domain)
 - [x] My Skin Journey share card + referrals
+- [x] Show redness and visible-lines face maps in first onboarding results

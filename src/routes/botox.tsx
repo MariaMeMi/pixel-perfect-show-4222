@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Camera, Check, Copy, ImageUp, Plus, ShieldCheck, Sparkles, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { Chip } from "@/components/Chip";
+import { FaceLines } from "@/components/FaceLines";
 import { useI18n } from "@/lib/i18n";
 import {
   AREAS,
@@ -517,64 +518,6 @@ function Capture({
         </div>
       )}
     </div>
-  );
-}
-
-const LEVEL_WEIGHT: Record<LineLevel, number> = { not_prominent: 1, visible_with_expression: 2, visible_at_rest: 3 };
-
-function FaceLines({
-  analysis,
-  active,
-  onTap,
-}: {
-  analysis: LineAnalysis | null;
-  active: LineArea | null;
-  onTap: (a: LineArea) => void;
-}) {
-  const op = (a: LineArea) => (analysis ? 0.18 + LEVEL_WEIGHT[analysis[a].level] * 0.14 : 0.15);
-  const zone = (a: LineArea) =>
-    cn("cursor-pointer transition-all", active === a ? "stroke-[var(--color-primary)]" : "stroke-transparent");
-  return (
-    <svg viewBox="0 0 200 260" className="h-full w-full">
-      <defs>
-        <radialGradient id="bx" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#c95a52" />
-          <stop offset="100%" stopColor="#c95a52" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      <ellipse cx="100" cy="130" rx="78" ry="108" fill="#fbf3ee" stroke="#e8cfc4" strokeWidth="1.5" />
-      <path d="M62 104 q14 -8 28 0 M110 104 q14 -8 28 0" stroke="#b69487" strokeWidth="2" fill="none" strokeLinecap="round" />
-      <path d="M66 122 q10 -6 20 0 M114 122 q10 -6 20 0" stroke="#b69487" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-      <path d="M100 128 v28 q-6 6 0 8" stroke="#d3b5a8" strokeWidth="1.3" fill="none" />
-      <path d="M82 190 q18 10 36 0" stroke="#c98f86" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-      {/* forehead */}
-      <g onClick={() => onTap("forehead")}>
-        <ellipse cx="100" cy="62" rx="52" ry="26" fill="url(#bx)" opacity={op("forehead")} />
-        <path d="M70 55 q30 -6 60 0 M74 67 q26 -5 52 0" stroke="#c98f86" strokeWidth="1" fill="none" opacity="0.7" />
-        <ellipse cx="100" cy="62" rx="56" ry="30" fill="transparent" strokeWidth="1.5" strokeDasharray="4 4" className={zone("forehead")} />
-      </g>
-      {/* glabella */}
-      <g onClick={() => onTap("glabella")}>
-        <ellipse cx="100" cy="100" rx="14" ry="14" fill="url(#bx)" opacity={op("glabella")} />
-        <path d="M96 92 v14 M104 92 v14" stroke="#c98f86" strokeWidth="1" opacity="0.7" />
-        <circle cx="100" cy="100" r="17" fill="transparent" strokeWidth="1.5" strokeDasharray="4 4" className={zone("glabella")} />
-      </g>
-      {/* eyes */}
-      <g onClick={() => onTap("eyes")}>
-        {[46, 154].map((x) => (
-          <g key={x}>
-            <ellipse cx={x} cy="122" rx="14" ry="16" fill="url(#bx)" opacity={op("eyes")} />
-            <path
-              d={x < 100 ? `M${x + 6} 116 l-10 -4 M${x + 6} 122 l-11 0 M${x + 6} 128 l-10 4` : `M${x - 6} 116 l10 -4 M${x - 6} 122 l11 0 M${x - 6} 128 l10 4`}
-              stroke="#c98f86"
-              strokeWidth="1"
-              opacity="0.7"
-            />
-            <ellipse cx={x} cy="122" rx="17" ry="19" fill="transparent" strokeWidth="1.5" strokeDasharray="4 4" className={zone("eyes")} />
-          </g>
-        ))}
-      </g>
-    </svg>
   );
 }
 
