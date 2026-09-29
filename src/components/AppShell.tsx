@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Camera, Home, LineChart, BookOpen, User } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { RosieChat } from "@/components/RosieChat";
 
 const tabs = [
   { to: "/", icon: Home, key: "nav.home" },
@@ -19,6 +20,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[30rem] flex-col bg-background">
       <main className="flex-1 px-5 pb-32 pt-8">{children}</main>
+
+      <RosieChat />
 
       <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[30rem] border-t border-border/70 bg-card/90 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl">
         <ul className="flex items-stretch justify-between">
