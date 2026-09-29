@@ -4,7 +4,7 @@ import type { TemplateEntry } from './registry'
 
 interface Props {
   lang?: 'en' | 'de'
-  kind?: 'redness' | 'botox_information'
+  kind?: 'redness' | 'botox_information' | 'routine'
   score?: number
   summary?: string
   points?: string[]
@@ -15,6 +15,8 @@ const T = {
     preview: 'Your Rose AI results',
     redness: 'Your Rosacea AI results',
     botox: 'Your Botox AI results',
+    routine: 'Your personal skin plan',
+    routineNotes: 'Your routine',
     score: 'Visible redness score',
     notes: 'What we noticed',
     note: 'Rose AI shares general wellness information only. It does not diagnose any condition and is not medical advice. Please speak with a qualified professional about your skin.',
@@ -23,6 +25,8 @@ const T = {
     preview: 'Deine Rose AI Ergebnisse',
     redness: 'Deine Rosacea AI Ergebnisse',
     botox: 'Deine Botox AI Ergebnisse',
+    routine: 'Dein persönlicher Hautplan',
+    routineNotes: 'Deine Routine',
     score: 'Sichtbarer Rötungswert',
     notes: 'Was uns aufgefallen ist',
     note: 'Rose AI teilt nur allgemeine Wellness-Informationen. Es stellt keine Diagnose und ist keine medizinische Beratung. Bitte sprich mit einer qualifizierten Fachperson über deine Haut.',
@@ -38,7 +42,7 @@ const Email = ({ lang = 'en', kind = 'redness', score, summary, points = [] }: P
       <Body style={main}>
         <Container style={container}>
           <Text style={brand}>Rose AI</Text>
-          <Heading style={h1}>{kind === 'botox_information' ? t.botox : t.redness}</Heading>
+          <Heading style={h1}>{kind === 'routine' ? t.routine : kind === 'botox_information' ? t.botox : t.redness}</Heading>
           {typeof score === 'number' ? (
             <Section style={card}>
               <Text style={eyebrow}>{t.score}</Text>
