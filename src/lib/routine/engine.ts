@@ -120,7 +120,7 @@ export const tierLabel = (t: number) => "$".repeat(t);
 /** Safety & suitability first, budget second, sponsorship never decides Best Match. */
 export function pickProducts(all: Product[], category: string, tags: string[], budget: number) {
   const pool = all.filter((p) => p.category === category);
-  const score = (p: Product) => p.concerns.filter((c) => tags.includes(c)).length * 10 + (p.fragrance_free ? 3 : 0) - p.rank / 20 - (budget && p.price_tier !== budget ? 6 : 0);
+  const score = (p: Product) => p.concerns.filter((c) => tags.includes(c)).length * 10 + (p.fragrance_free ? 3 : 0) - p.rank / 20 - (budget && p.price_tier > budget ? 6 : 0);
   const organic = pool.filter((p) => !p.sponsored).sort((x, y) => score(y) - score(x));
   const best = organic[0];
   const alts = organic.slice(1).sort((x, y) => (x.price_tier === best?.price_tier ? 1 : 0) - (y.price_tier === best?.price_tier ? 1 : 0)).slice(0, 2);
