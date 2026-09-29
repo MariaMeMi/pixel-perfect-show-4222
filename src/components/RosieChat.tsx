@@ -29,7 +29,10 @@ async function saveMessages(messages: UIMessage[]) {
   localStorage.setItem(LOCAL_KEY, JSON.stringify(messages));
   const { data } = await supabase.auth.getSession();
   if (!data.session) return;
-  const { error } = await supabase.from("rosie_conversations").upsert({ user_id: data.session.user.id, messages });
+  const { error } = await supabase.from("rosie_conversations").upsert({
+    user_id: data.session.user.id,
+    messages: JSON.parse(JSON.stringify(messages)),
+  });
   if (error) console.error("Rosie conversation could not be saved", error.message);
 }
 
@@ -44,8 +47,7 @@ function RosieConversation({ initialMessages }: { initialMessages: UIMessage[] }
     onFinish: ({ messages: finished }) => { void saveMessages(finished); },
   });
   useEffect(() => { if (status === "ready") textareaRef.current?.focus(); }, [status]);
-  const submit = (event: React.FormEvent) => {
-    event.preventDefault();
+  const submit = () => {
     const text = input.trim();
     if (!text || status === "submitted" || status === "streaming") return;
     setInput("");

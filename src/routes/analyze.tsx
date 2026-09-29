@@ -200,7 +200,13 @@ function AnalyzePage() {
       </div>
 
 
-      <div className="surface-lift relative flex h-[22rem] items-center justify-center overflow-hidden gradient-dawn">
+      <button
+        type="button"
+        onClick={photo ? undefined : camera !== "off" ? capture : startCamera}
+        disabled={camera === "starting"}
+        aria-label={camera !== "off" ? t("analyze.shutter") : t("analyze.takePhoto")}
+        className="surface-lift relative flex h-[22rem] w-full items-center justify-center overflow-hidden gradient-dawn transition-transform active:scale-[0.99] disabled:opacity-60"
+      >
         <div className="relative h-[19rem] w-[14rem]">
           <div className="absolute inset-0 overflow-hidden rounded-[50%] border-2 border-dashed border-primary/40 bg-card/40">
             {photo ? (
@@ -220,7 +226,8 @@ function AnalyzePage() {
             )}
           </div>
         </div>
-      </div>
+        {!photo && <span className="absolute bottom-5 rounded-full bg-card/90 px-4 py-2 text-xs font-medium text-foreground shadow-sm">{camera === "starting" ? t("analyze.startingCamera") : camera === "on" ? t("analyze.shutter") : t("analyze.takePhoto")}</span>}
+      </button>
 
       <ul className="space-y-2.5 text-sm text-secondary-foreground">
         {[
@@ -285,14 +292,6 @@ function AnalyzePage() {
         ) : camera !== "off" ? (
           <>
             <button
-              onClick={capture}
-              disabled={camera === "starting"}
-              className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-medium tracking-wide text-primary-foreground shadow-[var(--shadow-lift)] active:scale-[0.99] disabled:opacity-60"
-            >
-              <Camera className="h-4 w-4" strokeWidth={1.7} />
-              {camera === "starting" ? t("analyze.startingCamera") : t("analyze.shutter")}
-            </button>
-            <button
               onClick={stopCamera}
               className="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card py-4 text-sm text-secondary-foreground active:scale-[0.99]"
             >
@@ -302,13 +301,6 @@ function AnalyzePage() {
           </>
         ) : (
           <>
-            <button
-              onClick={startCamera}
-              className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-medium tracking-wide text-primary-foreground shadow-[var(--shadow-lift)] active:scale-[0.99]"
-            >
-              <Camera className="h-4 w-4" strokeWidth={1.7} />
-              {t("analyze.takePhoto")}
-            </button>
             <button
               onClick={() => uploadRef.current?.click()}
               className="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card py-4 text-sm text-secondary-foreground active:scale-[0.99]"

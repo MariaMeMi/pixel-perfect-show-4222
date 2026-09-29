@@ -59,11 +59,12 @@ export const Route = createFileRoute("/api/rosie-chat")({
               },
             },
           });
+          const runId = run.getRunId();
           return result.toUIMessageStreamResponse({
             originalMessages: payload.messages,
             sendReasoning: false,
             onError: safeErrorMessage,
-            headers: run.getRunId() ? { "X-Lovable-AIG-Run-ID": run.getRunId() ?? "" } : undefined,
+            ...(runId ? { headers: { "X-Lovable-AIG-Run-ID": runId } } : {}),
           });
         } catch (error) {
           return Response.json({ message: safeErrorMessage(error) }, { status: 400 });
