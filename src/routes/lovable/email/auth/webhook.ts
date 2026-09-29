@@ -9,7 +9,7 @@ import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 // Configuration
-const SITE_NAME = "Exact Match Screen"
+const SITE_NAME = "Rose AI"
 const SENDER_DOMAIN = "notify.xrosacea.com"
 const ROOT_DOMAIN = "xrosacea.com"
 const FROM_DOMAIN = "notify.xrosacea.com"
