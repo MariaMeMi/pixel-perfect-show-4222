@@ -44,16 +44,17 @@ function WelcomePage() {
   // Signed-in users continue where they left off; this page is only for signed-out visitors.
   useEffect(() => {
     let cancelled = false;
+    const go = () => void navigate({ to: onboardingCompleted() ? "/" : "/onboarding", replace: true });
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!cancelled && session && (event === "SIGNED_IN" || event === "INITIAL_SESSION")) go();
+    });
     void (async () => {
       const { data } = await supabase.auth.getSession();
       if (cancelled) return;
-      if (data.session) {
-        void navigate({ to: onboardingCompleted() ? "/" : "/onboarding", replace: true });
-        return;
-      }
+      if (data.session) { go(); return; }
       setReady(true);
     })();
-    return () => { cancelled = true; };
+    return () => { cancelled = true; sub.subscription.unsubscribe(); };
   }, [navigate]);
 
   function destination() {
@@ -63,8 +64,8 @@ function WelcomePage() {
   async function social(provider: "google" | "apple") {
     setBusy(provider); setError("");
     track("auth_started", "skin_journey", provider);
-    const r = await lovable.auth.signInWithOAuth(provider, { redirect_uri: window.location.origin });
-    if (r.error) { setBusy(undefined); toast.error("Sign-in didn't complete. Please try again."); return; }
+    const r = await lovable.auth.signInWithOAuth(provider, { redirect_uri: `${window.location.origin}/welcome` });
+    if (r.error) { console.error("OAuth error", r.error); setBusy(undefined); toast.error("Sign-in didn't complete. Please try again."); return; }
     if (r.redirected) return;
     const { data } = await supabase.auth.getUser();
     void navigate({ to: destination(), replace: true });

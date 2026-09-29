@@ -50,17 +50,22 @@ function HomePage() {
 
   const navigate = useNavigate();
   useEffect(() => {
+    let cancelled = false;
     const raw = window.localStorage.getItem("rosea.onboarding.v2");
     let completed = false;
     if (raw) {
       try { completed = Boolean((JSON.parse(raw) as { completedAt?: string }).completedAt); }
       catch { completed = false; }
     }
-    if (!completed) {
-      void navigate({ to: "/welcome", replace: true });
-      return;
-    }
-    setReady(true);
+    if (completed) { setReady(true); return; }
+    // Wait for any returning Google/Apple sign-in to finish before redirecting.
+    void (async () => {
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data } = await supabase.auth.getSession();
+      if (cancelled) return;
+      void navigate({ to: data.session ? "/onboarding" : "/welcome", replace: true });
+    })();
+    return () => { cancelled = true; };
   }, [navigate]);
 
   useEffect(() => {
