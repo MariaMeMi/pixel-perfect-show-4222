@@ -26,6 +26,8 @@ import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ApiAnalyzeRouteImport } from './routes/api/analyze'
 import { Route as ApiBotoxRouteImport } from './routes/api/botox'
 import { Route as ApiRosieChatRouteImport } from './routes/api/rosie-chat'
+import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 
 const IndexRoute = IndexRouteImport.update({
@@ -113,6 +115,16 @@ const ApiRosieChatRoute = ApiRosieChatRouteImport.update({
   path: '/api/rosie-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
+  id: '/lovable/email/auth/preview',
+  path: '/lovable/email/auth/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
+  id: '/lovable/email/auth/webhook',
+  path: '/lovable/email/auth/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LovableEmailTransactionalPreviewRoute =
   LovableEmailTransactionalPreviewRouteImport.update({
     id: '/lovable/email/transactional/preview',
@@ -138,6 +150,8 @@ export interface FileRoutesByFullPath {
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesByTo {
@@ -158,6 +172,8 @@ export interface FileRoutesByTo {
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRoutesById {
@@ -179,6 +195,8 @@ export interface FileRoutesById {
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
+  '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
+  '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
 }
 export interface FileRouteTypes {
@@ -201,6 +219,8 @@ export interface FileRouteTypes {
     | '/api/analyze'
     | '/api/botox'
     | '/api/rosie-chat'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -221,6 +241,8 @@ export interface FileRouteTypes {
     | '/api/analyze'
     | '/api/botox'
     | '/api/rosie-chat'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
   id:
     | '__root__'
@@ -241,6 +263,8 @@ export interface FileRouteTypes {
     | '/api/analyze'
     | '/api/botox'
     | '/api/rosie-chat'
+    | '/lovable/email/auth/preview'
+    | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
   fileRoutesById: FileRoutesById
 }
@@ -262,6 +286,8 @@ export interface RootRouteChildren {
   ApiAnalyzeRoute: typeof ApiAnalyzeRoute
   ApiBotoxRoute: typeof ApiBotoxRoute
   ApiRosieChatRoute: typeof ApiRosieChatRoute
+  LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
+  LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
 }
 
@@ -386,6 +412,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiRosieChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lovable/email/auth/preview': {
+      id: '/lovable/email/auth/preview'
+      path: '/lovable/email/auth/preview'
+      fullPath: '/lovable/email/auth/preview'
+      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/webhook': {
+      id: '/lovable/email/auth/webhook'
+      path: '/lovable/email/auth/webhook'
+      fullPath: '/lovable/email/auth/webhook'
+      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/transactional/preview': {
       id: '/lovable/email/transactional/preview'
       path: '/lovable/email/transactional/preview'
@@ -414,6 +454,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAnalyzeRoute: ApiAnalyzeRoute,
   ApiBotoxRoute: ApiBotoxRoute,
   ApiRosieChatRoute: ApiRosieChatRoute,
+  LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
+  LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
 }
 export const routeTree = rootRouteImport
