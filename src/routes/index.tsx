@@ -46,10 +46,21 @@ function HomePage() {
   const { t } = useI18n();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [name, setName] = useState("");
+  const [ready, setReady] = useState(false);
 
   const navigate = useNavigate();
   useEffect(() => {
-    if (!window.localStorage.getItem("rosea.onboarding.v2")) navigate({ to: "/onboarding" });
+    const raw = window.localStorage.getItem("rosea.onboarding.v2");
+    let completed = false;
+    if (raw) {
+      try { completed = Boolean((JSON.parse(raw) as { completedAt?: string }).completedAt); }
+      catch { completed = false; }
+    }
+    if (!completed) {
+      void navigate({ to: "/onboarding", replace: true });
+      return;
+    }
+    setReady(true);
   }, [navigate]);
 
   useEffect(() => {
@@ -82,6 +93,8 @@ function HomePage() {
 
   const todayKey = new Date().toISOString().slice(0, 10);
   const scannedToday = last?.date.slice(0, 10) === todayKey;
+
+  if (!ready) return <div className="min-h-[70vh]" aria-hidden="true" />;
 
   return (
     <div className="animate-rise space-y-7">

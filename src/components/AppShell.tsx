@@ -16,14 +16,15 @@ const tabs = [
 export function AppShell({ children }: { children: ReactNode }) {
   const { t } = useI18n();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isOnboarding = pathname === "/onboarding";
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[30rem] flex-col bg-background">
-      <main className="flex-1 px-5 pb-32 pt-8">{children}</main>
+      <main className={cn("flex-1 px-5 pt-8", isOnboarding ? "pb-8" : "pb-32")}>{children}</main>
 
-      <RosieChat />
+      {!isOnboarding && <RosieChat />}
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[30rem] border-t border-border/70 bg-card/90 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl">
+      {!isOnboarding && <nav className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[30rem] border-t border-border/70 bg-card/90 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl">
         <ul className="flex items-stretch justify-between">
           {tabs.map(({ to, icon: Icon, key }) => {
             const active = to === "/" ? pathname === "/" : pathname.startsWith(to);
@@ -50,7 +51,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             );
           })}
         </ul>
-      </nav>
+      </nav>}
     </div>
   );
 }
