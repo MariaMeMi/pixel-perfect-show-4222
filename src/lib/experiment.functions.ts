@@ -62,7 +62,12 @@ export const trackEvent = createServerFn({ method: "POST" })
         event: z.enum(EVENTS),
         experience,
         sessionId: z.string().regex(/^[a-zA-Z0-9-]{8,64}$/),
-        referralCode: refCode.optional(),
+        // Analytics must never crash the app: silently drop malformed codes.
+        referralCode: z
+          .string()
+          .optional()
+          .catch(undefined)
+          .transform((v) => (v && /^[A-Za-z0-9]{6,16}$/.test(v) ? v : undefined)),
       })
       .parse(d),
   )

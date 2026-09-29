@@ -19,11 +19,18 @@ function sessionId() {
 }
 
 /** Sends only event name + experience + random session id (+ random referral code). */
+const REF_RE = /^[A-Za-z0-9]{6,16}$/;
+
 export function track(event: ExperimentEvent, experience: Experience, referralCode?: string) {
   if (typeof window === "undefined") return;
-  void trackEvent({ data: { event, experience, sessionId: sessionId(), referralCode } }).catch(
-    () => undefined,
-  );
+  const code = referralCode && REF_RE.test(referralCode) ? referralCode : undefined;
+  try {
+    void trackEvent({ data: { event, experience, sessionId: sessionId(), referralCode: code } }).catch(
+      () => undefined,
+    );
+  } catch {
+    /* analytics must never break the app */
+  }
 }
 
 export function hasProvidedEmail() {
@@ -54,7 +61,10 @@ export function referralUrl() {
 
 export function referredBy(): string | undefined {
   if (typeof window === "undefined") return undefined;
-  return localStorage.getItem(REFERRED_BY) ?? undefined;
+  const v = localStorage.getItem(REFERRED_BY);
+  if (v && REF_RE.test(v)) return v;
+  if (v) localStorage.removeItem(REFERRED_BY);
+  return undefined;
 }
 
 export function setReferredBy(code: string) {
