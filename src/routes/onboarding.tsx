@@ -4,6 +4,9 @@ import { ArrowLeft, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Chips, OptionCard, ProgressBar, Question, SingleList } from "@/components/onboarding/ui";
 import { BaselineCapture } from "@/components/onboarding/BaselineCapture";
+import { FaceMap } from "@/components/FaceMap";
+import { FaceLines } from "@/components/FaceLines";
+import { ScoreRing } from "@/components/ScoreRing";
 import { Button } from "@/components/ui/button";
 import { track } from "@/lib/experiment";
 import { EmailGate } from "@/components/EmailGate";
@@ -12,6 +15,7 @@ import { useI18n } from "@/lib/i18n";
 import { addEntry, loadProfile } from "@/lib/storage";
 import { supabase } from "@/integrations/supabase/client";
 import type { Analysis } from "@/lib/types";
+import type { LineArea, LineLevel } from "@/lib/botox";
 import {
   BOTOX_AREAS, BOTOX_PRODUCTS, BOTOX_WHEN, DIAGNOSED, DRY_EXPERIENCE, DRY_USING, GOALS, INFLUENCES, LINE_AREAS,
   LINE_DOING, NONE_TRIED, NOT_SURE, ONBOARDING_KEY, RATINGS, STOP_REASONS, SYMPTOMS, TREATMENTS, UNDERSTAND,
@@ -35,7 +39,7 @@ export const Route = createFileRoute("/onboarding")({
   component: Onboarding,
 });
 
-type LineRes = { forehead: { level: string; noticed: string }; glabella: { level: string; noticed: string }; eyes: { level: string; noticed: string }; summary: string };
+type LineRes = Record<LineArea, { level: LineLevel; noticed: string }> & { summary: string };
 const LINE_NAMES = { forehead: "Forehead lines", glabella: "Frown lines", eyes: "Crow's-feet area" };
 const LEVELS: Record<string, string> = { not_prominent: "Not prominent", visible_with_expression: "Visible with expression", visible_at_rest: "Visible at rest" };
 const BUILD_STEPS = ["Reading your photo", "Saving your Day 1"];
@@ -49,6 +53,7 @@ function Onboarding() {
   const [built, setBuilt] = useState(0);
   const [redRes, setRedRes] = useState<Analysis>();
   const [lineRes, setLineRes] = useState<LineRes>();
+  const [activeLine, setActiveLine] = useState<LineArea>("forehead");
   const [linePending, setLinePending] = useState(false);
   const [acctEmail, setAcctEmail] = useState<string>();
   const tracked = useRef(new Set<string>());
@@ -252,18 +257,37 @@ function Onboarding() {
   } else if (step === "profile") {
     body = <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
       <p className="eyebrow">Your first results</p>
-      {redRes && <div className="surface mt-3 p-5">
-        <div className="flex items-center justify-between"><p className="font-display text-xl text-foreground">Rosacea AI · visible redness</p><p className="font-display text-3xl text-primary">{redRes.score}<span className="text-sm text-muted-foreground">/100</span></p></div>
-        <p className="mt-2 text-sm text-foreground">{redRes.summary}</p>
-        {redRes.observations?.length > 0 && <ul className="mt-3 space-y-1 text-sm text-muted-foreground">{redRes.observations.slice(0, 3).map((o) => <li key={o}>• {o}</li>)}</ul>}
-      </div>}
-      {lineRes && <div className="surface mt-3 p-5">
-        <p className="font-display text-xl text-foreground">Botox AI · visible lines at rest</p>
-        <div className="mt-3 space-y-2">{(["forehead", "glabella", "eyes"] as const).map((k) => <div key={k} className="flex items-center justify-between text-sm"><span className="text-foreground">{LINE_NAMES[k]}</span><span className="rounded-full bg-accent px-3 py-1 text-xs text-foreground">{LEVELS[lineRes[k].level] ?? lineRes[k].level}</span></div>)}</div>
-        <p className="mt-3 text-sm text-muted-foreground">{lineRes.summary}</p>
-        <p className="mt-2 text-xs text-muted-foreground">Based on one relaxed photo. For lines during expression, use the 4-photo Botox AI check. Areas you may want to discuss with a qualified provider — not a treatment recommendation.</p>
-        <button type="button" onClick={() => navigate({ to: "/botox" })} className="mt-3 text-sm font-medium text-primary">Open Botox AI →</button>
-      </div>}
+      {redRes && <section className="mt-4 space-y-5" aria-label="Visible redness results">
+        <div className="surface-lift gradient-dawn flex flex-col items-center gap-4 p-6 text-center">
+          <p className="font-display text-2xl text-foreground">Rosacea AI · visible redness</p>
+          <ScoreRing score={redRes.score} />
+          <p className="max-w-xs text-sm leading-relaxed text-secondary-foreground">{redRes.summary}</p>
+        </div>
+        <div className="surface p-5">
+          <h2 className="font-display text-xl text-foreground">Where redness shows most</h2>
+          <div className="mt-5"><FaceMap regions={redRes.regions} /></div>
+        </div>
+        {redRes.observations?.length > 0 && <ul className="space-y-1 text-sm text-muted-foreground">{redRes.observations.slice(0, 3).map((o) => <li key={o}>• {o}</li>)}</ul>}
+      </section>}
+      {lineRes && <section className="mt-7 space-y-4" aria-label="Visible facial-lines results">
+        <div>
+          <h2 className="font-display text-2xl text-foreground">Botox AI · visible lines at rest</h2>
+          <p className="mt-2 text-sm text-muted-foreground">{lineRes.summary}</p>
+        </div>
+        <div className="surface p-5">
+          <p className="font-display text-xl text-foreground">Your facial-lines map</p>
+          <div className="mx-auto mt-3 h-64 w-52"><FaceLines analysis={lineRes} active={activeLine} onTap={setActiveLine} /></div>
+          <div className="mt-3 grid grid-cols-3 gap-1.5">{(["forehead", "glabella", "eyes"] as const).map((area) =>
+            <Button key={area} type="button" variant={activeLine === area ? "secondary" : "ghost"} onClick={() => setActiveLine(area)} className="h-auto min-h-10 whitespace-normal px-1.5 py-2 text-center text-xs leading-tight">{LINE_NAMES[area]}</Button>
+          )}</div>
+          <div className="mt-4 border-t border-border pt-4">
+            <p className="text-sm font-medium text-foreground">{LINE_NAMES[activeLine]} · {LEVELS[lineRes[activeLine].level]}</p>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{lineRes[activeLine].noticed}</p>
+          </div>
+        </div>
+        <p className="text-xs leading-relaxed text-muted-foreground">Based on one relaxed photo. Lines during expression cannot be assessed here. For a full four-photo check, open Botox AI. This is educational information, not a treatment recommendation.</p>
+        <Button type="button" variant="link" onClick={() => navigate({ to: "/botox" })} className="h-auto px-0 text-sm">Open Botox AI →</Button>
+      </section>}
       {linePending && <p className="mt-3 flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Reading visible lines from your photo…</p>}
       {!redRes && !lineRes && !linePending && <p className="mt-2 text-sm text-muted-foreground">We couldn't read your photo this time — your baseline photo is still saved.</p>}
       <p className="eyebrow mt-8">🌹 Your starting skin profile</p>
