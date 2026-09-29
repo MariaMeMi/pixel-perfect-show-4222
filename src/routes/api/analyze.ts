@@ -68,7 +68,7 @@ export const Route = createFileRoute("/api/analyze")({
             "X-Lovable-AIG-SDK": "fetch",
           },
           body: JSON.stringify({
-            model: "google/gemini-3-flash-preview",
+            model: "openai/gpt-5-mini",
             stream: true,
             instructions: SYSTEM,
             reasoning: { effort: "minimal" },

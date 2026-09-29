@@ -66,7 +66,7 @@ export const Route = createFileRoute("/api/botox")({
             "X-Lovable-AIG-SDK": "fetch",
           },
           body: JSON.stringify({
-            model: "google/gemini-3-flash-preview",
+            model: "openai/gpt-5-mini",
             stream: true,
             instructions: baselineOnly
               ? `${SYSTEM}\nFor this baseline, only ONE relaxed photo was provided. Describe visible lines at rest only. Never infer expression or symmetry of expression from this photo. Use visible_at_rest only when lines are clearly visible at rest; otherwise use not_prominent. State in the summary that expression cannot be assessed from one photo.`
