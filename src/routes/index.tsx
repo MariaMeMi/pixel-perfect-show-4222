@@ -218,3 +218,14 @@ function BotoxCard() {
     </Link>
   );
 }
+
+function MyRoutineLink() {
+  const [has, setHas] = useState(false);
+  useEffect(() => setHas(!!localStorage.getItem("rose.routine.v1")), []);
+  if (!has) return null;
+  return (
+    <Link to="/my-routine" className="-mt-4 block text-center text-sm font-medium text-primary">
+      View My Routine →
+    </Link>
+  );
+}

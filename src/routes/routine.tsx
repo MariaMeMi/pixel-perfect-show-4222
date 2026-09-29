@@ -246,7 +246,7 @@ function EmailRoutine({ plan, products }: { plan: Plan; products: Product[] }) {
   async function send(e: React.FormEvent) {
     e.preventDefault();
     const ok = z.string().trim().email().max(255).safeParse(email);
-    if (!ok.success) return toast.error("Please enter a valid email address.");
+    if (!ok.success) { toast.error("Please enter a valid email address."); return; }
     setBusy(true);
     const names = (steps: Step[]) => steps.map((s) => s.label).join(" → ");
     const res = await submit({ data: { email: ok.data, experience: "routine", lang: lang === "de" ? "de" : "en", results: {
