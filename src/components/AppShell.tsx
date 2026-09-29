@@ -16,7 +16,7 @@ const tabs = [
 export function AppShell({ children }: { children: ReactNode }) {
   const { t } = useI18n();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isOnboarding = pathname === "/onboarding";
+  const isOnboarding = pathname === "/onboarding" || pathname === "/welcome";
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[30rem] flex-col bg-background">

@@ -22,6 +22,8 @@ export const EVENTS = [
   "referral_link_created",
   "referral_visit",
   "referral_link_clicked",
+  "auth_started",
+  "auth_completed",
   "referral_signup",
   "referred_user_signed_up",
   "referral_first_checkin",
