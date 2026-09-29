@@ -95,6 +95,21 @@ function HomePage() {
       </header>
 
       <Link
+        to="/routine"
+        className="surface-lift gradient-dawn flex items-center justify-between gap-3 p-6 active:scale-[0.99] transition-transform"
+      >
+        <div>
+          <p className="eyebrow">8 simple questions · personalized AM/PM</p>
+          <p className="mt-1 font-display text-3xl text-foreground">Build My Routine</p>
+          <p className="mt-1 text-sm text-muted-foreground">One best product for every step.</p>
+        </div>
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full gradient-rose text-primary-foreground">
+          <ArrowRight className="h-5 w-5" strokeWidth={1.7} />
+        </span>
+      </Link>
+      <MyRoutineLink />
+
+      <Link
         to="/onboarding"
         className="surface-lift relative block overflow-hidden active:scale-[0.99] transition-transform"
       >
@@ -200,6 +215,17 @@ function BotoxCard() {
       <span className="mt-4 inline-flex items-center gap-2 rounded-full gradient-rose px-4 py-2 text-sm text-primary-foreground">
         {t("homeCta")} <ArrowRight className="h-4 w-4" strokeWidth={1.7} />
       </span>
+    </Link>
+  );
+}
+
+function MyRoutineLink() {
+  const [has, setHas] = useState(false);
+  useEffect(() => setHas(!!localStorage.getItem("rose.routine.v1")), []);
+  if (!has) return null;
+  return (
+    <Link to="/my-routine" className="-mt-4 block text-center text-sm font-medium text-primary">
+      View My Routine →
     </Link>
   );
 }

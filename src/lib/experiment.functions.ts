@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-const experience = z.enum(["redness", "botox_information", "skin_journey", "onboarding"]);
+const experience = z.enum(["redness", "botox_information", "skin_journey", "onboarding", "routine"]);
 const refCode = z.string().regex(/^[A-Za-z0-9]{6,16}$/);
 
 export const EVENTS = [
@@ -42,6 +42,15 @@ export const EVENTS = [
   "timeline_viewed",
   "second_checkin_completed",
   "third_checkin_completed",
+  "questionnaire_started",
+  "questionnaire_completed",
+  "result_generated",
+  "product_recommended",
+  "product_alternative_viewed",
+  "shop_clicked",
+  "affiliate_clicked",
+  "routine_saved",
+  "results_emailed",
 ] as const;
 
 export const trackEvent = createServerFn({ method: "POST" })
@@ -72,7 +81,7 @@ export const submitEmail = createServerFn({ method: "POST" })
     z
       .object({
         email: z.string().trim().toLowerCase().email().max(255),
-        experience: z.enum(["redness", "botox_information"]),
+        experience: z.enum(["redness", "botox_information", "routine"]),
         referredBy: refCode.optional(),
         lang: z.enum(["en", "de"]).optional(),
         results: z

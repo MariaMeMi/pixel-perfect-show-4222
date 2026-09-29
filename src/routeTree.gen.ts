@@ -15,11 +15,13 @@ import { Route as BotoxRouteImport } from './routes/botox'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as JourneyRouteImport } from './routes/journey'
 import { Route as LearnRouteImport } from './routes/learn'
+import { Route as MyRoutineRouteImport } from './routes/my-routine'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as ResultsRouteImport } from './routes/results'
+import { Route as RoutineRouteImport } from './routes/routine'
 import { Route as ApiAnalyzeRouteImport } from './routes/api/analyze'
 import { Route as ApiBotoxRouteImport } from './routes/api/botox'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -54,6 +56,11 @@ const LearnRoute = LearnRouteImport.update({
   path: '/learn',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MyRoutineRoute = MyRoutineRouteImport.update({
+  id: '/my-routine',
+  path: '/my-routine',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -77,6 +84,11 @@ const ProgressRoute = ProgressRouteImport.update({
 const ResultsRoute = ResultsRouteImport.update({
   id: '/results',
   path: '/results',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoutineRoute = RoutineRouteImport.update({
+  id: '/routine',
+  path: '/routine',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAnalyzeRoute = ApiAnalyzeRouteImport.update({
@@ -103,11 +115,13 @@ export interface FileRoutesByFullPath {
   '/join': typeof JoinRoute
   '/journey': typeof JourneyRoute
   '/learn': typeof LearnRoute
+  '/my-routine': typeof MyRoutineRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
+  '/routine': typeof RoutineRoute
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -119,11 +133,13 @@ export interface FileRoutesByTo {
   '/join': typeof JoinRoute
   '/journey': typeof JourneyRoute
   '/learn': typeof LearnRoute
+  '/my-routine': typeof MyRoutineRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
+  '/routine': typeof RoutineRoute
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -136,11 +152,13 @@ export interface FileRoutesById {
   '/join': typeof JoinRoute
   '/journey': typeof JourneyRoute
   '/learn': typeof LearnRoute
+  '/my-routine': typeof MyRoutineRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
+  '/routine': typeof RoutineRoute
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -154,11 +172,13 @@ export interface FileRouteTypes {
     | '/join'
     | '/journey'
     | '/learn'
+    | '/my-routine'
     | '/onboarding'
     | '/privacy'
     | '/profile'
     | '/progress'
     | '/results'
+    | '/routine'
     | '/api/analyze'
     | '/api/botox'
     | '/lovable/email/transactional/preview'
@@ -170,11 +190,13 @@ export interface FileRouteTypes {
     | '/join'
     | '/journey'
     | '/learn'
+    | '/my-routine'
     | '/onboarding'
     | '/privacy'
     | '/profile'
     | '/progress'
     | '/results'
+    | '/routine'
     | '/api/analyze'
     | '/api/botox'
     | '/lovable/email/transactional/preview'
@@ -186,11 +208,13 @@ export interface FileRouteTypes {
     | '/join'
     | '/journey'
     | '/learn'
+    | '/my-routine'
     | '/onboarding'
     | '/privacy'
     | '/profile'
     | '/progress'
     | '/results'
+    | '/routine'
     | '/api/analyze'
     | '/api/botox'
     | '/lovable/email/transactional/preview'
@@ -203,11 +227,13 @@ export interface RootRouteChildren {
   JoinRoute: typeof JoinRoute
   JourneyRoute: typeof JourneyRoute
   LearnRoute: typeof LearnRoute
+  MyRoutineRoute: typeof MyRoutineRoute
   OnboardingRoute: typeof OnboardingRoute
   PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
   ResultsRoute: typeof ResultsRoute
+  RoutineRoute: typeof RoutineRoute
   ApiAnalyzeRoute: typeof ApiAnalyzeRoute
   ApiBotoxRoute: typeof ApiBotoxRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
@@ -257,6 +283,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LearnRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/my-routine': {
+      id: '/my-routine'
+      path: '/my-routine'
+      fullPath: '/my-routine'
+      preLoaderRoute: typeof MyRoutineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding': {
       id: '/onboarding'
       path: '/onboarding'
@@ -292,6 +325,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResultsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/routine': {
+      id: '/routine'
+      path: '/routine'
+      fullPath: '/routine'
+      preLoaderRoute: typeof RoutineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/analyze': {
       id: '/api/analyze'
       path: '/api/analyze'
@@ -323,11 +363,13 @@ const rootRouteChildren: RootRouteChildren = {
   JoinRoute: JoinRoute,
   JourneyRoute: JourneyRoute,
   LearnRoute: LearnRoute,
+  MyRoutineRoute: MyRoutineRoute,
   OnboardingRoute: OnboardingRoute,
   PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
   ResultsRoute: ResultsRoute,
+  RoutineRoute: RoutineRoute,
   ApiAnalyzeRoute: ApiAnalyzeRoute,
   ApiBotoxRoute: ApiBotoxRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
