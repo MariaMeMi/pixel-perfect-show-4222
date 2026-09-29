@@ -287,6 +287,8 @@ function ProfilePage() {
           </p>
           <button
             onClick={async () => {
+              await queryClient.cancelQueries();
+              queryClient.clear();
               await supabase.auth.signOut();
               navigate({ to: "/welcome", replace: true });
             }}
