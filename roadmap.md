@@ -7,3 +7,4 @@
 - [x] My Skin Journey share card + referrals
 - [x] Show redness and visible-lines face maps in first onboarding results
 - [ ] Add Rosie as an original rose-blossom cartoon onboarding guide and account-synced support companion
+- [ ] Make photo frames tappable camera shutters and remove separate capture buttons
