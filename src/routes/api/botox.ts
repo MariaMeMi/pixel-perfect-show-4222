@@ -52,9 +52,10 @@ export const Route = createFileRoute("/api/botox")({
         } catch {
           return Response.json({ error: "Invalid request." }, { status: 400 });
         }
-        if (images.length !== 4 || images.some((i) => typeof i !== "string" || !i.startsWith("data:image/"))) {
-          return Response.json({ error: "Four photos are required." }, { status: 400 });
+        if (![1, 4].includes(images.length) || images.some((i) => typeof i !== "string" || !i.startsWith("data:image/"))) {
+          return Response.json({ error: "One baseline photo or four expression photos are required." }, { status: 400 });
         }
+        const baselineOnly = images.length === 1;
         const labels = ["Relaxed", "Raised eyebrows", "Smile", "Gentle frown"];
 
         const upstream = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
@@ -67,7 +68,9 @@ export const Route = createFileRoute("/api/botox")({
           body: JSON.stringify({
             model: "openai/gpt-6-astra",
             stream: true,
-            instructions: SYSTEM,
+            instructions: baselineOnly
+              ? `${SYSTEM}\nFor this baseline, only ONE relaxed photo was provided. Describe visible lines at rest only. Never infer expression or symmetry of expression from this photo. Use visible_at_rest only when lines are clearly visible at rest; otherwise use not_prominent. State in the summary that expression cannot be assessed from one photo.`
+              : SYSTEM,
             reasoning: { effort: "low" },
             input: [
               {
@@ -75,10 +78,13 @@ export const Route = createFileRoute("/api/botox")({
                 content: [
                   {
                     type: "input_text",
-                    text:
-                      lang === "de"
-                        ? "Beschreibe die sichtbaren Linien auf diesen vier Fotos (in der Reihenfolge: entspannt, Augenbrauen hoch, Lächeln, leichtes Stirnrunzeln). Antworte auf Deutsch."
-                        : "Describe the visible lines across these four photos (in order: relaxed, raised eyebrows, smile, gentle frown). Answer in English.",
+                      text: baselineOnly
+                        ? lang === "de"
+                          ? "Beschreibe nur die sichtbaren Linien im entspannten Gesicht auf diesem einzelnen Foto. Beurteile keinen Gesichtsausdruck. Antworte auf Deutsch."
+                          : "Describe only visible facial lines at rest in this single relaxed photo. Do not assess expression. Answer in English."
+                        : lang === "de"
+                          ? "Beschreibe die sichtbaren Linien auf diesen vier Fotos (in der Reihenfolge: entspannt, Augenbrauen hoch, Lächeln, leichtes Stirnrunzeln). Antworte auf Deutsch."
+                          : "Describe the visible lines across these four photos (in order: relaxed, raised eyebrows, smile, gentle frown). Answer in English.",
                   },
                   ...images.flatMap((img, i) => [
                     { type: "input_text", text: `Photo ${i + 1}: ${labels[i]}` },
