@@ -98,6 +98,8 @@ function LearnPage() {
           </button>
         ))}
       </div>
+
+      <RoutineCta />
     </div>
   );
 }
