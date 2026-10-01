@@ -86,7 +86,7 @@ export const restorePlusAccess = createServerFn({ method: "POST" })
       if (!/^[a-zA-Z0-9_-]+$/.test(context.userId)) throw new Error("Invalid userId");
       const stripe = createStripeClient(data.environment);
       const customers = await stripe.customers.search({ query: `metadata['userId']:'${context.userId}'`, limit: 10 });
-      let latest: Awaited<ReturnType<typeof stripe.checkout.sessions.retrieve>> | undefined;
+      let latest: import("stripe").Stripe.Checkout.Session | undefined;
       for (const c of customers.data) {
         const sessions = await stripe.checkout.sessions.list({ customer: c.id, limit: 100 });
         for (const s of sessions.data) {
