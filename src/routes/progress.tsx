@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { track } from "@/lib/experiment";
 import { useEffect, useMemo, useState } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -8,6 +8,8 @@ import { buildInsights } from "@/lib/insights";
 import { averageScore, deletePhoto, entriesWithinDays, loadEntries } from "@/lib/storage";
 import type { Entry } from "@/lib/types";
 import { RoutineCta } from "@/components/RoutineCta";
+import { PlusLock } from "@/components/PlusLock";
+import { usePlus } from "@/hooks/usePlus";
 
 export const Route = createFileRoute("/progress")({
   head: () => ({
@@ -28,6 +30,7 @@ export const Route = createFileRoute("/progress")({
 });
 
 const RANGES = [7, 30, 90] as const;
+const FREE_PHOTOS = 3;
 
 function ProgressPage() {
   const { t, lang } = useI18n();
