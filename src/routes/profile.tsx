@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useQueryClient } from "@tanstack/react-query";
@@ -124,6 +124,15 @@ function ProfilePage() {
         <p className="eyebrow">{t("nav.profile")}</p>
         <h1 className="mt-2 text-[2rem] leading-tight text-foreground">{t("profile.title")}</h1>
       </header>
+
+      <Link to="/plus" className="surface-lift gradient-dawn flex items-center justify-between p-5">
+        <span>
+          <span className="block text-lg text-foreground">Rosea Plus 🌹</span>
+          <span className="block text-xs text-muted-foreground">Full skin history, comparisons & insights · Restore access</span>
+        </span>
+        <span className="text-sm font-medium text-primary">$14.99 / 1 year</span>
+      </Link>
+
 
       <section className="surface space-y-4 p-5">
         <div className="flex items-center gap-2">

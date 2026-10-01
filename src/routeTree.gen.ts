@@ -17,6 +17,7 @@ import { Route as JourneyRouteImport } from './routes/journey'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as MyRoutineRouteImport } from './routes/my-routine'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as PlusRouteImport } from './routes/plus'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgressRouteImport } from './routes/progress'
@@ -26,6 +27,7 @@ import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as ApiAnalyzeRouteImport } from './routes/api/analyze'
 import { Route as ApiBotoxRouteImport } from './routes/api/botox'
 import { Route as ApiRosieChatRouteImport } from './routes/api/rosie-chat'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -68,6 +70,11 @@ const MyRoutineRoute = MyRoutineRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlusRoute = PlusRouteImport.update({
+  id: '/plus',
+  path: '/plus',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -115,6 +122,12 @@ const ApiRosieChatRoute = ApiRosieChatRouteImport.update({
   path: '/api/rosie-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   id: '/lovable/email/auth/preview',
   path: '/lovable/email/auth/preview',
@@ -141,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/learn': typeof LearnRoute
   '/my-routine': typeof MyRoutineRoute
   '/onboarding': typeof OnboardingRoute
+  '/plus': typeof PlusRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -150,6 +164,7 @@ export interface FileRoutesByFullPath {
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -163,6 +178,7 @@ export interface FileRoutesByTo {
   '/learn': typeof LearnRoute
   '/my-routine': typeof MyRoutineRoute
   '/onboarding': typeof OnboardingRoute
+  '/plus': typeof PlusRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -172,6 +188,7 @@ export interface FileRoutesByTo {
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -186,6 +203,7 @@ export interface FileRoutesById {
   '/learn': typeof LearnRoute
   '/my-routine': typeof MyRoutineRoute
   '/onboarding': typeof OnboardingRoute
+  '/plus': typeof PlusRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -195,6 +213,7 @@ export interface FileRoutesById {
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -210,6 +229,7 @@ export interface FileRouteTypes {
     | '/learn'
     | '/my-routine'
     | '/onboarding'
+    | '/plus'
     | '/privacy'
     | '/profile'
     | '/progress'
@@ -219,6 +239,7 @@ export interface FileRouteTypes {
     | '/api/analyze'
     | '/api/botox'
     | '/api/rosie-chat'
+    | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -232,6 +253,7 @@ export interface FileRouteTypes {
     | '/learn'
     | '/my-routine'
     | '/onboarding'
+    | '/plus'
     | '/privacy'
     | '/profile'
     | '/progress'
@@ -241,6 +263,7 @@ export interface FileRouteTypes {
     | '/api/analyze'
     | '/api/botox'
     | '/api/rosie-chat'
+    | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -254,6 +277,7 @@ export interface FileRouteTypes {
     | '/learn'
     | '/my-routine'
     | '/onboarding'
+    | '/plus'
     | '/privacy'
     | '/profile'
     | '/progress'
@@ -263,6 +287,7 @@ export interface FileRouteTypes {
     | '/api/analyze'
     | '/api/botox'
     | '/api/rosie-chat'
+    | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -277,6 +302,7 @@ export interface RootRouteChildren {
   LearnRoute: typeof LearnRoute
   MyRoutineRoute: typeof MyRoutineRoute
   OnboardingRoute: typeof OnboardingRoute
+  PlusRoute: typeof PlusRoute
   PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
@@ -286,6 +312,7 @@ export interface RootRouteChildren {
   ApiAnalyzeRoute: typeof ApiAnalyzeRoute
   ApiBotoxRoute: typeof ApiBotoxRoute
   ApiRosieChatRoute: typeof ApiRosieChatRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
@@ -347,6 +374,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plus': {
+      id: '/plus'
+      path: '/plus'
+      fullPath: '/plus'
+      preLoaderRoute: typeof PlusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -412,6 +446,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiRosieChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/auth/preview': {
       id: '/lovable/email/auth/preview'
       path: '/lovable/email/auth/preview'
@@ -445,6 +486,7 @@ const rootRouteChildren: RootRouteChildren = {
   LearnRoute: LearnRoute,
   MyRoutineRoute: MyRoutineRoute,
   OnboardingRoute: OnboardingRoute,
+  PlusRoute: PlusRoute,
   PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
@@ -454,6 +496,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAnalyzeRoute: ApiAnalyzeRoute,
   ApiBotoxRoute: ApiBotoxRoute,
   ApiRosieChatRoute: ApiRosieChatRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,

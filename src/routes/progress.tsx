@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { track } from "@/lib/experiment";
 import { useEffect, useMemo, useState } from "react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
@@ -8,6 +8,8 @@ import { buildInsights } from "@/lib/insights";
 import { averageScore, deletePhoto, entriesWithinDays, loadEntries } from "@/lib/storage";
 import type { Entry } from "@/lib/types";
 import { RoutineCta } from "@/components/RoutineCta";
+import { PlusLock } from "@/components/PlusLock";
+import { usePlus } from "@/hooks/usePlus";
 
 export const Route = createFileRoute("/progress")({
   head: () => ({
@@ -28,12 +30,16 @@ export const Route = createFileRoute("/progress")({
 });
 
 const RANGES = [7, 30, 90] as const;
+const FREE_PHOTOS = 3;
 
 function ProgressPage() {
   const { t, lang } = useI18n();
   useEffect(() => { track("timeline_viewed", "onboarding"); }, []);
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [range, setRange] = useState<(typeof RANGES)[number]>(30);
+  const { isPlus } = usePlus();
+  const navigate = useNavigate();
+  const [chosenRange, setRange] = useState<(typeof RANGES)[number]>(30);
+  const range = isPlus ? chosenRange : RANGES[0];
   const [slider, setSlider] = useState(50);
 
   useEffect(() => {
@@ -74,17 +80,20 @@ function ProgressPage() {
       {entries.length >= 3 ? <JourneyCta lang={lang} /> : null}
 
       <div className="flex gap-2 rounded-full bg-secondary p-1">
-        {RANGES.map((r) => (
-          <button
-            key={r}
-            onClick={() => setRange(r)}
-            className={`flex-1 rounded-full py-2 text-sm transition-colors ${
-              range === r ? "bg-card text-foreground shadow-[var(--shadow-soft)]" : "text-muted-foreground"
-            }`}
-          >
-            {t(`progress.${r}` as const)}
-          </button>
-        ))}
+        {RANGES.map((r) => {
+          const locked = !isPlus && r !== RANGES[0];
+          return (
+            <button
+              key={r}
+              onClick={() => (locked ? void navigate({ to: "/plus" }) : setRange(r))}
+              className={`flex-1 rounded-full py-2 text-sm transition-colors ${
+                range === r ? "bg-card text-foreground shadow-[var(--shadow-soft)]" : "text-muted-foreground"
+              }`}
+            >
+              {t(`progress.${r}` as const)}{locked ? " 🔒" : ""}
+            </button>
+          );
+        })}
       </div>
 
       <section className="surface p-5">
@@ -151,7 +160,8 @@ function ProgressPage() {
         )}
       </section>
 
-      {insights.length ? (
+      {insights.length && !isPlus ? <PlusLock title={t("progress.patterns")} /> : null}
+      {insights.length && isPlus ? (
         <section>
           <h2 className="text-lg text-foreground">{t("progress.patterns")}</h2>
           <p className="mt-1 text-xs text-muted-foreground">{t("progress.patternsNote")}</p>
@@ -173,6 +183,7 @@ function ProgressPage() {
             {photos
               .slice()
               .reverse()
+              .slice(0, isPlus ? undefined : FREE_PHOTOS)
               .map((e) => (
                 <figure key={e.id} className="w-28 shrink-0">
                   <div className="relative overflow-hidden rounded-2xl border border-border">
@@ -198,9 +209,11 @@ function ProgressPage() {
         ) : (
           <p className="mt-3 text-sm text-muted-foreground">{t("progress.noPhotos")}</p>
         )}
+        {!isPlus && photos.length > FREE_PHOTOS ? <div className="mt-3"><PlusLock title="Full photo history" /></div> : null}
       </section>
 
-      {first && last && first.id !== last.id ? (
+      {first && last && first.id !== last.id && !isPlus ? <PlusLock title={t("progress.compare")} /> : null}
+      {first && last && first.id !== last.id && isPlus ? (
         <section className="surface p-5">
           <h2 className="text-lg text-foreground">{t("progress.compare")}</h2>
           <p className="mt-1 text-xs text-muted-foreground">{t("progress.compareNote")}</p>

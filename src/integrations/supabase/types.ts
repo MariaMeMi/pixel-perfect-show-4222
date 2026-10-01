@@ -152,6 +152,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_plans: {
+        Row: {
+          created_at: string
+          environment: string
+          plan: string
+          plus_expires_at: string | null
+          plus_started_at: string | null
+          stripe_customer_id: string | null
+          stripe_session_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          environment?: string
+          plan?: string
+          plus_expires_at?: string | null
+          plus_started_at?: string | null
+          stripe_customer_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          environment?: string
+          plan?: string
+          plus_expires_at?: string | null
+          plus_started_at?: string | null
+          stripe_customer_id?: string | null
+          stripe_session_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
