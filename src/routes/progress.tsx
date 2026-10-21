@@ -24,6 +24,8 @@ export const Route = createFileRoute("/progress")({
         property: "og:description",
         content: "Follow how your skin changes over time with gentle, private tracking.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ProgressPage,

@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AnalyzeRouteImport } from './routes/analyze'
 import { Route as BotoxRouteImport } from './routes/botox'
 import { Route as JoinRouteImport } from './routes/join'
@@ -24,9 +25,16 @@ import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as ResultsRouteImport } from './routes/results'
 import { Route as RoutineRouteImport } from './routes/routine'
 import { Route as WelcomeRouteImport } from './routes/welcome'
+import { Route as AuthenticatedClinicianRouteRouteImport } from './routes/_authenticated/clinician/route'
 import { Route as ApiAnalyzeRouteImport } from './routes/api/analyze'
 import { Route as ApiBotoxRouteImport } from './routes/api/botox'
 import { Route as ApiRosieChatRouteImport } from './routes/api/rosie-chat'
+import { Route as ClinicianOnboardingRouteImport } from './routes/clinician.onboarding'
+import { Route as AuthenticatedClinicianDashboardRouteImport } from './routes/_authenticated/clinician/dashboard'
+import { Route as AuthenticatedClinicianPatientsRouteImport } from './routes/_authenticated/clinician/patients'
+import { Route as AuthenticatedClinicianProgressRouteImport } from './routes/_authenticated/clinician/progress'
+import { Route as AuthenticatedClinicianSettingsRouteImport } from './routes/_authenticated/clinician/settings'
+import { Route as AuthenticatedClinicianPatientsIdRouteImport } from './routes/_authenticated/clinician/patients_.$id'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
@@ -35,6 +43,10 @@ import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/l
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnalyzeRoute = AnalyzeRouteImport.update({
@@ -107,6 +119,12 @@ const WelcomeRoute = WelcomeRouteImport.update({
   path: '/welcome',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedClinicianRouteRoute =
+  AuthenticatedClinicianRouteRouteImport.update({
+    id: '/clinician',
+    path: '/clinician',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiAnalyzeRoute = ApiAnalyzeRouteImport.update({
   id: '/api/analyze',
   path: '/api/analyze',
@@ -122,6 +140,41 @@ const ApiRosieChatRoute = ApiRosieChatRouteImport.update({
   path: '/api/rosie-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClinicianOnboardingRoute = ClinicianOnboardingRouteImport.update({
+  id: '/clinician/onboarding',
+  path: '/clinician/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedClinicianDashboardRoute =
+  AuthenticatedClinicianDashboardRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => AuthenticatedClinicianRouteRoute,
+  } as any)
+const AuthenticatedClinicianPatientsRoute =
+  AuthenticatedClinicianPatientsRouteImport.update({
+    id: '/patients',
+    path: '/patients',
+    getParentRoute: () => AuthenticatedClinicianRouteRoute,
+  } as any)
+const AuthenticatedClinicianProgressRoute =
+  AuthenticatedClinicianProgressRouteImport.update({
+    id: '/progress',
+    path: '/progress',
+    getParentRoute: () => AuthenticatedClinicianRouteRoute,
+  } as any)
+const AuthenticatedClinicianSettingsRoute =
+  AuthenticatedClinicianSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedClinicianRouteRoute,
+  } as any)
+const AuthenticatedClinicianPatientsIdRoute =
+  AuthenticatedClinicianPatientsIdRouteImport.update({
+    id: '/patients_/$id',
+    path: '/patients/$id',
+    getParentRoute: () => AuthenticatedClinicianRouteRoute,
+  } as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -161,9 +214,16 @@ export interface FileRoutesByFullPath {
   '/results': typeof ResultsRoute
   '/routine': typeof RoutineRoute
   '/welcome': typeof WelcomeRoute
+  '/clinician': typeof AuthenticatedClinicianRouteRouteWithChildren
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
+  '/clinician/onboarding': typeof ClinicianOnboardingRoute
+  '/clinician/dashboard': typeof AuthenticatedClinicianDashboardRoute
+  '/clinician/patients': typeof AuthenticatedClinicianPatientsRoute
+  '/clinician/progress': typeof AuthenticatedClinicianProgressRoute
+  '/clinician/settings': typeof AuthenticatedClinicianSettingsRoute
+  '/clinician/patients/$id': typeof AuthenticatedClinicianPatientsIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -185,9 +245,16 @@ export interface FileRoutesByTo {
   '/results': typeof ResultsRoute
   '/routine': typeof RoutineRoute
   '/welcome': typeof WelcomeRoute
+  '/clinician': typeof AuthenticatedClinicianRouteRouteWithChildren
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
+  '/clinician/onboarding': typeof ClinicianOnboardingRoute
+  '/clinician/dashboard': typeof AuthenticatedClinicianDashboardRoute
+  '/clinician/patients': typeof AuthenticatedClinicianPatientsRoute
+  '/clinician/progress': typeof AuthenticatedClinicianProgressRoute
+  '/clinician/settings': typeof AuthenticatedClinicianSettingsRoute
+  '/clinician/patients/$id': typeof AuthenticatedClinicianPatientsIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -196,6 +263,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/analyze': typeof AnalyzeRoute
   '/botox': typeof BotoxRoute
   '/join': typeof JoinRoute
@@ -210,9 +278,16 @@ export interface FileRoutesById {
   '/results': typeof ResultsRoute
   '/routine': typeof RoutineRoute
   '/welcome': typeof WelcomeRoute
+  '/_authenticated/clinician': typeof AuthenticatedClinicianRouteRouteWithChildren
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
+  '/clinician/onboarding': typeof ClinicianOnboardingRoute
+  '/_authenticated/clinician/dashboard': typeof AuthenticatedClinicianDashboardRoute
+  '/_authenticated/clinician/patients': typeof AuthenticatedClinicianPatientsRoute
+  '/_authenticated/clinician/progress': typeof AuthenticatedClinicianProgressRoute
+  '/_authenticated/clinician/settings': typeof AuthenticatedClinicianSettingsRoute
+  '/_authenticated/clinician/patients_/$id': typeof AuthenticatedClinicianPatientsIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -236,9 +311,16 @@ export interface FileRouteTypes {
     | '/results'
     | '/routine'
     | '/welcome'
+    | '/clinician'
     | '/api/analyze'
     | '/api/botox'
     | '/api/rosie-chat'
+    | '/clinician/onboarding'
+    | '/clinician/dashboard'
+    | '/clinician/patients'
+    | '/clinician/progress'
+    | '/clinician/settings'
+    | '/clinician/patients/$id'
     | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -260,9 +342,16 @@ export interface FileRouteTypes {
     | '/results'
     | '/routine'
     | '/welcome'
+    | '/clinician'
     | '/api/analyze'
     | '/api/botox'
     | '/api/rosie-chat'
+    | '/clinician/onboarding'
+    | '/clinician/dashboard'
+    | '/clinician/patients'
+    | '/clinician/progress'
+    | '/clinician/settings'
+    | '/clinician/patients/$id'
     | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -270,6 +359,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/analyze'
     | '/botox'
     | '/join'
@@ -284,9 +374,16 @@ export interface FileRouteTypes {
     | '/results'
     | '/routine'
     | '/welcome'
+    | '/_authenticated/clinician'
     | '/api/analyze'
     | '/api/botox'
     | '/api/rosie-chat'
+    | '/clinician/onboarding'
+    | '/_authenticated/clinician/dashboard'
+    | '/_authenticated/clinician/patients'
+    | '/_authenticated/clinician/progress'
+    | '/_authenticated/clinician/settings'
+    | '/_authenticated/clinician/patients_/$id'
     | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -295,6 +392,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AnalyzeRoute: typeof AnalyzeRoute
   BotoxRoute: typeof BotoxRoute
   JoinRoute: typeof JoinRoute
@@ -312,6 +410,7 @@ export interface RootRouteChildren {
   ApiAnalyzeRoute: typeof ApiAnalyzeRoute
   ApiBotoxRoute: typeof ApiBotoxRoute
   ApiRosieChatRoute: typeof ApiRosieChatRoute
+  ClinicianOnboardingRoute: typeof ClinicianOnboardingRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -325,6 +424,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/analyze': {
@@ -425,6 +531,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WelcomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/clinician': {
+      id: '/_authenticated/clinician'
+      path: '/clinician'
+      fullPath: '/clinician'
+      preLoaderRoute: typeof AuthenticatedClinicianRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/analyze': {
       id: '/api/analyze'
       path: '/api/analyze'
@@ -445,6 +558,48 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/rosie-chat'
       preLoaderRoute: typeof ApiRosieChatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/clinician/onboarding': {
+      id: '/clinician/onboarding'
+      path: '/clinician/onboarding'
+      fullPath: '/clinician/onboarding'
+      preLoaderRoute: typeof ClinicianOnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/clinician/dashboard': {
+      id: '/_authenticated/clinician/dashboard'
+      path: '/dashboard'
+      fullPath: '/clinician/dashboard'
+      preLoaderRoute: typeof AuthenticatedClinicianDashboardRouteImport
+      parentRoute: typeof AuthenticatedClinicianRouteRoute
+    }
+    '/_authenticated/clinician/patients': {
+      id: '/_authenticated/clinician/patients'
+      path: '/patients'
+      fullPath: '/clinician/patients'
+      preLoaderRoute: typeof AuthenticatedClinicianPatientsRouteImport
+      parentRoute: typeof AuthenticatedClinicianRouteRoute
+    }
+    '/_authenticated/clinician/progress': {
+      id: '/_authenticated/clinician/progress'
+      path: '/progress'
+      fullPath: '/clinician/progress'
+      preLoaderRoute: typeof AuthenticatedClinicianProgressRouteImport
+      parentRoute: typeof AuthenticatedClinicianRouteRoute
+    }
+    '/_authenticated/clinician/settings': {
+      id: '/_authenticated/clinician/settings'
+      path: '/settings'
+      fullPath: '/clinician/settings'
+      preLoaderRoute: typeof AuthenticatedClinicianSettingsRouteImport
+      parentRoute: typeof AuthenticatedClinicianRouteRoute
+    }
+    '/_authenticated/clinician/patients_/$id': {
+      id: '/_authenticated/clinician/patients_/$id'
+      path: '/patients/$id'
+      fullPath: '/clinician/patients/$id'
+      preLoaderRoute: typeof AuthenticatedClinicianPatientsIdRouteImport
+      parentRoute: typeof AuthenticatedClinicianRouteRoute
     }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
@@ -477,8 +632,44 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedClinicianRouteRouteChildren {
+  AuthenticatedClinicianDashboardRoute: typeof AuthenticatedClinicianDashboardRoute
+  AuthenticatedClinicianPatientsRoute: typeof AuthenticatedClinicianPatientsRoute
+  AuthenticatedClinicianProgressRoute: typeof AuthenticatedClinicianProgressRoute
+  AuthenticatedClinicianSettingsRoute: typeof AuthenticatedClinicianSettingsRoute
+  AuthenticatedClinicianPatientsIdRoute: typeof AuthenticatedClinicianPatientsIdRoute
+}
+
+const AuthenticatedClinicianRouteRouteChildren: AuthenticatedClinicianRouteRouteChildren =
+  {
+    AuthenticatedClinicianDashboardRoute: AuthenticatedClinicianDashboardRoute,
+    AuthenticatedClinicianPatientsRoute: AuthenticatedClinicianPatientsRoute,
+    AuthenticatedClinicianProgressRoute: AuthenticatedClinicianProgressRoute,
+    AuthenticatedClinicianSettingsRoute: AuthenticatedClinicianSettingsRoute,
+    AuthenticatedClinicianPatientsIdRoute:
+      AuthenticatedClinicianPatientsIdRoute,
+  }
+
+const AuthenticatedClinicianRouteRouteWithChildren =
+  AuthenticatedClinicianRouteRoute._addFileChildren(
+    AuthenticatedClinicianRouteRouteChildren,
+  )
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedClinicianRouteRoute: typeof AuthenticatedClinicianRouteRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedClinicianRouteRoute:
+    AuthenticatedClinicianRouteRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AnalyzeRoute: AnalyzeRoute,
   BotoxRoute: BotoxRoute,
   JoinRoute: JoinRoute,
@@ -496,6 +687,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAnalyzeRoute: ApiAnalyzeRoute,
   ApiBotoxRoute: ApiBotoxRoute,
   ApiRosieChatRoute: ApiRosieChatRoute,
+  ClinicianOnboardingRoute: ClinicianOnboardingRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,

@@ -13,3 +13,6 @@
 - Reuse the shared facial-lines map for both onboarding and Botox AI; one-photo onboarding results may only mark lines visible at rest because expression is unobserved.
 - Treat onboarding as a focused first-run experience: hide the main app navigation until onboarding is completed, because new users should not enter the app shell first.
 - Paid access lives in user_plans (per user+environment), written only server-side after Stripe verification (plus.server.ts grantPlus via verify fn, restore fn, or webhook); clients only read their own row — never trust browser payment status.
+- Clinician routes live beneath the authenticated clinician layout and bypass the consumer shell; every data operation is separately protected by account-scoped RLS so route visibility never grants data access.
+- Clinician enrollment and patient creation use validated database functions that atomically establish unverified membership and owner-only authorization; sensitive records never enter consumer local storage.
+- Clinician photos use the private clinician-test-photos bucket with short-lived signed URLs, and clinician account removal goes through deletion requests to avoid bypassing retention review.

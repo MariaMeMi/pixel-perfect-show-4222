@@ -7,8 +7,12 @@ import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
 import { track } from "@/lib/experiment";
 import { ONBOARDING_KEY } from "@/lib/onboarding/flow";
+import { Link } from '@tanstack/react-router';
+import { Button } from '@/components/ui/button';
+import { Flower2, Stethoscope } from 'lucide-react';
 
 export const Route = createFileRoute("/welcome")({
+  validateSearch: (s: Record<string, unknown>): {clinician?: boolean} => (s['clinician'] === true || s['clinician'] === 'true' ? {clinician:true} : {}),
   head: () => ({
     meta: [
       { title: "Welcome to Rose AI — sign up or sign in" },
@@ -33,6 +37,8 @@ function onboardingCompleted(): boolean {
 }
 
 function WelcomePage() {
+  const search = Route.useSearch();
+  const [skinSelected, setSkinSelected] = useState(onboardingCompleted());
   const navigate = useNavigate();
   const [mode, setMode] = useState<"choose" | "signin" | "signup" | "sent">("choose");
   const [email, setEmail] = useState("");
@@ -44,7 +50,10 @@ function WelcomePage() {
   // Signed-in users continue where they left off; this page is only for signed-out visitors.
   useEffect(() => {
     let cancelled = false;
-    const go = () => void navigate({ to: onboardingCompleted() ? "/" : "/onboarding", replace: true });
+    const go = async () => {
+      const { data } = await supabase.from('clinician_profiles').select('user_id').maybeSingle();
+      void navigate({ to: data ? '/clinician/dashboard' : search.clinician ? '/clinician/onboarding' : onboardingCompleted() ? '/' : '/onboarding', replace: true });
+    };
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if (!cancelled && session && (event === "SIGNED_IN" || event === "INITIAL_SESSION")) go();
     });
@@ -55,16 +64,16 @@ function WelcomePage() {
       setReady(true);
     })();
     return () => { cancelled = true; sub.subscription.unsubscribe(); };
-  }, [navigate]);
+  }, [navigate, search.clinician]);
 
   function destination() {
-    return onboardingCompleted() ? "/" : "/onboarding";
+    return search.clinician ? '/clinician/onboarding' : onboardingCompleted() ? "/" : "/onboarding";
   }
 
   async function social(provider: "google" | "apple") {
     setBusy(provider); setError("");
     track("auth_started", "skin_journey", provider);
-    const r = await lovable.auth.signInWithOAuth(provider, { redirect_uri: `${window.location.origin}/welcome` });
+    const r = await lovable.auth.signInWithOAuth(provider, { redirect_uri: `${window.location.origin}/welcome${search.clinician ? '?clinician=true' : ''}` });
     if (r.error) { console.error("OAuth error", r.error); setBusy(undefined); toast.error("Sign-in didn't complete. Please try again."); return; }
     if (r.redirected) return;
     const { data } = await supabase.auth.getUser();
@@ -85,7 +94,7 @@ function WelcomePage() {
       void navigate({ to: destination(), replace: true });
       return;
     }
-    const { data, error } = await supabase.auth.signUp({ email: p.data.email, password: p.data.password, options: { emailRedirectTo: window.location.origin } });
+    const { data, error } = await supabase.auth.signUp({ email: p.data.email, password: p.data.password, options: { emailRedirectTo: `${window.location.origin}/welcome${search.clinician ? '?clinician=true' : ''}` } });
     setBusy(undefined);
     if (error) return setError(error.message);
     track("auth_completed", "skin_journey", "email_signup");
@@ -108,12 +117,17 @@ function WelcomePage() {
           </p>
         </div>
 
-        {mode === "choose" && <div className="space-y-2.5">
+        {mode === 'choose' && !skinSelected && !search.clinician ? <div className="space-y-3">
+          <h2 className="text-center text-xl">How would you like to use Rose AI?</h2>
+          <Button variant="outline" className="h-auto w-full justify-start gap-3 whitespace-normal rounded-md p-4 text-left" onClick={() => setSkinSelected(true)}><Flower2/><span><span className="block font-semibold">For my skin</span><span className="block text-xs font-normal text-muted-foreground">Track your skin changes and progress.</span></span></Button>
+          <Button asChild variant="outline" className="h-auto w-full justify-start gap-3 whitespace-normal rounded-md p-4 text-left"><Link to="/clinician/onboarding"><Stethoscope/><span><span className="block font-semibold">I'm a clinician</span><span className="block text-xs font-normal text-muted-foreground">Manage patient photos and track treatment progress.</span></span></Link></Button>
+          <Button variant="link" className="w-full" onClick={() => setMode('signin')}>I already have an account</Button>
+        </div> : mode === "choose" && <div className="space-y-2.5">
           <button type="button" disabled={!!busy} onClick={() => social("google")} className={btn}>{busy === "google" ? <Loader2 className="h-4 w-4 animate-spin" /> : <span className="font-semibold">G</span>} Continue with Google</button>
           <button type="button" disabled={!!busy} onClick={() => social("apple")} className={btn}>{busy === "apple" ? <Loader2 className="h-4 w-4 animate-spin" /> : <span></span>} Continue with Apple</button>
           <button type="button" disabled={!!busy} onClick={() => setMode("signup")} className={btn}><Mail className="h-4 w-4" /> Sign up with email</button>
           <button type="button" disabled={!!busy} onClick={() => setMode("signin")} className="w-full pt-1 text-sm font-medium text-primary underline underline-offset-2">I already have an account</button>
-          <button type="button" disabled={!!busy} onClick={() => { track("onboarding_started", "onboarding", "guest"); void navigate({ to: "/onboarding", replace: true }); }} className="w-full pt-1 text-xs text-muted-foreground underline underline-offset-2">Maybe later</button>
+          {!search.clinician && <button type="button" disabled={!!busy} onClick={() => { track("onboarding_started", "onboarding", "guest"); void navigate({ to: "/onboarding", replace: true }); }} className="w-full pt-1 text-xs text-muted-foreground underline underline-offset-2">Maybe later</button>}
         </div>}
 
         {mode === "signup" && <form onSubmit={withEmail} className="space-y-3">
@@ -145,6 +159,7 @@ function WelcomePage() {
         <p className="text-center text-[0.7rem] leading-relaxed text-muted-foreground">
           Your photos and results stay private. See our <a href="/privacy" className="underline underline-offset-2">Privacy Policy</a>.
         </p>
+        <Button asChild variant="link" size="sm" className="w-full"><Link to="/clinician/onboarding">For Clinicians · Early access</Link></Button>
       </div>
     </div>
   );

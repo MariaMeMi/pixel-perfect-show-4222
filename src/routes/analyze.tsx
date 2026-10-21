@@ -19,6 +19,8 @@ export const Route = createFileRoute("/analyze")({
         property: "og:description",
         content: "A guided selfie check that scores visible facial redness.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AnalyzePage,

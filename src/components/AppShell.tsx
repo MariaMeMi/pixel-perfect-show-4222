@@ -17,6 +17,7 @@ const tabs = [
 export function AppShell({ children }: { children: ReactNode }) {
   const { t } = useI18n();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  if (pathname.startsWith('/clinician')) return <>{children}</>;
   const isOnboarding = pathname === "/onboarding" || pathname === "/welcome";
 
   return (
