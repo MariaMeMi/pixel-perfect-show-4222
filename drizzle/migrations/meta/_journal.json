@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1792599509151,
+      "tag": "0000_clinician_test_portal",
+      "breakpoints": true
+    }
+  ]
+}
