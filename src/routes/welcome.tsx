@@ -49,6 +49,7 @@ function WelcomePage() {
   async function continueSignedIn() {
     const {data,error} = await supabase.from('clinician_profiles').select('user_id').maybeSingle();
     if(error) { setError('Could not load your account. Please try again.'); setReady(true); return; }
+    if(!data && !search.clinician) await supabase.rpc('record_consumer_choice');
     void navigate({to:data?'/clinician/dashboard':destination(),replace:true});
   }
 
