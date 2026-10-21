@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { fileAssociation } from "./library-association";
 export const dateSchema = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/)
@@ -22,6 +23,7 @@ export const patientSchema = z.object({
   testOnly: z.literal(true),
 });
 export const photoSchema = z.object({
+  ...fileAssociation,
   patientId: z.string().uuid(),
   path: z.string().max(500),
   captureDate: dateSchema,

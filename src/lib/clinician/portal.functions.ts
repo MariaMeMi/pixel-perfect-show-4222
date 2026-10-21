@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
+import { fileAssociation } from "./library-association";
 import {
   enrollmentSchema,
   patientSchema,
@@ -88,7 +89,7 @@ export const patientDetail = createServerFn({ method: "POST" })
       .eq("id", data.id)
       .single();
     if (error || !patient) throw new Error("Patient unavailable or access denied");
-    const [photos, checkins, treatments, notes] = await Promise.all([
+    const [photos, checkins, treatments, notes, cases, documents, updates] = await Promise.all([
       context.supabase
         .from("clinician_photos")
         .select("*")
@@ -109,8 +110,11 @@ export const patientDetail = createServerFn({ method: "POST" })
         .select("*")
         .eq("patient_id", data.id)
         .order("created_at", { ascending: false }),
+      context.supabase.from("clinician_cases").select("*").eq("patient_id", data.id).order("opened_date", { ascending: false }),
+      context.supabase.from("clinician_documents").select("*").eq("patient_id", data.id).order("document_date"),
+      context.supabase.from("clinician_case_updates").select("*").eq("patient_id", data.id).order("event_date"),
     ]);
-    if (photos.error || checkins.error || treatments.error || notes.error)
+    if (photos.error || checkins.error || treatments.error || notes.error || cases.error || documents.error || updates.error)
       throw new Error("Could not load patient records");
     await context.supabase
       .from("clinician_audit_events")
@@ -121,6 +125,9 @@ export const patientDetail = createServerFn({ method: "POST" })
       checkins: checkins.data ?? [],
       treatments: treatments.data ?? [],
       notes: notes.data ?? [],
+      cases: cases.data ?? [],
+      documents: documents.data ?? [],
+      updates: updates.data ?? [],
     };
   });
 export const editPatient = createServerFn({ method: "POST" })
@@ -179,6 +186,10 @@ export const savePhoto = createServerFn({ method: "POST" })
         facial_view: data.view,
         label: data.label,
         note: data.note,
+        case_id: data.caseId ?? null,
+        treatment_id: data.treatmentId ?? null,
+        tags: data.tags ?? [],
+        session_name: data.sessionName ?? "",
       });
     if (error) throw new Error("Could not save photo metadata");
     await context.supabase
@@ -217,6 +228,7 @@ export const editPhoto = createServerFn({ method: "POST" })
       .object({
         id: z.string().uuid(),
         captureDate: dateSchema,
+        ...fileAssociation,
         view: photoSchema.shape.view,
         label: photoSchema.shape.label,
         note: z.string().max(2000),
@@ -231,6 +243,10 @@ export const editPhoto = createServerFn({ method: "POST" })
         facial_view: data.view,
         label: data.label,
         note: data.note,
+        case_id: data.caseId,
+        treatment_id: data.treatmentId,
+        tags: data.tags,
+        session_name: data.sessionName,
       })
       .eq("id", data.id)
       .select("patient_id")
@@ -271,6 +287,7 @@ export const addCheckin = createServerFn({ method: "POST" })
       .object({
         patientId: z.string().uuid(),
         date: dateSchema,
+        caseId: z.string().uuid().nullable().optional(),
         ratings: z.record(z.number().int().min(0).max(4)),
         observations: z.string().max(5000),
       })
@@ -282,12 +299,14 @@ export const addCheckin = createServerFn({ method: "POST" })
       .select("concern")
       .eq("id", data.patientId)
       .single();
-    if (!p || !validRatings(data.ratings, p.concern)) throw new Error("Invalid subjective ratings");
+    const { data: clinicalCase } = data.caseId ? await context.supabase.from("clinician_cases").select("category").eq("id", data.caseId).eq("patient_id", data.patientId).single() : { data: null };
+    if (!p || (data.caseId && !clinicalCase) || !validRatings(data.ratings, clinicalCase?.category ?? p.concern)) throw new Error("Invalid subjective ratings");
     const { error } = await context.supabase
       .from("clinician_checkins")
       .insert({
         patient_id: data.patientId,
         observation_date: data.date,
+        case_id: data.caseId ?? null,
         ratings: data.ratings,
         observations: data.observations,
       });
@@ -304,6 +323,7 @@ export const addTreatment = createServerFn({ method: "POST" })
       .object({
         patientId: z.string().uuid(),
         name: z.string().trim().min(1).max(160),
+        caseId: z.string().uuid().nullable().optional(),
         start: dateSchema,
         end: dateSchema.nullable(),
         followUp: dateSchema.nullable(),
@@ -319,6 +339,7 @@ export const addTreatment = createServerFn({ method: "POST" })
       .insert({
         patient_id: data.patientId,
         name: data.name,
+        case_id: data.caseId ?? null,
         start_date: data.start,
         end_date: data.end,
         follow_up_date: data.followUp,
@@ -338,6 +359,7 @@ export const addNote = createServerFn({ method: "POST" })
       .object({
         patientId: z.string().uuid(),
         content: z.string().trim().min(1).max(5000),
+        caseId: z.string().uuid().nullable().optional(),
         photoA: z.string().uuid().nullable(),
         photoB: z.string().uuid().nullable(),
       })
@@ -359,6 +381,7 @@ export const addNote = createServerFn({ method: "POST" })
       .insert({
         patient_id: data.patientId,
         content: data.content,
+        case_id: data.caseId ?? null,
         photo_a: data.photoA,
         photo_b: data.photoB,
       });
