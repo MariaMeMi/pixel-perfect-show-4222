@@ -19,7 +19,6 @@ const tabs = [
 export function AppShell({ children }: { children: ReactNode }) {
   const { t } = useI18n();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  if (pathname.startsWith('/clinician')) return <>{children}</>;
   const isOnboarding = pathname === "/onboarding" || pathname === "/welcome";
 
   // Navigation is hidden during onboarding/welcome — offer signed-in users a way out.
@@ -32,6 +31,8 @@ export function AppShell({ children }: { children: ReactNode }) {
     });
     return () => { cancelled = true; };
   }, [isOnboarding]);
+
+  if (pathname.startsWith('/clinician')) return <>{children}</>;
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[30rem] flex-col bg-background">
