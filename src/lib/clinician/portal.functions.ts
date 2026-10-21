@@ -19,7 +19,7 @@ export const portalOverview = createServerFn({method:'POST'}).middleware([requir
  return {patients:p.data ?? [],checkins:c.data ?? [],photos:h.data ?? [],activity:a.data ?? []};
 });
 export const addPatient = createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:z.infer<typeof patientSchema>)=>patientSchema.parse(v)).handler(async ({data,context})=>{
- const {data:id,error} = await context.supabase.rpc('create_clinician_patient',{p_name:data.name,p_concern:data.concern,p_date:data.date,p_follow:data.followUp ?? undefined,p_consent:data.consent,p_test:data.testOnly});
+ const {data:id,error} = await context.supabase.rpc('create_clinician_patient',{p_name:data.name,p_concern:data.concern,p_date:data.date,p_follow:data.followUp as unknown as string,p_consent:data.consent,p_test:data.testOnly});
  if(error || !id) throw new Error('Could not create test record'); return {id};
 });
 export const patientDetail = createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:z.infer<typeof idSchema>)=>idSchema.parse(v)).handler(async ({data,context})=>{

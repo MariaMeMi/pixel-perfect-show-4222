@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Flower2, Stethoscope } from 'lucide-react';
 
 export const Route = createFileRoute("/welcome")({
-  validateSearch: (s: Record<string, unknown>): {clinician?: boolean} => ({ clinician: s.clinician === true || s.clinician === 'true' ? true : undefined }),
+  validateSearch: (s: Record<string, unknown>): {clinician?: boolean} => (s['clinician'] === true || s['clinician'] === 'true' ? {clinician:true} : {}),
   head: () => ({
     meta: [
       { title: "Welcome to Rose AI — sign up or sign in" },
