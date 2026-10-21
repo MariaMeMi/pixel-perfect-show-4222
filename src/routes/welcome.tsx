@@ -38,7 +38,7 @@ function onboardingCompleted(): boolean {
 
 function WelcomePage() {
   const search = Route.useSearch();
-  const [skinSelected, setSkinSelected] = useState(onboardingCompleted());
+  const [skinSelected, setSkinSelected] = useState(false);
   const navigate = useNavigate();
   const [mode, setMode] = useState<"choose" | "signin" | "signup" | "sent">("choose");
   const [email, setEmail] = useState("");
@@ -46,14 +46,18 @@ function WelcomePage() {
   const [busy, setBusy] = useState<string>();
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
+  async function continueSignedIn() {
+    const {data,error} = await supabase.from('clinician_profiles').select('user_id').maybeSingle();
+    if(error) { setError('Could not load your account. Please try again.'); setReady(true); return; }
+    if(!data && !search.clinician) await supabase.rpc('record_consumer_choice');
+    void navigate({to:data?'/clinician/dashboard':destination(),replace:true});
+  }
 
   // Signed-in users continue where they left off; this page is only for signed-out visitors.
   useEffect(() => {
     let cancelled = false;
-    const go = async () => {
-      const { data } = await supabase.from('clinician_profiles').select('user_id').maybeSingle();
-      void navigate({ to: data ? '/clinician/dashboard' : search.clinician ? '/clinician/onboarding' : onboardingCompleted() ? '/' : '/onboarding', replace: true });
-    };
+    setSkinSelected(onboardingCompleted());
+    const go = () => { setTimeout(() => {if(!cancelled) void continueSignedIn();},0); };
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if (!cancelled && session && (event === "SIGNED_IN" || event === "INITIAL_SESSION")) go();
     });
@@ -77,8 +81,8 @@ function WelcomePage() {
     if (r.error) { console.error("OAuth error", r.error); setBusy(undefined); toast.error("Sign-in didn't complete. Please try again."); return; }
     if (r.redirected) return;
     const { data } = await supabase.auth.getUser();
-    void navigate({ to: destination(), replace: true });
-    if (data.user) track("auth_completed", "skin_journey", provider);
+    if (data.user) { track("auth_completed", "skin_journey", provider); await continueSignedIn(); }
+    else {setBusy(undefined);setError('Sign-in did not complete. Please try again.');}
   }
 
   async function withEmail(e: React.FormEvent) {
@@ -91,14 +95,14 @@ function WelcomePage() {
       setBusy(undefined);
       if (error) return setError("That email and password don't match an account. Check your details or create a new account.");
       track("auth_completed", "skin_journey", "email_signin");
-      void navigate({ to: destination(), replace: true });
+      await continueSignedIn();
       return;
     }
     const { data, error } = await supabase.auth.signUp({ email: p.data.email, password: p.data.password, options: { emailRedirectTo: `${window.location.origin}/welcome${search.clinician ? '?clinician=true' : ''}` } });
     setBusy(undefined);
     if (error) return setError(error.message);
     track("auth_completed", "skin_journey", "email_signup");
-    if (data.session) void navigate({ to: destination(), replace: true });
+    if (data.session) await continueSignedIn();
     else setMode("sent");
   }
 

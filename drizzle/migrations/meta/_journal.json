@@ -8,6 +8,13 @@
       "when": 1792599509151,
       "tag": "0000_clinician_test_portal",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792600164262,
+      "tag": "0001_clinician_documentation_validation",
+      "breakpoints": true
     }
   ]
 }

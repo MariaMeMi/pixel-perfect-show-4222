@@ -1,10 +1,84 @@
-import {createFileRoute} from '@tanstack/react-router';
-import {queryOptions,useSuspenseQuery} from '@tanstack/react-query';
-import {Users,Camera,CalendarDays,ClipboardCheck} from 'lucide-react';
-import {portalOverview} from '@/lib/clinician/portal.functions';
-import {clinicianHead,upcomingCount} from '@/lib/clinician/rules';
-import {SectionTitle} from '@/components/clinician/Shell';
-import {AddPatientButton,PatientList} from '@/components/clinician/Patients';
-export const overviewOptions=queryOptions({queryKey:['clinician','overview'],queryFn:()=>portalOverview()});
-export const Route=createFileRoute('/_authenticated/clinician/dashboard')({head:()=>clinicianHead('Dashboard','Your private clinician test workspace and latest activity.'),loader:({context})=>context.queryClient.ensureQueryData(overviewOptions),component:Dashboard});
-function Dashboard(){const {data}=useSuspenseQuery(overviewOptions);const active=data.patients.filter(p=>!p.archived);const cutoff=new Date(Date.now()-7*86400000).toISOString().slice(0,10);const recent=new Set(data.checkins.filter(c=>c.observation_date>=cutoff&&active.some(p=>p.id===c.patient_id)).map(c=>c.patient_id)).size;const cards=[{label:'Total patients',value:active.length,icon:Users},{label:'Recent check-ins · 7 days',value:recent,icon:ClipboardCheck},{label:'Photo uploads · 7 days',value:data.photos.filter(p=>p.created_at.slice(0,10)>=cutoff).length,icon:Camera},{label:'Upcoming follow-ups',value:upcomingCount(data.patients,new Date().toISOString().slice(0,10)),icon:CalendarDays}];return <><SectionTitle title="Dashboard" subtitle="A clear view of your test patient workspace." action={<AddPatientButton/>}/><div className="mb-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{cards.map(c=><div key={c.label} className="rounded-md border border-border bg-card p-5"><div className="flex justify-between gap-2 text-sm text-muted-foreground">{c.label}<c.icon className="size-4 text-primary"/></div><p className="mt-4 text-3xl font-semibold">{c.value}</p></div>)}</div><h2 className="mb-5 font-sans text-lg font-semibold">Patients</h2><PatientList patients={data.patients}/><section className="mt-10"><h2 className="mb-4 font-sans text-lg font-semibold">Recent activity</h2>{data.activity.filter(a=>a.action!=='workspace_viewed').length?data.activity.filter(a=>a.action!=='workspace_viewed').slice(0,6).map(a=><div key={a.id} className="flex justify-between gap-3 border-b border-border py-3 text-sm"><span>{a.action.replaceAll('_',' ')}</span><time className="text-muted-foreground">{new Date(a.created_at).toLocaleDateString()}</time></div>):<p className="text-sm text-muted-foreground">No activity yet.</p>}</section></>}
+import { createFileRoute } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { Users, Camera, CalendarDays, ClipboardCheck } from "lucide-react";
+import { portalOverview } from "@/lib/clinician/portal.functions";
+import { clinicianHead, upcomingCount } from "@/lib/clinician/rules";
+import { SectionTitle } from "@/components/clinician/Shell";
+import { AddPatientButton, PatientList } from "@/components/clinician/Patients";
+export const overviewOptions = queryOptions({
+  queryKey: ["clinician", "overview"],
+  queryFn: () => portalOverview(),
+});
+export const Route = createFileRoute("/_authenticated/clinician/dashboard")({
+  head: () =>
+    clinicianHead("Dashboard", "Your private clinician test workspace and latest activity."),
+  loader: ({ context }) => context.queryClient.ensureQueryData(overviewOptions),
+  component: Dashboard,
+});
+function Dashboard() {
+  const { data } = useSuspenseQuery(overviewOptions);
+  const active = data.patients.filter((p) => !p.archived);
+  const cutoff = new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10);
+  const recent = new Set(
+    data.checkins
+      .filter((c) => c.observation_date >= cutoff && active.some((p) => p.id === c.patient_id))
+      .map((c) => c.patient_id),
+  ).size;
+  const cards = [
+    { label: "Total patients", value: active.length, icon: Users },
+    { label: "Recent check-ins · 7 days", value: recent, icon: ClipboardCheck },
+    {
+      label: "Photo uploads · 7 days",
+      value: data.photos.filter((p) => p.created_at.slice(0, 10) >= cutoff).length,
+      icon: Camera,
+    },
+    {
+      label: "Upcoming follow-ups",
+      value: upcomingCount(data.patients, new Date().toISOString().slice(0, 10)),
+      icon: CalendarDays,
+    },
+  ];
+  return (
+    <>
+      <SectionTitle
+        title="Dashboard"
+        subtitle="A clear view of your test patient workspace."
+        action={<AddPatientButton />}
+      />
+      <div className="mb-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {cards.map((c) => (
+          <div key={c.label} className="rounded-md border border-border bg-card p-5">
+            <div className="flex justify-between gap-2 text-sm text-muted-foreground">
+              {c.label}
+              <c.icon className="size-4 text-primary" />
+            </div>
+            <p className="mt-4 text-3xl font-semibold">{c.value}</p>
+          </div>
+        ))}
+      </div>
+      <h2 className="mb-5 font-sans text-lg font-semibold">Patients</h2>
+      <PatientList patients={data.patients} />
+      <section className="mt-10">
+        <h2 className="mb-4 font-sans text-lg font-semibold">Recent activity</h2>
+        {data.activity.filter((a) => a.action !== "workspace_viewed").length ? (
+          data.activity
+            .filter((a) => a.action !== "workspace_viewed")
+            .slice(0, 6)
+            .map((a) => (
+              <div
+                key={a.id}
+                className="flex justify-between gap-3 border-b border-border py-3 text-sm"
+              >
+                <span>{a.action.replaceAll("_", " ")}</span>
+                <time className="text-muted-foreground">
+                  {new Date(a.created_at).toLocaleDateString()}
+                </time>
+              </div>
+            ))
+        ) : (
+          <p className="text-sm text-muted-foreground">No activity yet.</p>
+        )}
+      </section>
+    </>
+  );
+}
