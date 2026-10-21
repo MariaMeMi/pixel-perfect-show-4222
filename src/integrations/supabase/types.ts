@@ -594,6 +594,7 @@ export type Database = {
         Returns: undefined
       }
       is_clinician: { Args: never; Returns: boolean }
+      record_consumer_choice: { Args: never; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
