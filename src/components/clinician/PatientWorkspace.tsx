@@ -1,25 +1,843 @@
-import {useState} from 'react';
-import {useServerFn} from '@tanstack/react-start';
-import {useQuery,useQueryClient} from '@tanstack/react-query';
-import {Link} from '@tanstack/react-router';
-import {Camera,Upload,Trash2,Pencil,ArrowLeft,Save,Archive} from 'lucide-react';
-import {toast} from 'sonner';
-import {Button} from '@/components/ui/button';
-import {Dialog,DialogContent,DialogHeader,DialogTitle} from '@/components/ui/dialog';
-import {supabase} from '@/integrations/supabase/client';
-import {patientDetail,editPatient,savePhoto,photoLink,editPhoto,deletePhoto,addCheckin,addTreatment,addNote} from '@/lib/clinician/portal.functions';
-import {metrics,canCompare} from '@/lib/clinician/rules';
-import {Field,fieldClass,today} from './Fields';
-import {SectionTitle} from './Shell';
-type Detail=Awaited<ReturnType<typeof patientDetail>>;
-type Photo=Detail['photos'][number];
-export function PrivatePhoto({photo}:{photo:Photo}){const getLink=useServerFn(photoLink);const {data,error}=useQuery({queryKey:['clinician','photo',photo.id],queryFn:()=>getLink({data:{id:photo.id}}),staleTime:40000,refetchInterval:45000});return <div className="flex aspect-[4/5] items-center justify-center overflow-hidden rounded-md bg-muted">{data?<img src={data.url} alt={`${photo.facial_view} test photo, ${photo.capture_date}`} className="h-full w-full object-contain"/>:<p className="text-xs text-muted-foreground">{error?'Photo unavailable':'Opening private photo…'}</p>}</div>}
-export function PatientWorkspace({detail}:{detail:Detail}){const [tab,setTab]=useState('Overview');const cache=useQueryClient();const refresh=async()=>{await cache.invalidateQueries({queryKey:['clinician']});};const {patient:p}=detail;return <><Link to="/clinician/patients" className="mb-5 inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft className="size-4"/>Patients</Link><SectionTitle title={p.display_name} subtitle={`${p.concern} · Test record${p.archived?' · Archived':''}`} action={<EditPatientForm detail={detail} refresh={refresh}/>}/><div className="mb-8 flex gap-1 overflow-x-auto border-b border-border pb-3">{['Overview','Photos','Progress','Treatments','Notes'].map(t=><Button key={t} variant={tab===t?'secondary':'ghost'} onClick={()=>setTab(t)}>{t}</Button>)}</div>{tab==='Overview'&&<div className="grid gap-8 md:grid-cols-2"><section><h2 className="font-sans text-lg font-semibold">Patient overview</h2><dl className="mt-4 space-y-4 text-sm"><div><dt className="text-muted-foreground">Initial consultation</dt><dd>{p.consultation_date}</dd></div><div><dt className="text-muted-foreground">Follow-up</dt><dd>{p.follow_up_date||'Not scheduled'}</dd></div><div><dt className="text-muted-foreground">Patient-reported symptoms</dt><dd className="whitespace-pre-wrap break-words">{p.symptoms||'Not recorded'}</dd></div><div><dt className="text-muted-foreground">Current skincare routine</dt><dd className="whitespace-pre-wrap break-words">{p.routine||'Not recorded'}</dd></div></dl></section><section><h2 className="font-sans text-lg font-semibold">Record summary</h2><div className="mt-4 divide-y divide-border text-sm">{[['Photos',detail.photos.length],['Subjective check-ins',detail.checkins.length],['Treatment records',detail.treatments.length],['Notes',detail.notes.length]].map(([k,v])=><div key={k} className="flex justify-between py-3"><span>{k}</span><span className="font-semibold">{v}</span></div>)}</div><p className="mt-5 text-xs text-muted-foreground">Authorization acknowledgment recorded when this test record was created. Only this account has access.</p></section></div>}{tab==='Photos'&&<PhotoWorkspace detail={detail} refresh={refresh}/>}{tab==='Progress'&&<ProgressWorkspace detail={detail} refresh={refresh}/>}{tab==='Treatments'&&<TreatmentWorkspace detail={detail} refresh={refresh}/>}{tab==='Notes'&&<NotesWorkspace detail={detail} refresh={refresh}/>}</>}
-function EditPatientForm({detail,refresh}:{detail:Detail;refresh:()=>Promise<void>}){const [open,setOpen]=useState(false),[busy,setBusy]=useState(false);const edit=useServerFn(editPatient),p=detail.patient;return <><Button variant="outline" onClick={()=>setOpen(true)}><Pencil/>Edit patient</Button><Dialog open={open} onOpenChange={setOpen}><DialogContent className="max-h-[90vh] overflow-y-auto"><DialogHeader><DialogTitle>Edit test patient</DialogTitle></DialogHeader><form className="space-y-4" onSubmit={async e=>{e.preventDefault();const f=new FormData(e.currentTarget);setBusy(true);try{await edit({data:{id:p.id,name:String(f.get('name')),date:String(f.get('date')),followUp:String(f.get('follow'))||null,symptoms:String(f.get('symptoms')),routine:String(f.get('routine')),archived:f.get('archived')==='on'}});await refresh();setOpen(false);}catch{toast.error('Could not update patient');}finally{setBusy(false);}}}><Field label="Test display name / internal ID"><input name="name" defaultValue={p.display_name} required maxLength={120} className={fieldClass}/></Field><Field label="Consultation date"><input type="date" name="date" defaultValue={p.consultation_date} required className={fieldClass}/></Field><Field label="Follow-up date"><input type="date" name="follow" defaultValue={p.follow_up_date??''} className={fieldClass}/></Field><Field label="Patient-reported symptoms"><textarea name="symptoms" defaultValue={p.symptoms} maxLength={5000} className={fieldClass}/></Field><Field label="Current skincare routine"><textarea name="routine" defaultValue={p.routine} maxLength={5000} className={fieldClass}/></Field><label className="flex items-center gap-2 text-sm"><input name="archived" type="checkbox" defaultChecked={p.archived}/><Archive className="size-4"/>Archive this record</label><Button type="submit" disabled={busy}><Save/>{busy?'Saving…':'Save changes'}</Button></form></DialogContent></Dialog></>}
-function PhotoWorkspace({detail,refresh}:{detail:Detail;refresh:()=>Promise<void>}){const [uploadOpen,setUploadOpen]=useState(false),[editing,setEditing]=useState<Photo|null>(null),[a,setA]=useState(''),[b,setB]=useState(''),[busy,setBusy]=useState(false),[slider,setSlider]=useState(false);const save=useServerFn(savePhoto),edit=useServerFn(editPhoto),remove=useServerFn(deletePhoto),note=useServerFn(addNote);const photoA=detail.photos.find(p=>p.id===a),photoB=detail.photos.find(p=>p.id===b);const compared=photoA&&photoB&&canCompare(photoA,photoB);return <div className="space-y-8"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="font-sans text-lg font-semibold">Photo timeline</h2><Button onClick={()=>setUploadOpen(true)}><Upload/>Upload test photo</Button></div>{!detail.photos.length?<div className="border-y border-dashed border-border py-12 text-center"><Camera className="mx-auto mb-3 size-7 text-muted-foreground"/><p className="text-sm text-muted-foreground">No photos yet. Upload a synthetic baseline photo.</p></div>:<div className="grid grid-cols-2 gap-4 lg:grid-cols-3">{detail.photos.map(p=><div key={p.id} className="min-w-0 rounded-md border border-border bg-card p-3"><PrivatePhoto photo={p}/><div className="mt-3 flex items-start justify-between gap-1"><div className="min-w-0 text-sm"><p className="font-semibold">{p.capture_date}</p><p className="text-muted-foreground">{p.facial_view} · {p.label||'Unlabeled'}</p><p className="mt-1 break-words text-xs text-muted-foreground">{p.note}</p></div><Button aria-label={`Edit photo ${p.capture_date}`} title="View and edit photo" size="icon" variant="ghost" onClick={()=>setEditing(p)}><Pencil/></Button></div></div>)}</div>}
-{detail.photos.length>=2&&<section className="border-t border-border pt-8"><h2 className="font-sans text-lg font-semibold">Compare photos</h2><div className="my-4 grid gap-4 sm:grid-cols-2"><Field label="Before photo"><select className={fieldClass} value={a} onChange={e=>{setA(e.target.value);setB('');}}><option value="">Select photo</option>{detail.photos.map(p=><option key={p.id} value={p.id}>{p.capture_date} · {p.facial_view} · {p.label}</option>)}</select></Field><Field label="After photo · matching facial view"><select value={b} onChange={e=>setB(e.target.value)} className={fieldClass}><option value="">Select photo</option>{detail.photos.filter(p=>photoA&&canCompare(photoA,p)).map(p=><option key={p.id} value={p.id}>{p.capture_date} · {p.facial_view} · {p.label}</option>)}</select></Field></div><p className="mb-5 text-xs text-muted-foreground">Lighting, angle, expression and camera quality can affect visual comparisons. A comparison does not establish treatment efficacy or medical improvement.</p>{compared&&<><label className="mb-4 flex items-center gap-2 text-sm"><input type="checkbox" checked={slider} onChange={e=>setSlider(e.target.checked)}/>Interactive before / after slider</label>{slider?<ComparisonSlider a={photoA} b={photoB}/>:<div className="grid grid-cols-2 gap-4"><div><PrivatePhoto photo={photoA}/><p className="mt-2 text-sm">Before · {photoA.capture_date}</p></div><div><PrivatePhoto photo={photoB}/><p className="mt-2 text-sm">After · {photoB.capture_date}</p></div></div>}<form className="mt-5 space-y-3" onSubmit={async e=>{e.preventDefault();const form=e.currentTarget;const f=new FormData(form);setBusy(true);try{await note({data:{patientId:detail.patient.id,content:String(f.get('observations')),photoA:a,photoB:b}});await refresh();form.reset();toast.success('Comparison observations saved');}catch{toast.error('Could not save comparison');}finally{setBusy(false);}}}><Field label="Clinician comparison observations"><textarea name="observations" required maxLength={5000} className={fieldClass}/></Field><Button disabled={busy} type="submit"><Save/>Save observations</Button></form></>}</section>}
-<Dialog open={uploadOpen||!!editing} onOpenChange={o=>{if(!o){setUploadOpen(false);setEditing(null);}}}><DialogContent className="max-h-[90vh] overflow-y-auto"><DialogHeader><DialogTitle>{editing?'Photo details':'Upload a synthetic test photo'}</DialogTitle></DialogHeader>{editing&&<><div className="mx-auto w-48"><PrivatePhoto photo={editing}/></div><p className="text-xs text-muted-foreground">Uploaded {new Date(editing.created_at).toLocaleString()} · By your account</p></>}<form key={editing?.id??'upload'} className="space-y-4" onSubmit={async e=>{e.preventDefault();const f=new FormData(e.currentTarget);setBusy(true);try{const metadata={captureDate:String(f.get('date')),view:String(f.get('view')) as Photo['facial_view'] & ('Front'|'Left'|'Right'|'Other'),label:String(f.get('label')) as ''|'Baseline'|'Follow-up'|'Before treatment'|'After treatment',note:String(f.get('note'))};if(editing){await edit({data:{id:editing.id,...metadata}});}else{const file=f.get('file');if(!(file instanceof File)||!file.size||file.size>5*1024*1024||!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Choose a JPG, PNG or WebP under 5 MB');const {data}=await supabase.auth.getUser();if(!data.user)throw new Error('Sign in again');const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';const path=`${data.user.id}/${detail.patient.id}/${crypto.randomUUID()}.${ext}`;const {error}=await supabase.storage.from('clinician-test-photos').upload(path,file,{contentType:file.type,upsert:false});if(error)throw new Error('Could not upload private photo');try{await save({data:{patientId:detail.patient.id,path,...metadata,testOnly:(f.get('test')==='on') as true}});}catch(err){await supabase.storage.from('clinician-test-photos').remove([path]);throw err;}}setUploadOpen(false);setEditing(null);await refresh();toast.success(editing?'Photo updated':'Private photo saved');}catch(err){toast.error(err instanceof Error?err.message:'Could not save photo');}finally{setBusy(false);}}}>{!editing&&<><Field label="Synthetic photo (JPG, PNG, WebP · max 5 MB)"><input type="file" name="file" accept="image/jpeg,image/png,image/webp" required className={fieldClass}/></Field><label className="flex gap-2 text-sm"><input type="checkbox" name="test" required/>This is a synthetic image, not a real patient photograph.</label></>}<Field label="Photo capture date"><input type="date" name="date" defaultValue={editing?.capture_date??today()} required className={fieldClass}/></Field><Field label="Facial view"><select name="view" defaultValue={editing?.facial_view??'Front'} className={fieldClass}>{['Front','Left','Right','Other'].map(v=><option key={v}>{v}</option>)}</select></Field><Field label="Label"><select name="label" defaultValue={editing?.label??''} className={fieldClass}>{['','Baseline','Follow-up','Before treatment','After treatment'].map(v=><option key={v} value={v}>{v||'None'}</option>)}</select></Field><Field label="Note (optional)"><textarea name="note" defaultValue={editing?.note??''} maxLength={2000} className={fieldClass}/></Field><Button disabled={busy} type="submit"><Save/>{busy?'Saving…':'Save photo'}</Button></form>{editing&&<Button variant="destructive" disabled={busy} onClick={async()=>{if(!confirm('Permanently delete this test photo? This cannot be undone.'))return;setBusy(true);try{await remove({data:{id:editing.id,confirmed:true}});setEditing(null);await refresh();toast.success('Test photo deleted');}catch{toast.error('Could not delete photo');}finally{setBusy(false);}}}><Trash2/>Delete test photo</Button>}</DialogContent></Dialog></div>}
-function ComparisonSlider({a,b}:{a:Photo;b:Photo}){const [value,setValue]=useState(50);return <div className="mx-auto max-w-lg"><div className="relative aspect-[4/5] overflow-hidden"><PrivatePhoto photo={b}/><div className="absolute inset-0" style={{clipPath:`inset(0 ${100-value}% 0 0)`}}><PrivatePhoto photo={a}/></div><div className="absolute bottom-3 left-3 rounded-md bg-card px-2 py-1 text-xs">{a.capture_date}</div><div className="absolute bottom-3 right-3 rounded-md bg-card px-2 py-1 text-xs">{b.capture_date}</div></div><input aria-label="Before after slider" type="range" min={0} max={100} value={value} onChange={e=>setValue(Number(e.target.value))} className="mt-4 w-full accent-primary"/></div>}
-function ProgressWorkspace({detail,refresh}:{detail:Detail;refresh:()=>Promise<void>}){const save=useServerFn(addCheckin),[busy,setBusy]=useState(false);const labels=metrics[detail.patient.concern]??metrics['Other'] ?? [];return <div className="grid gap-10 lg:grid-cols-2"><section><h2 className="mb-2 font-sans text-lg font-semibold">Patient-reported check-in</h2><p className="mb-5 text-xs text-muted-foreground">Subjective ratings only: 0 = none / lowest, 4 = highest. Treatment adherence: 0 = none, 4 = full.</p><form className="space-y-4" onSubmit={async e=>{e.preventDefault();const form=e.currentTarget,f=new FormData(form);setBusy(true);try{await save({data:{patientId:detail.patient.id,date:String(f.get('date')),ratings:Object.fromEntries(labels.map(l=>[l,Number(f.get(l))])),observations:String(f.get('observations'))}});await refresh();toast.success('Check-in saved');}catch{toast.error('Could not save check-in');}finally{setBusy(false);}}}><Field label="Observation date"><input name="date" type="date" defaultValue={today()} required className={fieldClass}/></Field>{labels.map(l=><Field key={l} label={l}><select name={l} defaultValue="0" className={fieldClass}>{[0,1,2,3,4].map(v=><option key={v} value={v}>{v}</option>)}</select></Field>)}<Field label="Patient-reported triggers / observations"><textarea name="observations" maxLength={5000} className={fieldClass}/></Field><Button disabled={busy} type="submit"><Save/>Save check-in</Button></form></section><section><h2 className="mb-4 font-sans text-lg font-semibold">Subjective trends</h2>{detail.checkins.length<2?<p className="text-sm text-muted-foreground">Trends appear after at least two dated check-ins. No clinical severity score is calculated.</p>:<div className="overflow-x-auto"><table className="w-full text-left text-xs"><thead><tr><th className="p-2">Date</th>{labels.map(l=><th className="p-2" key={l}>{l}</th>)}</tr></thead><tbody>{detail.checkins.map(c=><tr key={c.id} className="border-t border-border"><td className="whitespace-nowrap p-2">{c.observation_date}</td>{labels.map(l=><td key={l} className="p-2">{c.ratings&&typeof c.ratings==='object'&&!Array.isArray(c.ratings)?String(c.ratings[l]??'—'):'—'}</td>)}</tr>)}</tbody></table></div>}<div className="mt-6 space-y-4">{detail.checkins.map(c=><div key={c.id} className="border-b border-border pb-3 text-sm"><p className="font-medium">{c.observation_date}</p><p className="mt-1 whitespace-pre-wrap break-words text-muted-foreground">{c.observations||'No additional observations'}</p></div>)}</div></section></div>}
-function TreatmentWorkspace({detail,refresh}:{detail:Detail;refresh:()=>Promise<void>}){const save=useServerFn(addTreatment),[busy,setBusy]=useState(false);return <div className="grid gap-10 lg:grid-cols-2"><section><h2 className="font-sans text-lg font-semibold">Treatment / procedure documentation</h2><p className="mb-5 mt-2 text-xs text-muted-foreground">A record of care only, not an automated prescribing system.</p><form className="space-y-4" onSubmit={async e=>{e.preventDefault();const form=e.currentTarget,f=new FormData(form);setBusy(true);try{await save({data:{patientId:detail.patient.id,name:String(f.get('name')),start:String(f.get('start')),end:String(f.get('end'))||null,followUp:String(f.get('follow'))||null,type:String(f.get('type')),notes:String(f.get('notes'))}});await refresh();form.reset();toast.success('Treatment record saved');}catch{toast.error('Could not save treatment. Check the dates.');}finally{setBusy(false);}}}><Field label="Treatment name"><input name="name" required maxLength={160} className={fieldClass}/></Field><Field label="Start / procedure date"><input type="date" name="start" required defaultValue={today()} className={fieldClass}/></Field><Field label="End date (optional)"><input type="date" name="end" className={fieldClass}/></Field><Field label="Follow-up date (optional)"><input type="date" name="follow" className={fieldClass}/></Field><Field label="Procedure type (optional)"><input name="type" maxLength={160} className={fieldClass}/></Field><Field label="Notes"><textarea name="notes" maxLength={5000} className={fieldClass}/></Field><Button disabled={busy} type="submit"><Save/>Save treatment</Button></form></section><section><h2 className="mb-5 font-sans text-lg font-semibold">Treatment timeline</h2>{!detail.treatments.length?<p className="text-sm text-muted-foreground">No treatments recorded.</p>:detail.treatments.map(t=><article key={t.id} className="mb-5 border-l-2 border-primary pl-4"><h3 className="font-sans font-semibold">{t.name}</h3><p className="mt-1 text-xs text-muted-foreground">{t.start_date}{t.end_date?` – ${t.end_date}`:''}{t.follow_up_date?` · Follow-up ${t.follow_up_date}`:''}</p><p className="mt-2 text-sm">{t.procedure_type}</p><p className="mt-2 whitespace-pre-wrap break-words text-sm text-muted-foreground">{t.notes}</p></article>)}</section></div>}
-function NotesWorkspace({detail,refresh}:{detail:Detail;refresh:()=>Promise<void>}){const save=useServerFn(addNote),[busy,setBusy]=useState(false);return <section className="max-w-3xl"><h2 className="mb-5 font-sans text-lg font-semibold">Clinician notes</h2><form className="space-y-3" onSubmit={async e=>{e.preventDefault();const form=e.currentTarget,f=new FormData(form);setBusy(true);try{await save({data:{patientId:detail.patient.id,content:String(f.get('content')),photoA:null,photoB:null}});await refresh();form.reset();toast.success('Note saved');}catch{toast.error('Could not save note');}finally{setBusy(false);}}}><Field label="New note (test data only)"><textarea name="content" required maxLength={5000} className={fieldClass}/></Field><Button type="submit" disabled={busy}><Save/>Save note</Button></form><div className="mt-8 space-y-5">{detail.notes.map(n=><article key={n.id} className="border-b border-border pb-5"><p className="text-xs text-muted-foreground">{new Date(n.created_at).toLocaleString()}{n.photo_a?' · Comparison observations':''}</p><p className="mt-2 whitespace-pre-wrap break-words text-sm">{n.content}</p></article>)}</div></section>}
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+import { Camera, Upload, Trash2, Pencil, ArrowLeft, Save, Archive } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  patientDetail,
+  editPatient,
+  savePhoto,
+  photoLink,
+  editPhoto,
+  deletePhoto,
+  addCheckin,
+  addTreatment,
+  addNote,
+} from "@/lib/clinician/portal.functions";
+import { metrics, canCompare } from "@/lib/clinician/rules";
+import { Field, fieldClass, today } from "./Fields";
+import { SectionTitle } from "./Shell";
+type Detail = Awaited<ReturnType<typeof patientDetail>>;
+type Photo = Detail["photos"][number];
+export function PrivatePhoto({ photo }: { photo: Photo }) {
+  const getLink = useServerFn(photoLink);
+  const { data, error } = useQuery({
+    queryKey: ["clinician", "photo", photo.id],
+    queryFn: () => getLink({ data: { id: photo.id } }),
+    staleTime: 40000,
+    refetchInterval: 45000,
+  });
+  return (
+    <div className="flex aspect-[4/5] items-center justify-center overflow-hidden rounded-md bg-muted">
+      {data ? (
+        <img
+          src={data.url}
+          alt={`${photo.facial_view} test photo, ${photo.capture_date}`}
+          className="h-full w-full object-contain"
+        />
+      ) : (
+        <p className="text-xs text-muted-foreground">
+          {error ? "Photo unavailable" : "Opening private photo…"}
+        </p>
+      )}
+    </div>
+  );
+}
+export function PatientWorkspace({ detail }: { detail: Detail }) {
+  const [tab, setTab] = useState("Overview");
+  const cache = useQueryClient();
+  const refresh = async () => {
+    await cache.invalidateQueries({ queryKey: ["clinician"] });
+  };
+  const { patient: p } = detail;
+  return (
+    <>
+      <Link
+        to="/clinician/patients"
+        className="mb-5 inline-flex items-center gap-2 text-sm text-muted-foreground"
+      >
+        <ArrowLeft className="size-4" />
+        Patients
+      </Link>
+      <SectionTitle
+        title={p.display_name}
+        subtitle={`${p.concern} · Test record${p.archived ? " · Archived" : ""}`}
+        action={<EditPatientForm detail={detail} refresh={refresh} />}
+      />
+      <div className="mb-8 flex gap-1 overflow-x-auto border-b border-border pb-3">
+        {["Overview", "Photos", "Progress", "Treatments", "Notes"].map((t) => (
+          <Button key={t} variant={tab === t ? "secondary" : "ghost"} onClick={() => setTab(t)}>
+            {t}
+          </Button>
+        ))}
+      </div>
+      {tab === "Overview" && (
+        <div className="grid gap-8 md:grid-cols-2">
+          <section>
+            <h2 className="font-sans text-lg font-semibold">Patient overview</h2>
+            <dl className="mt-4 space-y-4 text-sm">
+              <div>
+                <dt className="text-muted-foreground">Initial consultation</dt>
+                <dd>{p.consultation_date}</dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">Follow-up</dt>
+                <dd>{p.follow_up_date || "Not scheduled"}</dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">Patient-reported symptoms</dt>
+                <dd className="whitespace-pre-wrap break-words">{p.symptoms || "Not recorded"}</dd>
+              </div>
+              <div>
+                <dt className="text-muted-foreground">Current skincare routine</dt>
+                <dd className="whitespace-pre-wrap break-words">{p.routine || "Not recorded"}</dd>
+              </div>
+            </dl>
+          </section>
+          <section>
+            <h2 className="font-sans text-lg font-semibold">Record summary</h2>
+            <div className="mt-4 divide-y divide-border text-sm">
+              {[
+                ["Photos", detail.photos.length],
+                ["Subjective check-ins", detail.checkins.length],
+                ["Treatment records", detail.treatments.length],
+                ["Notes", detail.notes.length],
+              ].map(([k, v]) => (
+                <div key={k} className="flex justify-between py-3">
+                  <span>{k}</span>
+                  <span className="font-semibold">{v}</span>
+                </div>
+              ))}
+            </div>
+            <p className="mt-5 text-xs text-muted-foreground">
+              Authorization acknowledgment recorded when this test record was created. Only this
+              account has access.
+            </p>
+          </section>
+        </div>
+      )}
+      {tab === "Photos" && <PhotoWorkspace detail={detail} refresh={refresh} />}
+      {tab === "Progress" && <ProgressWorkspace detail={detail} refresh={refresh} />}
+      {tab === "Treatments" && <TreatmentWorkspace detail={detail} refresh={refresh} />}
+      {tab === "Notes" && <NotesWorkspace detail={detail} refresh={refresh} />}
+    </>
+  );
+}
+function EditPatientForm({ detail, refresh }: { detail: Detail; refresh: () => Promise<void> }) {
+  const [open, setOpen] = useState(false),
+    [busy, setBusy] = useState(false);
+  const edit = useServerFn(editPatient),
+    p = detail.patient;
+  return (
+    <>
+      <Button variant="outline" onClick={() => setOpen(true)}>
+        <Pencil />
+        Edit patient
+      </Button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit test patient</DialogTitle>
+          </DialogHeader>
+          <form
+            className="space-y-4"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const f = new FormData(e.currentTarget);
+              setBusy(true);
+              try {
+                await edit({
+                  data: {
+                    id: p.id,
+                    name: String(f.get("name")),
+                    date: String(f.get("date")),
+                    followUp: String(f.get("follow")) || null,
+                    symptoms: String(f.get("symptoms")),
+                    routine: String(f.get("routine")),
+                    archived: f.get("archived") === "on",
+                  },
+                });
+                await refresh();
+                setOpen(false);
+              } catch {
+                toast.error("Could not update patient");
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            <Field label="Test display name / internal ID">
+              <input
+                name="name"
+                defaultValue={p.display_name}
+                required
+                maxLength={120}
+                className={fieldClass}
+              />
+            </Field>
+            <Field label="Consultation date">
+              <input
+                type="date"
+                name="date"
+                defaultValue={p.consultation_date}
+                required
+                className={fieldClass}
+              />
+            </Field>
+            <Field label="Follow-up date">
+              <input
+                type="date"
+                name="follow"
+                defaultValue={p.follow_up_date ?? ""}
+                className={fieldClass}
+              />
+            </Field>
+            <Field label="Patient-reported symptoms">
+              <textarea
+                name="symptoms"
+                defaultValue={p.symptoms}
+                maxLength={5000}
+                className={fieldClass}
+              />
+            </Field>
+            <Field label="Current skincare routine">
+              <textarea
+                name="routine"
+                defaultValue={p.routine}
+                maxLength={5000}
+                className={fieldClass}
+              />
+            </Field>
+            <label className="flex items-center gap-2 text-sm">
+              <input name="archived" type="checkbox" defaultChecked={p.archived} />
+              <Archive className="size-4" />
+              Archive this record
+            </label>
+            <Button type="submit" disabled={busy}>
+              <Save />
+              {busy ? "Saving…" : "Save changes"}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+function PhotoWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Promise<void> }) {
+  const [uploadOpen, setUploadOpen] = useState(false),
+    [editing, setEditing] = useState<Photo | null>(null),
+    [a, setA] = useState(""),
+    [b, setB] = useState(""),
+    [busy, setBusy] = useState(false),
+    [slider, setSlider] = useState(false);
+  const save = useServerFn(savePhoto),
+    edit = useServerFn(editPhoto),
+    remove = useServerFn(deletePhoto),
+    note = useServerFn(addNote);
+  const photoA = detail.photos.find((p) => p.id === a),
+    photoB = detail.photos.find((p) => p.id === b);
+  const compared = photoA && photoB && canCompare(photoA, photoB);
+  return (
+    <div className="space-y-8">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="font-sans text-lg font-semibold">Photo timeline</h2>
+        <Button onClick={() => setUploadOpen(true)}>
+          <Upload />
+          Upload test photo
+        </Button>
+      </div>
+      {!detail.photos.length ? (
+        <div className="border-y border-dashed border-border py-12 text-center">
+          <Camera className="mx-auto mb-3 size-7 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">
+            No photos yet. Upload a synthetic baseline photo.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+          {detail.photos.map((p) => (
+            <div key={p.id} className="min-w-0 rounded-md border border-border bg-card p-3">
+              <PrivatePhoto photo={p} />
+              <div className="mt-3 flex items-start justify-between gap-1">
+                <div className="min-w-0 text-sm">
+                  <p className="font-semibold">{p.capture_date}</p>
+                  <p className="text-muted-foreground">
+                    {p.facial_view} · {p.label || "Unlabeled"}
+                  </p>
+                  <p className="mt-1 break-words text-xs text-muted-foreground">{p.note}</p>
+                </div>
+                <Button
+                  aria-label={`Edit photo ${p.capture_date}`}
+                  title="View and edit photo"
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => setEditing(p)}
+                >
+                  <Pencil />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      {detail.photos.length >= 2 && (
+        <section className="border-t border-border pt-8">
+          <h2 className="font-sans text-lg font-semibold">Compare photos</h2>
+          <div className="my-4 grid gap-4 sm:grid-cols-2">
+            <Field label="Before photo">
+              <select
+                className={fieldClass}
+                value={a}
+                onChange={(e) => {
+                  setA(e.target.value);
+                  setB("");
+                }}
+              >
+                <option value="">Select photo</option>
+                {detail.photos.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.capture_date} · {p.facial_view} · {p.label}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="After photo · matching facial view">
+              <select value={b} onChange={(e) => setB(e.target.value)} className={fieldClass}>
+                <option value="">Select photo</option>
+                {detail.photos
+                  .filter((p) => photoA && canCompare(photoA, p))
+                  .map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.capture_date} · {p.facial_view} · {p.label}
+                    </option>
+                  ))}
+              </select>
+            </Field>
+          </div>
+          <p className="mb-5 text-xs text-muted-foreground">
+            Lighting, angle, expression and camera quality can affect visual comparisons. A
+            comparison does not establish treatment efficacy or medical improvement.
+          </p>
+          {compared && (
+            <>
+              <label className="mb-4 flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={slider}
+                  onChange={(e) => setSlider(e.target.checked)}
+                />
+                Interactive before / after slider
+              </label>
+              {slider ? (
+                <ComparisonSlider a={photoA} b={photoB} />
+              ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <PrivatePhoto photo={photoA} />
+                    <p className="mt-2 text-sm">Before · {photoA.capture_date}</p>
+                  </div>
+                  <div>
+                    <PrivatePhoto photo={photoB} />
+                    <p className="mt-2 text-sm">After · {photoB.capture_date}</p>
+                  </div>
+                </div>
+              )}
+              <form
+                className="mt-5 space-y-3"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  const form = e.currentTarget;
+                  const f = new FormData(form);
+                  setBusy(true);
+                  try {
+                    await note({
+                      data: {
+                        patientId: detail.patient.id,
+                        content: String(f.get("observations")),
+                        photoA: a,
+                        photoB: b,
+                      },
+                    });
+                    await refresh();
+                    form.reset();
+                    toast.success("Comparison observations saved");
+                  } catch {
+                    toast.error("Could not save comparison");
+                  } finally {
+                    setBusy(false);
+                  }
+                }}
+              >
+                <Field label="Clinician comparison observations">
+                  <textarea name="observations" required maxLength={5000} className={fieldClass} />
+                </Field>
+                <Button disabled={busy} type="submit">
+                  <Save />
+                  Save observations
+                </Button>
+              </form>
+            </>
+          )}
+        </section>
+      )}
+      <Dialog
+        open={uploadOpen || !!editing}
+        onOpenChange={(o) => {
+          if (!o) {
+            setUploadOpen(false);
+            setEditing(null);
+          }
+        }}
+      >
+        <DialogContent className="max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editing ? "Photo details" : "Upload a synthetic test photo"}</DialogTitle>
+          </DialogHeader>
+          {editing && (
+            <>
+              <div className="mx-auto w-48">
+                <PrivatePhoto photo={editing} />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Uploaded {new Date(editing.created_at).toLocaleString()} · By your account
+              </p>
+            </>
+          )}
+          <form
+            key={editing?.id ?? "upload"}
+            className="space-y-4"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const f = new FormData(e.currentTarget);
+              setBusy(true);
+              try {
+                const metadata = {
+                  captureDate: String(f.get("date")),
+                  view: String(f.get("view")) as Photo["facial_view"] &
+                    ("Front" | "Left" | "Right" | "Other"),
+                  label: String(f.get("label")) as
+                    "" | "Baseline" | "Follow-up" | "Before treatment" | "After treatment",
+                  note: String(f.get("note")),
+                };
+                if (editing) {
+                  await edit({ data: { id: editing.id, ...metadata } });
+                } else {
+                  const file = f.get("file");
+                  if (
+                    !(file instanceof File) ||
+                    !file.size ||
+                    file.size > 5 * 1024 * 1024 ||
+                    !["image/jpeg", "image/png", "image/webp"].includes(file.type)
+                  )
+                    throw new Error("Choose a JPG, PNG or WebP under 5 MB");
+                  const { data } = await supabase.auth.getUser();
+                  if (!data.user) throw new Error("Sign in again");
+                  const ext =
+                    file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
+                  const path = `${data.user.id}/${detail.patient.id}/${crypto.randomUUID()}.${ext}`;
+                  const { error } = await supabase.storage
+                    .from("clinician-test-photos")
+                    .upload(path, file, { contentType: file.type, upsert: false });
+                  if (error) throw new Error("Could not upload private photo");
+                  try {
+                    await save({
+                      data: {
+                        patientId: detail.patient.id,
+                        path,
+                        ...metadata,
+                        testOnly: (f.get("test") === "on") as true,
+                      },
+                    });
+                  } catch (err) {
+                    await supabase.storage.from("clinician-test-photos").remove([path]);
+                    throw err;
+                  }
+                }
+                setUploadOpen(false);
+                setEditing(null);
+                await refresh();
+                toast.success(editing ? "Photo updated" : "Private photo saved");
+              } catch (err) {
+                toast.error(err instanceof Error ? err.message : "Could not save photo");
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            {!editing && (
+              <>
+                <Field label="Synthetic photo (JPG, PNG, WebP · max 5 MB)">
+                  <input
+                    type="file"
+                    name="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    required
+                    className={fieldClass}
+                  />
+                </Field>
+                <label className="flex gap-2 text-sm">
+                  <input type="checkbox" name="test" required />
+                  This is a synthetic image, not a real patient photograph.
+                </label>
+              </>
+            )}
+            <Field label="Photo capture date">
+              <input
+                type="date"
+                name="date"
+                defaultValue={editing?.capture_date ?? today()}
+                required
+                className={fieldClass}
+              />
+            </Field>
+            <Field label="Facial view">
+              <select
+                name="view"
+                defaultValue={editing?.facial_view ?? "Front"}
+                className={fieldClass}
+              >
+                {["Front", "Left", "Right", "Other"].map((v) => (
+                  <option key={v}>{v}</option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Label">
+              <select name="label" defaultValue={editing?.label ?? ""} className={fieldClass}>
+                {["", "Baseline", "Follow-up", "Before treatment", "After treatment"].map((v) => (
+                  <option key={v} value={v}>
+                    {v || "None"}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Note (optional)">
+              <textarea
+                name="note"
+                defaultValue={editing?.note ?? ""}
+                maxLength={2000}
+                className={fieldClass}
+              />
+            </Field>
+            <Button disabled={busy} type="submit">
+              <Save />
+              {busy ? "Saving…" : "Save photo"}
+            </Button>
+          </form>
+          {editing && (
+            <Button
+              variant="destructive"
+              disabled={busy}
+              onClick={async () => {
+                if (!confirm("Permanently delete this test photo? This cannot be undone.")) return;
+                setBusy(true);
+                try {
+                  await remove({ data: { id: editing.id, confirmed: true } });
+                  setEditing(null);
+                  await refresh();
+                  toast.success("Test photo deleted");
+                } catch {
+                  toast.error("Could not delete photo");
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              <Trash2 />
+              Delete test photo
+            </Button>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+function ComparisonSlider({ a, b }: { a: Photo; b: Photo }) {
+  const [value, setValue] = useState(50);
+  return (
+    <div className="mx-auto max-w-lg">
+      <div className="relative aspect-[4/5] overflow-hidden">
+        <PrivatePhoto photo={b} />
+        <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - value}% 0 0)` }}>
+          <PrivatePhoto photo={a} />
+        </div>
+        <div className="absolute bottom-3 left-3 rounded-md bg-card px-2 py-1 text-xs">
+          {a.capture_date}
+        </div>
+        <div className="absolute bottom-3 right-3 rounded-md bg-card px-2 py-1 text-xs">
+          {b.capture_date}
+        </div>
+      </div>
+      <input
+        aria-label="Before after slider"
+        type="range"
+        min={0}
+        max={100}
+        value={value}
+        onChange={(e) => setValue(Number(e.target.value))}
+        className="mt-4 w-full accent-primary"
+      />
+    </div>
+  );
+}
+function ProgressWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Promise<void> }) {
+  const save = useServerFn(addCheckin),
+    [busy, setBusy] = useState(false);
+  const labels = metrics[detail.patient.concern] ?? metrics["Other"] ?? [];
+  return (
+    <div className="grid gap-10 lg:grid-cols-2">
+      <section>
+        <h2 className="mb-2 font-sans text-lg font-semibold">Patient-reported check-in</h2>
+        <p className="mb-5 text-xs text-muted-foreground">
+          Subjective ratings only: 0 = none / lowest, 4 = highest. Treatment adherence: 0 = none, 4
+          = full.
+        </p>
+        <form
+          className="space-y-4"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const form = e.currentTarget,
+              f = new FormData(form);
+            setBusy(true);
+            try {
+              await save({
+                data: {
+                  patientId: detail.patient.id,
+                  date: String(f.get("date")),
+                  ratings: Object.fromEntries(labels.map((l) => [l, Number(f.get(l))])),
+                  observations: String(f.get("observations")),
+                },
+              });
+              await refresh();
+              toast.success("Check-in saved");
+            } catch {
+              toast.error("Could not save check-in");
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          <Field label="Observation date">
+            <input name="date" type="date" defaultValue={today()} required className={fieldClass} />
+          </Field>
+          {labels.map((l) => (
+            <Field key={l} label={l}>
+              <select name={l} defaultValue="0" className={fieldClass}>
+                {[0, 1, 2, 3, 4].map((v) => (
+                  <option key={v} value={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+            </Field>
+          ))}
+          <Field label="Patient-reported triggers / observations">
+            <textarea name="observations" maxLength={5000} className={fieldClass} />
+          </Field>
+          <Button disabled={busy} type="submit">
+            <Save />
+            Save check-in
+          </Button>
+        </form>
+      </section>
+      <section>
+        <h2 className="mb-4 font-sans text-lg font-semibold">Subjective trends</h2>
+        {detail.checkins.length < 2 ? (
+          <p className="text-sm text-muted-foreground">
+            Trends appear after at least two dated check-ins. No clinical severity score is
+            calculated.
+          </p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr>
+                  <th className="p-2">Date</th>
+                  {labels.map((l) => (
+                    <th className="p-2" key={l}>
+                      {l}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {detail.checkins.map((c) => (
+                  <tr key={c.id} className="border-t border-border">
+                    <td className="whitespace-nowrap p-2">{c.observation_date}</td>
+                    {labels.map((l) => (
+                      <td key={l} className="p-2">
+                        {c.ratings && typeof c.ratings === "object" && !Array.isArray(c.ratings)
+                          ? String(c.ratings[l] ?? "—")
+                          : "—"}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <div className="mt-6 space-y-4">
+          {detail.checkins.map((c) => (
+            <div key={c.id} className="border-b border-border pb-3 text-sm">
+              <p className="font-medium">{c.observation_date}</p>
+              <p className="mt-1 whitespace-pre-wrap break-words text-muted-foreground">
+                {c.observations || "No additional observations"}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
+function TreatmentWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Promise<void> }) {
+  const save = useServerFn(addTreatment),
+    [busy, setBusy] = useState(false);
+  return (
+    <div className="grid gap-10 lg:grid-cols-2">
+      <section>
+        <h2 className="font-sans text-lg font-semibold">Treatment / procedure documentation</h2>
+        <p className="mb-5 mt-2 text-xs text-muted-foreground">
+          A record of care only, not an automated prescribing system.
+        </p>
+        <form
+          className="space-y-4"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            const form = e.currentTarget,
+              f = new FormData(form);
+            setBusy(true);
+            try {
+              await save({
+                data: {
+                  patientId: detail.patient.id,
+                  name: String(f.get("name")),
+                  start: String(f.get("start")),
+                  end: String(f.get("end")) || null,
+                  followUp: String(f.get("follow")) || null,
+                  type: String(f.get("type")),
+                  notes: String(f.get("notes")),
+                },
+              });
+              await refresh();
+              form.reset();
+              toast.success("Treatment record saved");
+            } catch {
+              toast.error("Could not save treatment. Check the dates.");
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          <Field label="Treatment name">
+            <input name="name" required maxLength={160} className={fieldClass} />
+          </Field>
+          <Field label="Start / procedure date">
+            <input
+              type="date"
+              name="start"
+              required
+              defaultValue={today()}
+              className={fieldClass}
+            />
+          </Field>
+          <Field label="End date (optional)">
+            <input type="date" name="end" className={fieldClass} />
+          </Field>
+          <Field label="Follow-up date (optional)">
+            <input type="date" name="follow" className={fieldClass} />
+          </Field>
+          <Field label="Procedure type (optional)">
+            <input name="type" maxLength={160} className={fieldClass} />
+          </Field>
+          <Field label="Notes">
+            <textarea name="notes" maxLength={5000} className={fieldClass} />
+          </Field>
+          <Button disabled={busy} type="submit">
+            <Save />
+            Save treatment
+          </Button>
+        </form>
+      </section>
+      <section>
+        <h2 className="mb-5 font-sans text-lg font-semibold">Treatment timeline</h2>
+        {!detail.treatments.length ? (
+          <p className="text-sm text-muted-foreground">No treatments recorded.</p>
+        ) : (
+          detail.treatments.map((t) => (
+            <article key={t.id} className="mb-5 border-l-2 border-primary pl-4">
+              <h3 className="font-sans font-semibold">{t.name}</h3>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t.start_date}
+                {t.end_date ? ` – ${t.end_date}` : ""}
+                {t.follow_up_date ? ` · Follow-up ${t.follow_up_date}` : ""}
+              </p>
+              <p className="mt-2 text-sm">{t.procedure_type}</p>
+              <p className="mt-2 whitespace-pre-wrap break-words text-sm text-muted-foreground">
+                {t.notes}
+              </p>
+            </article>
+          ))
+        )}
+      </section>
+    </div>
+  );
+}
+function NotesWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Promise<void> }) {
+  const save = useServerFn(addNote),
+    [busy, setBusy] = useState(false);
+  return (
+    <section className="max-w-3xl">
+      <h2 className="mb-5 font-sans text-lg font-semibold">Clinician notes</h2>
+      <form
+        className="space-y-3"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const form = e.currentTarget,
+            f = new FormData(form);
+          setBusy(true);
+          try {
+            await save({
+              data: {
+                patientId: detail.patient.id,
+                content: String(f.get("content")),
+                photoA: null,
+                photoB: null,
+              },
+            });
+            await refresh();
+            form.reset();
+            toast.success("Note saved");
+          } catch {
+            toast.error("Could not save note");
+          } finally {
+            setBusy(false);
+          }
+        }}
+      >
+        <Field label="New note (test data only)">
+          <textarea name="content" required maxLength={5000} className={fieldClass} />
+        </Field>
+        <Button type="submit" disabled={busy}>
+          <Save />
+          Save note
+        </Button>
+      </form>
+      <div className="mt-8 space-y-5">
+        {detail.notes.map((n) => (
+          <article key={n.id} className="border-b border-border pb-5">
+            <p className="text-xs text-muted-foreground">
+              {new Date(n.created_at).toLocaleString()}
+              {n.photo_a ? " · Comparison observations" : ""}
+            </p>
+            <p className="mt-2 whitespace-pre-wrap break-words text-sm">{n.content}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
