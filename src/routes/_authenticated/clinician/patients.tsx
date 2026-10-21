@@ -5,7 +5,7 @@ import { clinicianHead } from "@/lib/clinician/rules";
 import { SectionTitle } from "@/components/clinician/Shell";
 import { AddPatientButton, PatientList } from "@/components/clinician/Patients";
 export const Route = createFileRoute("/_authenticated/clinician/patients")({
-  head: () => clinicianHead("Patients", "Manage your own non-identifying patient test records."),
+  head: () => clinicianHead("My Patients", "Manage your own private longitudinal patient test records and linked cases."),
   loader: ({ context }) => context.queryClient.ensureQueryData(overviewOptions),
   component: Patients,
 });
@@ -14,7 +14,7 @@ function Patients() {
   return (
     <>
       <SectionTitle
-        title="Patients"
+        title="My Patients"
         subtitle="Private, account-scoped test records."
         action={<AddPatientButton />}
       />

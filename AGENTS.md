@@ -16,3 +16,6 @@
 - Clinician routes live beneath the authenticated clinician layout and bypass the consumer shell; every data operation is separately protected by account-scoped RLS so route visibility never grants data access.
 - Clinician enrollment and patient creation use validated database functions that atomically establish unverified membership and owner-only authorization; sensitive records never enter consumer local storage.
 - Clinician photos use the private clinician-test-photos bucket with short-lived signed URLs, and clinician account removal goes through deletion requests to avoid bypassing retention review.
+- Clinical cases are patient children; database triggers enforce same-patient case and treatment links across documents, photos and documentation to prevent cross-record association.
+- Archive mutations update only archival state, retaining files and history; authenticated owner reads include archived records so restoration remains possible.
+- Related documents use a separate private clinician-test-documents bucket with short-lived signed downloads; file association and library filters never replace account-scoped authorization.

@@ -754,9 +754,6 @@ export function TreatmentWorkspace({ detail, refresh, caseId }: { detail: Detail
             }
           }}
         >
-          <Field label="Treatment name">
-            <input type="hidden" />
-          </Field>
           <CaseField detail={detail} caseId={caseId} />
           <Field label="Treatment name">
             <input name="name" required maxLength={160} className={fieldClass} />
@@ -845,9 +842,6 @@ export function NotesWorkspace({ detail, refresh, caseId }: { detail: Detail; re
           }
         }}
       >
-        <Field label="New note (test data only)">
-          <input type="hidden" />
-        </Field>
         <CaseField detail={detail} caseId={caseId} />
         <Field label="New note (test data only)">
           <textarea name="content" required maxLength={5000} className={fieldClass} />

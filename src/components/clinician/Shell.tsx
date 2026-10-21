@@ -7,13 +7,17 @@ import {
   ShieldCheck,
   Flower2,
   ArrowLeft,
+  FolderOpen,
+  Images,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 const tabs = [
   { to: "/clinician/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/clinician/patients", label: "Patients", icon: Users },
+  { to: "/clinician/patients", label: "My Patients", icon: Users },
+  { to: "/clinician/cases", label: "My Cases", icon: FolderOpen },
+  { to: "/clinician/photos", label: "Photo Library", icon: Images },
   { to: "/clinician/progress", label: "Progress", icon: ChartNoAxesCombined },
   { to: "/clinician/settings", label: "Settings", icon: Settings },
 ] as const;
