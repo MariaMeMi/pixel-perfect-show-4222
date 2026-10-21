@@ -38,8 +38,107 @@ export type Database = {
         }
         Relationships: []
       }
+      clinician_case_updates: {
+        Row: {
+          case_id: string
+          content: string
+          created_at: string
+          event_date: string
+          event_type: string
+          id: string
+          patient_id: string
+          recorded_by: string
+        }
+        Insert: {
+          case_id: string
+          content: string
+          created_at?: string
+          event_date: string
+          event_type: string
+          id?: string
+          patient_id: string
+          recorded_by?: string
+        }
+        Update: {
+          case_id?: string
+          content?: string
+          created_at?: string
+          event_date?: string
+          event_type?: string
+          id?: string
+          patient_id?: string
+          recorded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinician_case_updates_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "clinician_cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinician_case_updates_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "clinician_patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clinician_cases: {
+        Row: {
+          archived: boolean
+          category: string
+          created_at: string
+          created_by: string
+          follow_up_date: string | null
+          id: string
+          opened_date: string
+          outcomes: string
+          patient_id: string
+          summary: string
+          title: string
+        }
+        Insert: {
+          archived?: boolean
+          category: string
+          created_at?: string
+          created_by?: string
+          follow_up_date?: string | null
+          id?: string
+          opened_date: string
+          outcomes?: string
+          patient_id: string
+          summary?: string
+          title: string
+        }
+        Update: {
+          archived?: boolean
+          category?: string
+          created_at?: string
+          created_by?: string
+          follow_up_date?: string | null
+          id?: string
+          opened_date?: string
+          outcomes?: string
+          patient_id?: string
+          summary?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinician_cases_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "clinician_patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clinician_checkins: {
         Row: {
+          case_id: string | null
           created_at: string
           id: string
           observation_date: string
@@ -49,6 +148,7 @@ export type Database = {
           recorded_by: string
         }
         Insert: {
+          case_id?: string | null
           created_at?: string
           id?: string
           observation_date: string
@@ -58,6 +158,7 @@ export type Database = {
           recorded_by?: string
         }
         Update: {
+          case_id?: string | null
           created_at?: string
           id?: string
           observation_date?: string
@@ -67,6 +168,13 @@ export type Database = {
           recorded_by?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "clinician_checkins_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "clinician_cases"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "clinician_checkins_patient_id_fkey"
             columns: ["patient_id"]
@@ -132,8 +240,79 @@ export type Database = {
         }
         Relationships: []
       }
+      clinician_documents: {
+        Row: {
+          archived: boolean
+          case_id: string
+          created_at: string
+          document_date: string
+          file_name: string
+          id: string
+          is_test: boolean
+          note: string
+          patient_id: string
+          storage_path: string
+          tags: string[]
+          treatment_id: string | null
+          uploaded_by: string
+        }
+        Insert: {
+          archived?: boolean
+          case_id: string
+          created_at?: string
+          document_date: string
+          file_name: string
+          id?: string
+          is_test?: boolean
+          note?: string
+          patient_id: string
+          storage_path: string
+          tags?: string[]
+          treatment_id?: string | null
+          uploaded_by?: string
+        }
+        Update: {
+          archived?: boolean
+          case_id?: string
+          created_at?: string
+          document_date?: string
+          file_name?: string
+          id?: string
+          is_test?: boolean
+          note?: string
+          patient_id?: string
+          storage_path?: string
+          tags?: string[]
+          treatment_id?: string | null
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinician_documents_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "clinician_cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinician_documents_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "clinician_patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinician_documents_treatment_id_fkey"
+            columns: ["treatment_id"]
+            isOneToOne: false
+            referencedRelation: "clinician_treatments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clinician_notes: {
         Row: {
+          case_id: string | null
           content: string
           created_at: string
           id: string
@@ -143,6 +322,7 @@ export type Database = {
           recorded_by: string
         }
         Insert: {
+          case_id?: string | null
           content: string
           created_at?: string
           id?: string
@@ -152,6 +332,7 @@ export type Database = {
           recorded_by?: string
         }
         Update: {
+          case_id?: string | null
           content?: string
           created_at?: string
           id?: string
@@ -161,6 +342,13 @@ export type Database = {
           recorded_by?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "clinician_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "clinician_cases"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "clinician_notes_patient_id_fkey"
             columns: ["patient_id"]
@@ -251,44 +439,73 @@ export type Database = {
       }
       clinician_photos: {
         Row: {
+          archived: boolean
           capture_date: string
+          case_id: string | null
           created_at: string
           facial_view: string
           id: string
           label: string
           note: string
           patient_id: string
+          session_name: string
           storage_path: string
+          tags: string[]
+          treatment_id: string | null
           uploaded_by: string
         }
         Insert: {
+          archived?: boolean
           capture_date: string
+          case_id?: string | null
           created_at?: string
           facial_view: string
           id?: string
           label?: string
           note?: string
           patient_id: string
+          session_name?: string
           storage_path: string
+          tags?: string[]
+          treatment_id?: string | null
           uploaded_by?: string
         }
         Update: {
+          archived?: boolean
           capture_date?: string
+          case_id?: string | null
           created_at?: string
           facial_view?: string
           id?: string
           label?: string
           note?: string
           patient_id?: string
+          session_name?: string
           storage_path?: string
+          tags?: string[]
+          treatment_id?: string | null
           uploaded_by?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "clinician_photos_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "clinician_cases"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "clinician_photos_patient_id_fkey"
             columns: ["patient_id"]
             isOneToOne: false
             referencedRelation: "clinician_patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinician_photos_treatment_id_fkey"
+            columns: ["treatment_id"]
+            isOneToOne: false
+            referencedRelation: "clinician_treatments"
             referencedColumns: ["id"]
           },
         ]
@@ -331,6 +548,7 @@ export type Database = {
       }
       clinician_treatments: {
         Row: {
+          case_id: string | null
           created_at: string
           end_date: string | null
           follow_up_date: string | null
@@ -343,6 +561,7 @@ export type Database = {
           start_date: string
         }
         Insert: {
+          case_id?: string | null
           created_at?: string
           end_date?: string | null
           follow_up_date?: string | null
@@ -355,6 +574,7 @@ export type Database = {
           start_date: string
         }
         Update: {
+          case_id?: string | null
           created_at?: string
           end_date?: string | null
           follow_up_date?: string | null
@@ -367,6 +587,13 @@ export type Database = {
           start_date?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "clinician_treatments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "clinician_cases"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "clinician_treatments_patient_id_fkey"
             columns: ["patient_id"]

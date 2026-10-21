@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Extend clinician workspace: My Patients, My Cases, private Photo Library and documents, linked histories, archive/restore; authenticated uploads, downloads, retained files, comparisons, mobile views and account isolation verified. Real patient use remains blocked pending healthcare safeguards.
 - [x] Clinician MVP: separate entry and onboarding, dashboard, patient profiles, private photos, comparison, subjective progress and documentation; authenticated test flow and account isolation verified. Real patient use remains blocked pending healthcare safeguards.
 - [x] Botox AI feature (separate section, Home card)
 - [x] Add Botox AI choice to the "Check my skin" (Analyze) screen alongside Redness AI

@@ -21,6 +21,11 @@ import {
 import { metrics, canCompare } from "@/lib/clinician/rules";
 import { Field, fieldClass, today } from "./Fields";
 import { SectionTitle } from "./Shell";
+import { AddCaseButton, CaseList } from "./Cases";
+import { CaseField, FileFields, readFileFields } from "./Associations";
+import { Documents } from "./Documents";
+import { archiveFile } from "@/lib/clinician/library.functions";
+import { visibleRecords } from "@/lib/clinician/library-rules";
 type Detail = Awaited<ReturnType<typeof patientDetail>>;
 type Photo = Detail["photos"][number];
 export function PrivatePhoto({ photo }: { photo: Photo }) {
@@ -69,7 +74,7 @@ export function PatientWorkspace({ detail }: { detail: Detail }) {
         action={<EditPatientForm detail={detail} refresh={refresh} />}
       />
       <div className="mb-8 flex gap-1 overflow-x-auto border-b border-border pb-3">
-        {["Overview", "Photos", "Progress", "Treatments", "Notes"].map((t) => (
+        {["Overview", "Cases", "Photos", "Documents", "History", "Progress", "Treatments", "Notes"].map((t) => (
           <Button key={t} variant={tab === t ? "secondary" : "ghost"} onClick={() => setTab(t)}>
             {t}
           </Button>
@@ -121,6 +126,9 @@ export function PatientWorkspace({ detail }: { detail: Detail }) {
         </div>
       )}
       {tab === "Photos" && <PhotoWorkspace detail={detail} refresh={refresh} />}
+      {tab === "Cases" && <div className="space-y-6"><AddCaseButton patients={[p]} patientId={p.id} /><CaseList cases={detail.cases} patients={[p]} /></div>}
+      {tab === "Documents" && <Documents detail={detail} refresh={refresh} />}
+      {tab === "History" && <RecordHistory detail={detail} />}
       {tab === "Progress" && <ProgressWorkspace detail={detail} refresh={refresh} />}
       {tab === "Treatments" && <TreatmentWorkspace detail={detail} refresh={refresh} />}
       {tab === "Notes" && <NotesWorkspace detail={detail} refresh={refresh} />}
@@ -227,13 +235,16 @@ function EditPatientForm({ detail, refresh }: { detail: Detail; refresh: () => P
     </>
   );
 }
-function PhotoWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Promise<void> }) {
+export function PhotoWorkspace({ detail, refresh, caseId }: { detail: Detail; refresh: () => Promise<void>; caseId?: string }) {
   const [uploadOpen, setUploadOpen] = useState(false),
     [editing, setEditing] = useState<Photo | null>(null),
     [a, setA] = useState(""),
     [b, setB] = useState(""),
     [busy, setBusy] = useState(false),
     [slider, setSlider] = useState(false);
+  const [mode, setMode] = useState("active");
+  const archive = useServerFn(archiveFile);
+  const shownPhotos = visibleRecords(detail.photos, mode);
   const save = useServerFn(savePhoto),
     edit = useServerFn(editPhoto),
     remove = useServerFn(deletePhoto),
@@ -250,7 +261,8 @@ function PhotoWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Pr
           Upload test photo
         </Button>
       </div>
-      {!detail.photos.length ? (
+      <select aria-label="Photo status" value={mode} onChange={e => setMode(e.target.value)} className={`${fieldClass} max-w-xs`}><option value="active">Active photos</option><option value="archived">Archived photos</option><option value="all">All photos</option></select>
+      {!shownPhotos.length ? (
         <div className="border-y border-dashed border-border py-12 text-center">
           <Camera className="mx-auto mb-3 size-7 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">
@@ -259,7 +271,7 @@ function PhotoWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Pr
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-          {detail.photos.map((p) => (
+          {shownPhotos.map((p) => (
             <div key={p.id} className="min-w-0 rounded-md border border-border bg-card p-3">
               <PrivatePhoto photo={p} />
               <div className="mt-3 flex items-start justify-between gap-1">
@@ -269,6 +281,7 @@ function PhotoWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Pr
                     {p.facial_view} · {p.label || "Unlabeled"}
                   </p>
                   <p className="mt-1 break-words text-xs text-muted-foreground">{p.note}</p>
+                  <p className="mt-1 break-words text-xs text-muted-foreground">{p.session_name} {p.tags.join(", ")}{p.archived ? " · Archived" : ""}</p>
                 </div>
                 <Button
                   aria-label={`Edit photo ${p.capture_date}`}
@@ -357,6 +370,7 @@ function PhotoWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Pr
                     await note({
                       data: {
                         patientId: detail.patient.id,
+                        caseId: caseId ?? null,
                         content: String(f.get("observations")),
                         photoA: a,
                         photoB: b,
@@ -416,6 +430,7 @@ function PhotoWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Pr
               setBusy(true);
               try {
                 const metadata = {
+                  ...readFileFields(f),
                   captureDate: String(f.get("date")),
                   view: String(f.get("view")) as Photo["facial_view"] &
                     ("Front" | "Left" | "Right" | "Other"),
@@ -468,6 +483,7 @@ function PhotoWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Pr
               }
             }}
           >
+            <FileFields detail={detail} caseId={caseId} initial={editing ?? undefined} />
             {!editing && (
               <>
                 <Field label="Synthetic photo (JPG, PNG, WebP · max 5 MB)">
@@ -528,6 +544,9 @@ function PhotoWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Pr
             </Button>
           </form>
           {editing && (
+            <Button variant="outline" disabled={busy} onClick={async () => { try { await archive({ data: { id: editing.id, kind: "photo", archived: !editing.archived } }); setEditing(null); await refresh(); } catch { toast.error("Could not change photo status"); } }}><Archive />{editing.archived ? "Restore photo" : "Archive photo — keep file"}</Button>
+          )}
+          {editing && (
             <Button
               variant="destructive"
               disabled={busy}
@@ -583,7 +602,7 @@ function ComparisonSlider({ a, b }: { a: Photo; b: Photo }) {
     </div>
   );
 }
-function ProgressWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Promise<void> }) {
+export function ProgressWorkspace({ detail, refresh, caseId }: { detail: Detail; refresh: () => Promise<void>; caseId?: string }) {
   const save = useServerFn(addCheckin),
     [busy, setBusy] = useState(false);
   const labels = metrics[detail.patient.concern] ?? metrics["Other"] ?? [];
@@ -606,6 +625,7 @@ function ProgressWorkspace({ detail, refresh }: { detail: Detail; refresh: () =>
               await save({
                 data: {
                   patientId: detail.patient.id,
+                  caseId: caseId ?? null,
                   date: String(f.get("date")),
                   ratings: Object.fromEntries(labels.map((l) => [l, Number(f.get(l))])),
                   observations: String(f.get("observations")),
@@ -694,7 +714,7 @@ function ProgressWorkspace({ detail, refresh }: { detail: Detail; refresh: () =>
     </div>
   );
 }
-function TreatmentWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Promise<void> }) {
+export function TreatmentWorkspace({ detail, refresh, caseId }: { detail: Detail; refresh: () => Promise<void>; caseId?: string }) {
   const save = useServerFn(addTreatment),
     [busy, setBusy] = useState(false);
   return (
@@ -715,6 +735,7 @@ function TreatmentWorkspace({ detail, refresh }: { detail: Detail; refresh: () =
               await save({
                 data: {
                   patientId: detail.patient.id,
+                  caseId: String(f.get("case")) || null,
                   name: String(f.get("name")),
                   start: String(f.get("start")),
                   end: String(f.get("end")) || null,
@@ -733,6 +754,7 @@ function TreatmentWorkspace({ detail, refresh }: { detail: Detail; refresh: () =
             }
           }}
         >
+          <CaseField detail={detail} caseId={caseId} />
           <Field label="Treatment name">
             <input name="name" required maxLength={160} className={fieldClass} />
           </Field>
@@ -787,7 +809,7 @@ function TreatmentWorkspace({ detail, refresh }: { detail: Detail; refresh: () =
     </div>
   );
 }
-function NotesWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Promise<void> }) {
+export function NotesWorkspace({ detail, refresh, caseId }: { detail: Detail; refresh: () => Promise<void>; caseId?: string }) {
   const save = useServerFn(addNote),
     [busy, setBusy] = useState(false);
   return (
@@ -804,6 +826,7 @@ function NotesWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Pr
             await save({
               data: {
                 patientId: detail.patient.id,
+                caseId: String(f.get("case")) || null,
                 content: String(f.get("content")),
                 photoA: null,
                 photoB: null,
@@ -819,6 +842,7 @@ function NotesWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Pr
           }
         }}
       >
+        <CaseField detail={detail} caseId={caseId} />
         <Field label="New note (test data only)">
           <textarea name="content" required maxLength={5000} className={fieldClass} />
         </Field>
@@ -840,4 +864,16 @@ function NotesWorkspace({ detail, refresh }: { detail: Detail; refresh: () => Pr
       </div>
     </section>
   );
+}
+export function RecordHistory({ detail }: { detail: Detail }) {
+  const events = [
+    ...detail.cases.map(c => ({ id: c.id, date: c.opened_date, title: `Case opened · ${c.title}`, content: c.summary })),
+    ...detail.updates.map(u => ({ id: u.id, date: u.event_date, title: u.event_type, content: u.content })),
+    ...detail.treatments.map(t => ({ id: t.id, date: t.start_date, title: `Treatment / procedure · ${t.name}`, content: t.notes })),
+    ...detail.checkins.map(c => ({ id: c.id, date: c.observation_date, title: "Subjective check-in", content: c.observations })),
+    ...detail.photos.map(p => ({ id: p.id, date: p.capture_date, title: `Photo session · ${p.session_name || p.facial_view}${p.archived ? " · Archived" : ""}`, content: p.note })),
+    ...detail.documents.map(d => ({ id: d.id, date: d.document_date, title: `Document · ${d.file_name}${d.archived ? " · Archived" : ""}`, content: d.note })),
+    ...detail.notes.map(n => ({ id: n.id, date: n.created_at.slice(0, 10), title: "Clinical note", content: n.content })),
+  ].sort((a, b) => b.date.localeCompare(a.date));
+  return <section><h2 className="mb-6 font-sans text-lg font-semibold">Chronological record</h2>{!events.length && <p className="text-sm text-muted-foreground">No history recorded.</p>}<div className="space-y-6">{events.map(e => <article key={e.id} className="border-l-2 border-border pl-4"><p className="text-xs text-muted-foreground">{e.date}</p><h3 className="mt-1 break-words font-sans text-sm font-semibold">{e.title}</h3><p className="mt-2 whitespace-pre-wrap break-words text-sm text-muted-foreground">{e.content}</p></article>)}</div></section>;
 }
