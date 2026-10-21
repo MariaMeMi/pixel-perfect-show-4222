@@ -1,8 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { Camera, Home, LineChart, BookOpen, Sparkles, User } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 import { RosieChat } from "@/components/RosieChat";
 
 const tabs = [
