@@ -25,6 +25,8 @@ export const Route = createFileRoute("/results")({
         property: "og:description",
         content: "A calm, non-diagnostic reading of today's visible facial redness.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ResultsPage,

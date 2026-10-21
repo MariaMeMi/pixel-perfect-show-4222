@@ -24,6 +24,8 @@ export const Route = createFileRoute("/profile")({
         property: "og:description",
         content: "Manage your skin profile and decide exactly what stays on your device.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ProfilePage,

@@ -19,6 +19,8 @@ export const Route = createFileRoute("/learn")({
         property: "og:description",
         content: "Simple, reassuring reads about redness-prone skin.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: LearnPage,
