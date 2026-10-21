@@ -22,9 +22,33 @@ export function AppShell({ children }: { children: ReactNode }) {
   if (pathname.startsWith('/clinician')) return <>{children}</>;
   const isOnboarding = pathname === "/onboarding" || pathname === "/welcome";
 
+  // Navigation is hidden during onboarding/welcome — offer signed-in users a way out.
+  const [hasSession, setHasSession] = useState(false);
+  useEffect(() => {
+    if (!isOnboarding) return;
+    let cancelled = false;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!cancelled) setHasSession(Boolean(data.session));
+    });
+    return () => { cancelled = true; };
+  }, [isOnboarding]);
+
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[30rem] flex-col bg-background">
       <main className={cn("flex-1 px-5 pt-8", isOnboarding ? "pb-8" : "pb-32")}>{children}</main>
+
+      {isOnboarding && hasSession && (
+        <button
+          type="button"
+          onClick={async () => {
+            await supabase.auth.signOut();
+            window.location.assign("/welcome");
+          }}
+          className="fixed right-3 top-3 z-50 rounded-full border border-border bg-card/90 px-3.5 py-2 text-xs font-medium text-muted-foreground backdrop-blur"
+        >
+          {t("profile.signOut")}
+        </button>
+      )}
 
       {!isOnboarding && <RosieChat />}
 
