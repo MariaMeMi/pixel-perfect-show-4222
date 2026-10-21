@@ -243,10 +243,10 @@ export const editPhoto = createServerFn({ method: "POST" })
         facial_view: data.view,
         label: data.label,
         note: data.note,
-        case_id: data.caseId,
-        treatment_id: data.treatmentId,
-        tags: data.tags,
-        session_name: data.sessionName,
+        ...(data.caseId !== undefined ? { case_id: data.caseId } : {}),
+        ...(data.treatmentId !== undefined ? { treatment_id: data.treatmentId } : {}),
+        ...(data.tags !== undefined ? { tags: data.tags } : {}),
+        ...(data.sessionName !== undefined ? { session_name: data.sessionName } : {}),
       })
       .eq("id", data.id)
       .select("patient_id")

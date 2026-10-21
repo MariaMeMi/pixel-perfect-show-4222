@@ -7,7 +7,8 @@ describe("longitudinal case rules", () => {
     expect(Object.keys(archivePatch(true))).toEqual(["archived"]);
   });
   it("restoring brings a case back without losing records", () => {
-    const restored = { ...record, archived: true, ...archivePatch(false) };
+    const archived = { ...record, ...archivePatch(true) };
+    const restored = { ...archived, ...archivePatch(false) };
     expect(visibleRecords([restored], "active")).toEqual([record]);
   });
   it("archived cases are retrievable separately", () => {

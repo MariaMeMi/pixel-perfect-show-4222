@@ -30,10 +30,13 @@ import { Route as ApiAnalyzeRouteImport } from './routes/api/analyze'
 import { Route as ApiBotoxRouteImport } from './routes/api/botox'
 import { Route as ApiRosieChatRouteImport } from './routes/api/rosie-chat'
 import { Route as ClinicianOnboardingRouteImport } from './routes/clinician.onboarding'
+import { Route as AuthenticatedClinicianCasesRouteImport } from './routes/_authenticated/clinician/cases'
 import { Route as AuthenticatedClinicianDashboardRouteImport } from './routes/_authenticated/clinician/dashboard'
 import { Route as AuthenticatedClinicianPatientsRouteImport } from './routes/_authenticated/clinician/patients'
+import { Route as AuthenticatedClinicianPhotosRouteImport } from './routes/_authenticated/clinician/photos'
 import { Route as AuthenticatedClinicianProgressRouteImport } from './routes/_authenticated/clinician/progress'
 import { Route as AuthenticatedClinicianSettingsRouteImport } from './routes/_authenticated/clinician/settings'
+import { Route as AuthenticatedClinicianCasesIdRouteImport } from './routes/_authenticated/clinician/cases_.$id'
 import { Route as AuthenticatedClinicianPatientsIdRouteImport } from './routes/_authenticated/clinician/patients_.$id'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
@@ -145,6 +148,12 @@ const ClinicianOnboardingRoute = ClinicianOnboardingRouteImport.update({
   path: '/clinician/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedClinicianCasesRoute =
+  AuthenticatedClinicianCasesRouteImport.update({
+    id: '/cases',
+    path: '/cases',
+    getParentRoute: () => AuthenticatedClinicianRouteRoute,
+  } as any)
 const AuthenticatedClinicianDashboardRoute =
   AuthenticatedClinicianDashboardRouteImport.update({
     id: '/dashboard',
@@ -157,6 +166,12 @@ const AuthenticatedClinicianPatientsRoute =
     path: '/patients',
     getParentRoute: () => AuthenticatedClinicianRouteRoute,
   } as any)
+const AuthenticatedClinicianPhotosRoute =
+  AuthenticatedClinicianPhotosRouteImport.update({
+    id: '/photos',
+    path: '/photos',
+    getParentRoute: () => AuthenticatedClinicianRouteRoute,
+  } as any)
 const AuthenticatedClinicianProgressRoute =
   AuthenticatedClinicianProgressRouteImport.update({
     id: '/progress',
@@ -167,6 +182,12 @@ const AuthenticatedClinicianSettingsRoute =
   AuthenticatedClinicianSettingsRouteImport.update({
     id: '/settings',
     path: '/settings',
+    getParentRoute: () => AuthenticatedClinicianRouteRoute,
+  } as any)
+const AuthenticatedClinicianCasesIdRoute =
+  AuthenticatedClinicianCasesIdRouteImport.update({
+    id: '/cases_/$id',
+    path: '/cases/$id',
     getParentRoute: () => AuthenticatedClinicianRouteRoute,
   } as any)
 const AuthenticatedClinicianPatientsIdRoute =
@@ -219,10 +240,13 @@ export interface FileRoutesByFullPath {
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
   '/clinician/onboarding': typeof ClinicianOnboardingRoute
+  '/clinician/cases': typeof AuthenticatedClinicianCasesRoute
   '/clinician/dashboard': typeof AuthenticatedClinicianDashboardRoute
   '/clinician/patients': typeof AuthenticatedClinicianPatientsRoute
+  '/clinician/photos': typeof AuthenticatedClinicianPhotosRoute
   '/clinician/progress': typeof AuthenticatedClinicianProgressRoute
   '/clinician/settings': typeof AuthenticatedClinicianSettingsRoute
+  '/clinician/cases/$id': typeof AuthenticatedClinicianCasesIdRoute
   '/clinician/patients/$id': typeof AuthenticatedClinicianPatientsIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -250,10 +274,13 @@ export interface FileRoutesByTo {
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
   '/clinician/onboarding': typeof ClinicianOnboardingRoute
+  '/clinician/cases': typeof AuthenticatedClinicianCasesRoute
   '/clinician/dashboard': typeof AuthenticatedClinicianDashboardRoute
   '/clinician/patients': typeof AuthenticatedClinicianPatientsRoute
+  '/clinician/photos': typeof AuthenticatedClinicianPhotosRoute
   '/clinician/progress': typeof AuthenticatedClinicianProgressRoute
   '/clinician/settings': typeof AuthenticatedClinicianSettingsRoute
+  '/clinician/cases/$id': typeof AuthenticatedClinicianCasesIdRoute
   '/clinician/patients/$id': typeof AuthenticatedClinicianPatientsIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -283,10 +310,13 @@ export interface FileRoutesById {
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
   '/clinician/onboarding': typeof ClinicianOnboardingRoute
+  '/_authenticated/clinician/cases': typeof AuthenticatedClinicianCasesRoute
   '/_authenticated/clinician/dashboard': typeof AuthenticatedClinicianDashboardRoute
   '/_authenticated/clinician/patients': typeof AuthenticatedClinicianPatientsRoute
+  '/_authenticated/clinician/photos': typeof AuthenticatedClinicianPhotosRoute
   '/_authenticated/clinician/progress': typeof AuthenticatedClinicianProgressRoute
   '/_authenticated/clinician/settings': typeof AuthenticatedClinicianSettingsRoute
+  '/_authenticated/clinician/cases_/$id': typeof AuthenticatedClinicianCasesIdRoute
   '/_authenticated/clinician/patients_/$id': typeof AuthenticatedClinicianPatientsIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -316,10 +346,13 @@ export interface FileRouteTypes {
     | '/api/botox'
     | '/api/rosie-chat'
     | '/clinician/onboarding'
+    | '/clinician/cases'
     | '/clinician/dashboard'
     | '/clinician/patients'
+    | '/clinician/photos'
     | '/clinician/progress'
     | '/clinician/settings'
+    | '/clinician/cases/$id'
     | '/clinician/patients/$id'
     | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
@@ -347,10 +380,13 @@ export interface FileRouteTypes {
     | '/api/botox'
     | '/api/rosie-chat'
     | '/clinician/onboarding'
+    | '/clinician/cases'
     | '/clinician/dashboard'
     | '/clinician/patients'
+    | '/clinician/photos'
     | '/clinician/progress'
     | '/clinician/settings'
+    | '/clinician/cases/$id'
     | '/clinician/patients/$id'
     | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
@@ -379,10 +415,13 @@ export interface FileRouteTypes {
     | '/api/botox'
     | '/api/rosie-chat'
     | '/clinician/onboarding'
+    | '/_authenticated/clinician/cases'
     | '/_authenticated/clinician/dashboard'
     | '/_authenticated/clinician/patients'
+    | '/_authenticated/clinician/photos'
     | '/_authenticated/clinician/progress'
     | '/_authenticated/clinician/settings'
+    | '/_authenticated/clinician/cases_/$id'
     | '/_authenticated/clinician/patients_/$id'
     | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
@@ -566,6 +605,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClinicianOnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/clinician/cases': {
+      id: '/_authenticated/clinician/cases'
+      path: '/cases'
+      fullPath: '/clinician/cases'
+      preLoaderRoute: typeof AuthenticatedClinicianCasesRouteImport
+      parentRoute: typeof AuthenticatedClinicianRouteRoute
+    }
     '/_authenticated/clinician/dashboard': {
       id: '/_authenticated/clinician/dashboard'
       path: '/dashboard'
@@ -580,6 +626,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedClinicianPatientsRouteImport
       parentRoute: typeof AuthenticatedClinicianRouteRoute
     }
+    '/_authenticated/clinician/photos': {
+      id: '/_authenticated/clinician/photos'
+      path: '/photos'
+      fullPath: '/clinician/photos'
+      preLoaderRoute: typeof AuthenticatedClinicianPhotosRouteImport
+      parentRoute: typeof AuthenticatedClinicianRouteRoute
+    }
     '/_authenticated/clinician/progress': {
       id: '/_authenticated/clinician/progress'
       path: '/progress'
@@ -592,6 +645,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/clinician/settings'
       preLoaderRoute: typeof AuthenticatedClinicianSettingsRouteImport
+      parentRoute: typeof AuthenticatedClinicianRouteRoute
+    }
+    '/_authenticated/clinician/cases_/$id': {
+      id: '/_authenticated/clinician/cases_/$id'
+      path: '/cases/$id'
+      fullPath: '/clinician/cases/$id'
+      preLoaderRoute: typeof AuthenticatedClinicianCasesIdRouteImport
       parentRoute: typeof AuthenticatedClinicianRouteRoute
     }
     '/_authenticated/clinician/patients_/$id': {
@@ -633,19 +693,25 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedClinicianRouteRouteChildren {
+  AuthenticatedClinicianCasesRoute: typeof AuthenticatedClinicianCasesRoute
   AuthenticatedClinicianDashboardRoute: typeof AuthenticatedClinicianDashboardRoute
   AuthenticatedClinicianPatientsRoute: typeof AuthenticatedClinicianPatientsRoute
+  AuthenticatedClinicianPhotosRoute: typeof AuthenticatedClinicianPhotosRoute
   AuthenticatedClinicianProgressRoute: typeof AuthenticatedClinicianProgressRoute
   AuthenticatedClinicianSettingsRoute: typeof AuthenticatedClinicianSettingsRoute
+  AuthenticatedClinicianCasesIdRoute: typeof AuthenticatedClinicianCasesIdRoute
   AuthenticatedClinicianPatientsIdRoute: typeof AuthenticatedClinicianPatientsIdRoute
 }
 
 const AuthenticatedClinicianRouteRouteChildren: AuthenticatedClinicianRouteRouteChildren =
   {
+    AuthenticatedClinicianCasesRoute: AuthenticatedClinicianCasesRoute,
     AuthenticatedClinicianDashboardRoute: AuthenticatedClinicianDashboardRoute,
     AuthenticatedClinicianPatientsRoute: AuthenticatedClinicianPatientsRoute,
+    AuthenticatedClinicianPhotosRoute: AuthenticatedClinicianPhotosRoute,
     AuthenticatedClinicianProgressRoute: AuthenticatedClinicianProgressRoute,
     AuthenticatedClinicianSettingsRoute: AuthenticatedClinicianSettingsRoute,
+    AuthenticatedClinicianCasesIdRoute: AuthenticatedClinicianCasesIdRoute,
     AuthenticatedClinicianPatientsIdRoute:
       AuthenticatedClinicianPatientsIdRoute,
   }

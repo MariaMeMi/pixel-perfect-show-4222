@@ -6,12 +6,6 @@ export const caseSchema = z.object({
   category: caseCategory, date: dateSchema, followUp: dateSchema.nullable(),
   summary: z.string().max(5000), testOnly: z.literal(true),
 });
-export const fileAssociation = {
-  caseId: z.string().uuid().nullable().optional(),
-  treatmentId: z.string().uuid().nullable().optional(),
-  tags: z.array(z.string().trim().min(1).max(50)).max(20).optional(),
-  sessionName: z.string().max(120).optional(),
-};
 export const parseTags = (value: string) => [...new Set(value.split(",").map(t => t.trim()).filter(Boolean))];
 export function archivePatch(archived: boolean) { return { archived }; }
 export function visibleRecords<T extends { archived: boolean }>(records: T[], mode: string) {

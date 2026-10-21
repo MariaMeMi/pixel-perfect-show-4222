@@ -3,10 +3,10 @@ import type { patientDetail } from "@/lib/clinician/portal.functions";
 import { parseTags } from "@/lib/clinician/library-rules";
 import { Field, fieldClass } from "./Fields";
 type Detail = Awaited<ReturnType<typeof patientDetail>>;
-export function CaseField({ detail, caseId }: { detail: Detail; caseId?: string | null }) {
+export function CaseField({ detail, caseId }: { detail: Detail; caseId?: string | null | undefined }) {
   return <Field label="Clinical case"><select name="case" defaultValue={caseId ?? ""} className={fieldClass}><option value="">Patient-level record</option>{detail.cases.map(c => <option key={c.id} value={c.id}>{c.title}{c.archived ? " · Archived" : ""}</option>)}</select></Field>;
 }
-export function FileFields({ detail, caseId, initial }: { detail: Detail; caseId?: string | null; initial?: { case_id: string | null; treatment_id: string | null; tags: string[]; session_name: string } }) {
+export function FileFields({ detail, caseId, initial }: { detail: Detail; caseId?: string | null | undefined; initial?: { case_id: string | null; treatment_id: string | null; tags: string[]; session_name: string } | undefined }) {
   const [selected, setSelected] = useState(initial?.case_id ?? caseId ?? "");
   return <>
     <Field label="Clinical case"><select name="case" value={selected} onChange={e => setSelected(e.target.value)} className={fieldClass}><option value="">Patient-level record</option>{detail.cases.map(c => <option key={c.id} value={c.id}>{c.title}{c.archived ? " · Archived" : ""}</option>)}</select></Field>
