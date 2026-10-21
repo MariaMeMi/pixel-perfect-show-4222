@@ -71,9 +71,9 @@ export function ClinicianShell({ children }: { children: ReactNode }) {
               Test data only
             </span>
           </div>
-          <nav className="mt-4 flex gap-1 overflow-x-auto md:hidden">
+          <nav className="mt-4 grid grid-cols-3 gap-1 md:hidden">
             {tabs.map((t) => (
-              <Button key={t.to} variant="ghost" size="sm" asChild>
+              <Button key={t.to} variant="ghost" size="sm" className="h-auto min-h-12 flex-col gap-1 whitespace-normal px-1 text-xs" asChild>
                 <Link to={t.to}>
                   <t.icon />
                   {t.label}
