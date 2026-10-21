@@ -1,0 +1,7 @@
+import {createFileRoute,Link} from '@tanstack/react-router';
+import {useSuspenseQuery} from '@tanstack/react-query';
+import {overviewOptions} from './dashboard';
+import {clinicianHead} from '@/lib/clinician/rules';
+import {SectionTitle,EmptyState} from '@/components/clinician/Shell';
+export const Route=createFileRoute('/_authenticated/clinician/progress')({head:()=>clinicianHead('Progress','Review documented subjective check-ins and test photo timelines.'),loader:({context})=>context.queryClient.ensureQueryData(overviewOptions),component:Progress});
+function Progress(){const {data}=useSuspenseQuery(overviewOptions);const patients=data.patients.filter(p=>!p.archived);return <><SectionTitle title="Progress" subtitle="Patient-reported observations and photo documentation — not clinical measurements."/>{!patients.length?<EmptyState title="No progress records yet" description="Add a test patient and record check-ins to begin."/>:<div className="divide-y divide-border border-y border-border">{patients.map(p=>{const c=data.checkins.filter(c=>c.patient_id===p.id),h=data.photos.filter(h=>h.patient_id===p.id);return <Link key={p.id} to="/clinician/patients/$id" params={{id:p.id}} className="flex flex-wrap justify-between gap-3 py-5"><div><p className="font-semibold">{p.display_name}</p><p className="mt-1 text-sm text-muted-foreground">{p.concern}</p></div><p className="text-sm text-muted-foreground">{c.length} subjective check-ins · {h.length} photos</p></Link>})}</div>}</>}
