@@ -30,6 +30,8 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "A calm, private way to track facial redness day by day.",
       },
+      { property: 'og:type', content: 'website' },
+      { name: 'twitter:card', content: 'summary' },
     ],
   }),
   component: HomePage,
@@ -57,12 +59,17 @@ function HomePage() {
       try { completed = Boolean((JSON.parse(raw) as { completedAt?: string }).completedAt); }
       catch { completed = false; }
     }
-    if (completed) { setReady(true); return; }
     // Wait for any returning Google/Apple sign-in to finish before redirecting.
     void (async () => {
       const { supabase } = await import("@/integrations/supabase/client");
       const { data } = await supabase.auth.getSession();
       if (cancelled) return;
+      if (data.session) {
+        const {data:clinician} = await supabase.from('clinician_profiles').select('user_id').maybeSingle();
+        if (cancelled) return;
+        if (clinician) { void navigate({to:'/clinician/dashboard',replace:true}); return; }
+      }
+      if (completed) { setReady(true); return; }
       void navigate({ to: data.session ? "/onboarding" : "/welcome", replace: true });
     })();
     return () => { cancelled = true; };
