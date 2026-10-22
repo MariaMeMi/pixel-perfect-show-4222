@@ -10,3 +10,5 @@
 - [x] Show redness and visible-lines face maps in first onboarding results
 - [x] Add Rosie as an original rose-blossom cartoon onboarding guide and account-synced support companion
 - [x] Make photo frames tappable camera shutters and remove separate capture buttons
+- [x] AI Clinical Clues for clinician cases: AI Clues tab, 5-section analysis, ratings, save-to-notes, follow-up questions; verified end-to-end with a test account
+- [ ] AI Voice Notes for clinicians: record → transcribe → structured SOAP/general note → approve & save (spec uploaded; starts after Clues verification)
