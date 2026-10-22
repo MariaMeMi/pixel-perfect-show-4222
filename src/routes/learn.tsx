@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { articles } from "@/lib/learn-content";
-import { useI18n } from "@/lib/i18n";
+import { contentLang, useI18n } from "@/lib/i18n";
 import { RoutineCta } from "@/components/RoutineCta";
 
 export const Route = createFileRoute("/learn")({
