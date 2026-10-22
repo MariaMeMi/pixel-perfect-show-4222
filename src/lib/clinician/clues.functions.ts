@@ -186,10 +186,10 @@ export const generateClues = createServerFn({ method: "POST" })
     };
     const { data: row, error } = await context.supabase
       .from("clinician_ai_analyses")
-      .insert({ case_id: data.caseId, patient_id: bundle.clinicalCase.patient_id, clinician_id: context.userId, model: MODEL, sections, sources })
+      .insert({ case_id: data.caseId, patient_id: bundle.clinicalCase["patient_id"], clinician_id: context.userId, model: MODEL, sections, sources })
       .select("*").single();
     if (error || !row) throw new Error("Could not save AI analysis");
-    await context.supabase.from("clinician_audit_events").insert({ patient_id: bundle.clinicalCase.patient_id, action: "ai_clues_generated" });
+    await context.supabase.from("clinician_audit_events").insert({ patient_id: bundle.clinicalCase["patient_id"], action: "ai_clues_generated" });
     return { insufficient: false as const, analysis: row };
   });
 
@@ -231,7 +231,7 @@ export const askClueFollowup = createServerFn({ method: "POST" })
         `${SYSTEM}\n\nThe clinician asks a follow-up question about this case. Answer concisely (under 200 words) using only the documented information; say plainly when the documentation does not contain the answer.`,
         `Case data:\n${casePrompt(bundle)}\n\nClinician question: ${data.question}`,
       );
-      await context.supabase.from("clinician_audit_events").insert({ patient_id: bundle.clinicalCase.patient_id, action: "ai_followup_asked" });
+      await context.supabase.from("clinician_audit_events").insert({ patient_id: bundle.clinicalCase["patient_id"], action: "ai_followup_asked" });
       return { answer: text.trim() || "The AI did not provide an answer. Please try rephrasing the question." };
     } catch (error) {
       throw safeAiError(error);
