@@ -32,7 +32,15 @@ Reply with a single JSON object, no markdown fences, matching exactly:
 followUpQuestions: 3-5 questions the clinician may choose to ask at the next consultation.`;
 
 type CaseBundle = {
-  clinicalCase: { patient_id: string; summary: string | null } & Record<string, unknown>;
+  clinicalCase: {
+    patient_id: string;
+    title: string;
+    category: string;
+    opened_date: string;
+    follow_up_date: string | null;
+    summary: string | null;
+    outcomes: string | null;
+  } & Record<string, unknown>;
   patient: Record<string, unknown>;
   photos: Record<string, unknown>[];
   treatments: Record<string, unknown>[];
@@ -60,7 +68,7 @@ async function loadCaseBundle(supabase: any, caseId: string): Promise<CaseBundle
 }
 
 function casePrompt(bundle: CaseBundle) {
-  const c = bundle.clinicalCase as { title: string; category: string; opened_date: string; follow_up_date: string | null; summary: string | null; outcomes: string | null };
+  const c = bundle.clinicalCase;
   // De-identified: the patient display name is never sent to the AI provider.
   return JSON.stringify({
     testCase: {

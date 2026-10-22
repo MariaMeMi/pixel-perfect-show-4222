@@ -48,8 +48,8 @@ export function CluesWorkspace({ detail, refresh }: { detail: Detail; refresh: (
     queryKey: ["clinician", "clues", caseId],
     queryFn: () => listClues({ data: { caseId } }),
   });
-  const analyses = (data?.analyses ?? []) as Analysis[];
-  const feedback = (data?.feedback ?? []) as Feedback[];
+  const analyses = (data?.analyses ?? []) as unknown as Analysis[];
+  const feedback = (data?.feedback ?? []) as unknown as Feedback[];
   const latest = analyses[0];
 
   const onGenerate = async () => {
