@@ -131,6 +131,7 @@ function RootComponent() {
           <Outlet />
         </AppShell>
         <Toaster position="top-center" />
+        <AutoTranslate />
       </I18nProvider>
     </QueryClientProvider>
   );

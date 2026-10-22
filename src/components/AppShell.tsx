@@ -32,11 +32,20 @@ export function AppShell({ children }: { children: ReactNode }) {
     return () => { cancelled = true; };
   }, [isOnboarding]);
 
-  if (pathname.startsWith('/clinician')) return <>{children}</>;
+  if (pathname.startsWith('/clinician'))
+    return (
+      <>
+        {children}
+        <LanguageSwitcher className="fixed bottom-3 right-3 z-50 shadow-sm" />
+      </>
+    );
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-[30rem] flex-col bg-background">
       <main className={cn("flex-1 px-5 pt-8", isOnboarding ? "pb-8" : "pb-32")}>{children}</main>
+
+      {isOnboarding && <LanguageSwitcher className="fixed left-3 top-3 z-50" />}
+
 
       {isOnboarding && hasSession && (
         <button
