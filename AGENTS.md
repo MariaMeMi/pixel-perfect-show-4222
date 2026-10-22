@@ -19,3 +19,4 @@
 - Clinical cases are patient children; database triggers enforce same-patient case and treatment links across documents, photos and documentation to prevent cross-record association.
 - Archive mutations update only archival state, retaining files and history; authenticated owner reads include archived records so restoration remains possible.
 - Related documents use a separate private clinician-test-documents bucket with short-lived signed downloads; file association and library filters never replace account-scoped authorization.
+- UI text not yet keyed in i18n is translated at runtime by AutoTranslate using src/locales/ui.<lang>.json keyed by exact English source; when adding new English UI strings, add their ru/de entries there (or use i18n keys).
