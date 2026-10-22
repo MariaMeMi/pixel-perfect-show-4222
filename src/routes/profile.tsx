@@ -287,10 +287,10 @@ function ProfilePage() {
           <h2 className="text-lg text-foreground">{t("profile.language")}</h2>
         </div>
         <div className="flex gap-2">
-          {(["en", "de"] as const).map((l) => (
+          {(["en", "de", "ru"] as const).map((l) => (
             <Chip
               key={l}
-              label={l === "en" ? "English" : "Deutsch"}
+              label={l === "en" ? "English" : l === "de" ? "Deutsch" : "Русский"}
               selected={profile.language === l}
               onClick={() => update({ language: l })}
             />

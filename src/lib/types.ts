@@ -46,6 +46,6 @@ export type Profile = {
   medications: string;
   remindersEnabled: boolean;
   retainPhotos: boolean;
-  language: "en" | "de";
+  language: "en" | "de" | "ru";
   country: string;
 };
