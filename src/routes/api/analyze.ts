@@ -52,7 +52,7 @@ export const Route = createFileRoute("/api/analyze")({
         try {
           const body = (await request.json()) as { image?: string; lang?: string };
           image = body.image;
-          lang = body.lang === "de" ? "de" : "en";
+          lang = body.lang === "de" ? "de" : body.lang === "ru" ? "ru" : "en";
         } catch {
           return Response.json({ error: "Invalid request." }, { status: 400 });
         }
@@ -81,7 +81,9 @@ export const Route = createFileRoute("/api/analyze")({
                     text:
                       lang === "de"
                         ? "Beschreibe die sichtbare Gesichtsrötung auf diesem Foto und fülle das Schema aus. Antworte auf Deutsch."
-                        : "Describe the visible facial redness in this photo and fill in the schema. Answer in English.",
+                        : lang === "ru"
+                          ? "Describe the visible facial redness in this photo and fill in the schema. Answer in Russian."
+                          : "Describe the visible facial redness in this photo and fill in the schema. Answer in English.",
                   },
                   { type: "input_image", image_url: image, detail: "low" },
                 ],

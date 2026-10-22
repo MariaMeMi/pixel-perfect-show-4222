@@ -1,8 +1,9 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { Context, ReactNode } from "react";
 import { loadProfile, saveProfile } from "./storage";
+import ruJson from "@/locales/ru.json";
 
-export type Lang = "en" | "de";
+export type Lang = "en" | "de" | "ru";
 
 /**
  * Flat translation dictionary. English is the source of truth; German is the
@@ -361,7 +362,11 @@ const de: Partial<Record<TKey, string>> = {
   "common.save": "Speichern",
 };
 
-const dictionaries: Record<Lang, Partial<Record<TKey, string>>> = { en, de };
+const dictionaries: Record<Lang, Partial<Record<TKey, string>>> = {
+  en,
+  de,
+  ru: ruJson as Partial<Record<TKey, string>>,
+};
 
 type I18nValue = {
   lang: Lang;
@@ -410,3 +415,7 @@ export function useI18n() {
   if (!ctx) throw new Error("useI18n must be used inside I18nProvider");
   return ctx;
 }
+
+/** Languages with fully written long-form content; others fall back to English. */
+export type ContentLang = "en" | "de";
+export const contentLang = (l: Lang): ContentLang => (l === "de" ? "de" : "en");

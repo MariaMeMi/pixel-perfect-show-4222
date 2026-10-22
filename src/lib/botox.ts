@@ -1,4 +1,4 @@
-import type { Lang } from "@/lib/i18n";
+import { contentLang, type ContentLang, type Lang } from "@/lib/i18n";
 
 export type LineArea = "forehead" | "glabella" | "eyes";
 export type LineLevel = "not_prominent" | "visible_with_expression" | "visible_at_rest";
@@ -312,7 +312,7 @@ export function bt(lang: Lang) {
   return (k: string) => d[k] ?? en[k] ?? k;
 }
 
-const ABOUT: Record<Lang, Record<LineArea, string>> = {
+const ABOUT: Record<ContentLang, Record<LineArea, string>> = {
   en: {
     forehead:
       "Forehead lines are one of the areas that may be discussed during a cosmetic consultation. Treatment suitability depends on facial anatomy, muscle movement, medical history, goals, and professional assessment.",
@@ -330,9 +330,9 @@ const ABOUT: Record<Lang, Record<LineArea, string>> = {
       "Linien an den äußeren Augenwinkeln zeigen sich oft beim Lächeln. Qualifizierte Fachleute können die Möglichkeiten – auch das Nichtstun – für deine Situation erklären.",
   },
 };
-export const aboutArea = (lang: Lang, a: LineArea) => ABOUT[lang][a];
+export const aboutArea = (lang: Lang, a: LineArea) => ABOUT[contentLang(lang)][a];
 
-const AREA_Q: Record<Lang, Record<LineArea, string[]>> = {
+const AREA_Q: Record<ContentLang, Record<LineArea, string[]>> = {
   en: {
     forehead: [
       "How does my forehead movement affect which options you'd consider?",
@@ -350,9 +350,9 @@ const AREA_Q: Record<Lang, Record<LineArea, string[]>> = {
     eyes: ["Hängen die Linien um meine Augen mit Bewegung, Hautstruktur oder beidem zusammen?", "Wie bleibt mein Lächeln natürlich?"],
   },
 };
-export const areaQuestions = (lang: Lang, a: LineArea) => AREA_Q[lang][a];
+export const areaQuestions = (lang: Lang, a: LineArea) => AREA_Q[contentLang(lang)][a];
 
-const BASE: Record<Lang, string[]> = {
+const BASE: Record<ContentLang, string[]> = {
   en: [
     "What are the potential risks and side effects for me?",
     "Is treatment appropriate given my skin and medical history?",
@@ -366,7 +366,7 @@ const BASE: Record<Lang, string[]> = {
     "Welche Qualifikationen hast du und wie oft führst du das durch?",
   ],
 };
-const GOAL_Q: Record<Lang, Record<Goal, string>> = {
+const GOAL_Q: Record<ContentLang, Record<Goal, string>> = {
   en: {
     soften: "What options could address my concerns, and what's realistic to expect?",
     natural: "What options could address my concerns while maintaining natural movement?",
@@ -382,17 +382,17 @@ const GOAL_Q: Record<Lang, Record<Goal, string>> = {
     curious: "Was sollte ich wissen, bevor ich überhaupt über eine Behandlung nachdenke?",
   },
 };
-const DURATION: Record<Lang, string> = {
+const DURATION: Record<ContentLang, string> = {
   en: "How long might results typically last, and what happens when they wear off?",
   de: "Wie lange halten Ergebnisse typischerweise, und was passiert, wenn sie nachlassen?",
 };
 
 export function buildQuestions(lang: Lang, goals: Goal[], analysis?: LineAnalysis): string[] {
-  const qs: string[] = goals.map((g) => GOAL_Q[lang][g]);
+  const qs: string[] = goals.map((g) => GOAL_Q[contentLang(lang)][g]);
   if (analysis) {
-    for (const a of AREAS) if (analysis[a].level !== "not_prominent") qs.push(AREA_Q[lang][a][0]!);
+    for (const a of AREAS) if (analysis[a].level !== "not_prominent") qs.push(AREA_Q[contentLang(lang)][a][0]!);
   }
-  if (!goals.includes("curious")) qs.push(DURATION[lang]);
-  qs.push(...BASE[lang]);
+  if (!goals.includes("curious")) qs.push(DURATION[contentLang(lang)]);
+  qs.push(...BASE[contentLang(lang)]);
   return [...new Set(qs)];
 }

@@ -4,7 +4,7 @@ import { ArrowLeft, Check, Copy, ImageUp, Plus, ShieldCheck, Sparkles, Trash2, X
 import { toast } from "sonner";
 import { Chip } from "@/components/Chip";
 import { FaceLines } from "@/components/FaceLines";
-import { useI18n } from "@/lib/i18n";
+import { contentLang, useI18n } from "@/lib/i18n";
 import {
   AREAS,
   GOALS,
@@ -193,7 +193,7 @@ function BotoxPage() {
         t={t}
         analysis={current}
         state={state}
-        lang={lang}
+        lang={contentLang(lang)}
         onBack={() => setView("hub")}
         onSave={
           current.sample || state.analyses.some((a) => a.id === current.id)
