@@ -26,7 +26,7 @@ const SECTIONS: { key: keyof ClueSections; title: string; list: boolean }[] = [
 
 function sourceLabel(sources: Record<string, unknown>) {
   const parts: string[] = [];
-  if (sources.caseSummary) parts.push("case summary");
+  if (sources["caseSummary"]) parts.push("case summary");
   const counts: [string, string][] = [
     ["symptomCheckins", "symptom check-in"], ["treatments", "treatment"], ["clinicianNotes", "note"],
     ["datedObservations", "dated observation"], ["photoMetadata", "photo metadata"], ["documentMetadata", "document metadata"],
