@@ -32,7 +32,7 @@ Reply with a single JSON object, no markdown fences, matching exactly:
 followUpQuestions: 3-5 questions the clinician may choose to ask at the next consultation.`;
 
 type CaseBundle = {
-  clinicalCase: Record<string, unknown>;
+  clinicalCase: { patient_id: string } & Record<string, unknown>;
   patient: Record<string, unknown>;
   photos: Record<string, unknown>[];
   treatments: Record<string, unknown>[];
