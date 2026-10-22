@@ -32,7 +32,7 @@ Reply with a single JSON object, no markdown fences, matching exactly:
 followUpQuestions: 3-5 questions the clinician may choose to ask at the next consultation.`;
 
 type CaseBundle = {
-  clinicalCase: { patient_id: string } & Record<string, unknown>;
+  clinicalCase: { patient_id: string; summary: string | null } & Record<string, unknown>;
   patient: Record<string, unknown>;
   photos: Record<string, unknown>[];
   treatments: Record<string, unknown>[];
@@ -138,7 +138,7 @@ export const listClues = createServerFn({ method: "POST" })
     const ids = (analyses ?? []).map((a: { id: string }) => a.id);
     const { data: feedback } = ids.length
       ? await context.supabase.from("clinician_ai_feedback").select("*").in("analysis_id", ids)
-      : { data: [] as unknown[] };
+      : { data: [] };
     return { analyses: analyses ?? [], feedback: feedback ?? [] };
   });
 
