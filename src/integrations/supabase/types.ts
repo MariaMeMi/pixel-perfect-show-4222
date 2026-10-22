@@ -14,6 +14,92 @@ export type Database = {
   }
   public: {
     Tables: {
+      clinician_ai_analyses: {
+        Row: {
+          case_id: string
+          clinician_id: string
+          created_at: string
+          id: string
+          model: string
+          patient_id: string
+          sections: Json
+          sources: Json
+        }
+        Insert: {
+          case_id: string
+          clinician_id: string
+          created_at?: string
+          id?: string
+          model: string
+          patient_id: string
+          sections: Json
+          sources: Json
+        }
+        Update: {
+          case_id?: string
+          clinician_id?: string
+          created_at?: string
+          id?: string
+          model?: string
+          patient_id?: string
+          sections?: Json
+          sources?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinician_ai_analyses_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "clinician_cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinician_ai_analyses_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "clinician_patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clinician_ai_feedback: {
+        Row: {
+          analysis_id: string
+          clinician_id: string
+          created_at: string
+          id: string
+          item_index: number
+          rating: string
+          section: string
+        }
+        Insert: {
+          analysis_id: string
+          clinician_id: string
+          created_at?: string
+          id?: string
+          item_index?: number
+          rating: string
+          section: string
+        }
+        Update: {
+          analysis_id?: string
+          clinician_id?: string
+          created_at?: string
+          id?: string
+          item_index?: number
+          rating?: string
+          section?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinician_ai_feedback_analysis_id_fkey"
+            columns: ["analysis_id"]
+            isOneToOne: false
+            referencedRelation: "clinician_ai_analyses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clinician_audit_events: {
         Row: {
           action: string
