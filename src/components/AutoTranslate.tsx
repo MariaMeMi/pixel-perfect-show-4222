@@ -28,7 +28,7 @@ function lookup(dict: Record<string, string> | undefined, src: string) {
 
 function skipped(el: Element | null) {
   for (let e = el; e; e = e.parentElement) {
-    if (SKIP.has(e.tagName) || e.hasAttribute("data-no-translate") || e.isContentEditable) return true;
+    if (SKIP.has(e.tagName) || e.hasAttribute("data-no-translate") || (e as HTMLElement).isContentEditable) return true;
   }
   return false;
 }

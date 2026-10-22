@@ -1,3 +1,4 @@
+import { LanguageSwitcher } from "@/components/AutoTranslate";
 import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
