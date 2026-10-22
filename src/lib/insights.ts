@@ -1,7 +1,7 @@
 import type { Entry, TriggerKey } from "./types";
-import type { Lang } from "./i18n";
+import { contentLang, type ContentLang, type Lang } from "./i18n";
 
-const TRIGGER_LABEL: Record<Lang, Partial<Record<TriggerKey, string>>> = {
+const TRIGGER_LABEL: Record<ContentLang, Partial<Record<TriggerKey, string>>> = {
   en: {
     sun: "sun exposure",
     heat: "heat",
@@ -52,7 +52,7 @@ export function buildInsights(entries: Entry[], lang: Lang): string[] {
 
   const top = scored[0];
   if (top && top.diff > 3) {
-    const label = TRIGGER_LABEL[lang][top.trigger] ?? top.trigger;
+    const label = TRIGGER_LABEL[contentLang(lang)][top.trigger] ?? top.trigger;
     insights.push(
       lang === "de"
         ? `Höhere Rötungswerte treten häufig an Tagen auf, an denen du ${label} notierst (${Math.round(top.diff)} Punkte über deinem Durchschnitt).`
@@ -62,7 +62,7 @@ export function buildInsights(entries: Entry[], lang: Lang): string[] {
 
   const calmest = scored[scored.length - 1];
   if (calmest && calmest.diff < -3 && calmest.trigger !== top?.trigger) {
-    const label = TRIGGER_LABEL[lang][calmest.trigger] ?? calmest.trigger;
+    const label = TRIGGER_LABEL[contentLang(lang)][calmest.trigger] ?? calmest.trigger;
     insights.push(
       lang === "de"
         ? `An Tagen mit ${label} liegen deine Werte eher unter deinem Durchschnitt.`

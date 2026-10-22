@@ -51,10 +51,10 @@ function LearnPage() {
           <p className="eyebrow">
             {open.minutes} {t("learn.readTime")}
           </p>
-          <h1 className="mt-2 text-[1.9rem] leading-tight text-foreground">{open.title[lang]}</h1>
+          <h1 className="mt-2 text-[1.9rem] leading-tight text-foreground">{open.title[contentLang(lang)]}</h1>
         </header>
         <div className="space-y-4">
-          {open.body[lang].map((p) => (
+          {open.body[contentLang(lang)].map((p) => (
             <p key={p} className="text-sm leading-relaxed text-secondary-foreground">
               {p}
             </p>
@@ -88,10 +88,10 @@ function LearnPage() {
             />
             <span className="min-w-0">
               <span className="block font-display text-lg leading-tight text-foreground">
-                {a.title[lang]}
+                {a.title[contentLang(lang)]}
               </span>
               <span className="mt-1 block text-xs leading-snug text-muted-foreground">
-                {a.teaser[lang]}
+                {a.teaser[contentLang(lang)]}
               </span>
               <span className="eyebrow mt-2 block">
                 {a.minutes} {t("learn.readTime")}

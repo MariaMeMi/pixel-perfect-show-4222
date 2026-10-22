@@ -2,15 +2,15 @@ import skincareImg from "@/assets/learn-skincare.jpg";
 import sunImg from "@/assets/learn-sun.jpg";
 import calmImg from "@/assets/learn-calm.jpg";
 import heroImg from "@/assets/hero-skin.jpg";
-import type { Lang } from "./i18n";
+import { contentLang, type ContentLang, type Lang } from "./i18n";
 
 export type Article = {
   id: string;
   image: string;
   minutes: number;
-  title: Record<Lang, string>;
-  teaser: Record<Lang, string>;
-  body: Record<Lang, string[]>;
+  title: Record<ContentLang, string>;
+  teaser: Record<ContentLang, string>;
+  body: Record<ContentLang, string[]>;
 };
 
 export const articles: Article[] = [

@@ -193,7 +193,7 @@ function BotoxPage() {
         t={t}
         analysis={current}
         state={state}
-        lang={lang}
+        lang={contentLang(lang)}
         onBack={() => setView("hub")}
         onSave={
           current.sample || state.analyses.some((a) => a.id === current.id)

@@ -415,3 +415,7 @@ export function useI18n() {
   if (!ctx) throw new Error("useI18n must be used inside I18nProvider");
   return ctx;
 }
+
+/** Languages with fully written long-form content; others fall back to English. */
+export type ContentLang = "en" | "de";
+export const contentLang = (l: Lang): ContentLang => (l === "de" ? "de" : "en");
