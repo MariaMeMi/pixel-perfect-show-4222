@@ -1,3 +1,4 @@
+import { AutoTranslate } from "../components/AutoTranslate";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -131,6 +132,7 @@ function RootComponent() {
           <Outlet />
         </AppShell>
         <Toaster position="top-center" />
+        <AutoTranslate />
       </I18nProvider>
     </QueryClientProvider>
   );
