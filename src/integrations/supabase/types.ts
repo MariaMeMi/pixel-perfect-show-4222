@@ -740,6 +740,270 @@ export type Database = {
         }
         Relationships: []
       }
+      hair_consultations: {
+        Row: {
+          answers: Json
+          contact_skipped: boolean
+          created_at: string
+          expires_at: string
+          id: string
+          result: Json
+          salon_id: string
+          secret_hash: string
+        }
+        Insert: {
+          answers: Json
+          contact_skipped?: boolean
+          created_at?: string
+          expires_at?: string
+          id?: string
+          result: Json
+          salon_id: string
+          secret_hash: string
+        }
+        Update: {
+          answers?: Json
+          contact_skipped?: boolean
+          created_at?: string
+          expires_at?: string
+          id?: string
+          result?: Json
+          salon_id?: string
+          secret_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hair_consultations_salon_id_fkey"
+            columns: ["salon_id"]
+            isOneToOne: false
+            referencedRelation: "hair_salons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hair_salon_admins: {
+        Row: {
+          salon_id: string
+          user_id: string
+        }
+        Insert: {
+          salon_id: string
+          user_id: string
+        }
+        Update: {
+          salon_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hair_salon_admins_salon_id_fkey"
+            columns: ["salon_id"]
+            isOneToOne: false
+            referencedRelation: "hair_salons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hair_salon_events: {
+        Row: {
+          concern: string | null
+          created_at: string
+          event: string
+          id: string
+          product_id: string | null
+          salon_id: string
+          session_id: string
+        }
+        Insert: {
+          concern?: string | null
+          created_at?: string
+          event: string
+          id?: string
+          product_id?: string | null
+          salon_id: string
+          session_id: string
+        }
+        Update: {
+          concern?: string | null
+          created_at?: string
+          event?: string
+          id?: string
+          product_id?: string | null
+          salon_id?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hair_salon_events_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "hair_salon_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hair_salon_events_salon_id_fkey"
+            columns: ["salon_id"]
+            isOneToOne: false
+            referencedRelation: "hair_salons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hair_salon_leads: {
+        Row: {
+          consent_evidence: Json
+          consent_notice_version: string
+          consent_source: string
+          consultation_answers: Json
+          consultation_consent_timestamp: string
+          consultation_data_sharing_consent: boolean
+          created_at: string
+          email: string
+          email_marketing_consent: boolean
+          email_marketing_consent_timestamp: string | null
+          first_name: string
+          hair_profile_id: string
+          id: string
+          lead_status: string
+          phone_number: string
+          salon_id: string
+          sms_marketing_consent: boolean
+          sms_marketing_consent_timestamp: string | null
+        }
+        Insert: {
+          consent_evidence: Json
+          consent_notice_version: string
+          consent_source: string
+          consultation_answers: Json
+          consultation_consent_timestamp?: string
+          consultation_data_sharing_consent?: boolean
+          created_at?: string
+          email: string
+          email_marketing_consent?: boolean
+          email_marketing_consent_timestamp?: string | null
+          first_name: string
+          hair_profile_id: string
+          id?: string
+          lead_status?: string
+          phone_number: string
+          salon_id: string
+          sms_marketing_consent?: boolean
+          sms_marketing_consent_timestamp?: string | null
+        }
+        Update: {
+          consent_evidence?: Json
+          consent_notice_version?: string
+          consent_source?: string
+          consultation_answers?: Json
+          consultation_consent_timestamp?: string
+          consultation_data_sharing_consent?: boolean
+          created_at?: string
+          email?: string
+          email_marketing_consent?: boolean
+          email_marketing_consent_timestamp?: string | null
+          first_name?: string
+          hair_profile_id?: string
+          id?: string
+          lead_status?: string
+          phone_number?: string
+          salon_id?: string
+          sms_marketing_consent?: boolean
+          sms_marketing_consent_timestamp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hair_salon_leads_hair_profile_id_fkey"
+            columns: ["hair_profile_id"]
+            isOneToOne: true
+            referencedRelation: "hair_consultations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hair_salon_leads_salon_id_fkey"
+            columns: ["salon_id"]
+            isOneToOne: false
+            referencedRelation: "hair_salons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hair_salon_products: {
+        Row: {
+          active: boolean
+          brand: string
+          concerns: string[]
+          description: string
+          function: string
+          id: string
+          name: string
+          price: string
+          purchase_url: string
+          salon_id: string
+          verified: boolean
+        }
+        Insert: {
+          active?: boolean
+          brand: string
+          concerns?: string[]
+          description?: string
+          function: string
+          id?: string
+          name: string
+          price?: string
+          purchase_url?: string
+          salon_id: string
+          verified?: boolean
+        }
+        Update: {
+          active?: boolean
+          brand?: string
+          concerns?: string[]
+          description?: string
+          function?: string
+          id?: string
+          name?: string
+          price?: string
+          purchase_url?: string
+          salon_id?: string
+          verified?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hair_salon_products_salon_id_fkey"
+            columns: ["salon_id"]
+            isOneToOne: false
+            referencedRelation: "hair_salons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hair_salons: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          name: string
+          settings: Json
+          slug: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          name: string
+          settings?: Json
+          slug: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          name?: string
+          settings?: Json
+          slug?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           active: boolean
@@ -907,6 +1171,7 @@ export type Database = {
         Returns: undefined
       }
       is_clinician: { Args: never; Returns: boolean }
+      is_hair_salon_admin: { Args: { sid: string }; Returns: boolean }
       record_consumer_choice: { Args: never; Returns: undefined }
     }
     Enums: {
