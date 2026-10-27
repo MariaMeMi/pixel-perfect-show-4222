@@ -3,7 +3,7 @@ import { selectInventory, inventorySchema, MAX_RECOMMENDED_PRODUCTS, MAX_ROUTINE
 import { newResultSchema, type HairAnswers } from './rules';
 const answers: HairAnswers = { texture: 'Wavy', thickness: 'Fine', scalp: 'Balanced', concern: 'Dryness', goal: 'Softness and shine', color: 'Natural', washing: 'Every 2–3 days', heat: 'Occasionally' };
 const reference: ProductReference = { id: 'ref', verified: true, kind: 'product', category: 'Shampoo', suitability: { concerns: ['Dryness'], scalps: ['Balanced'] } };
-const product: InventoryProduct = { id: 'a', reference_id: '00000000-0000-4000-8000-000000000001', verified: true, active: true, enabled: true, available: true, function: 'Shampoo', price: '$30', size: '250 ml', purchase_url: 'https://example.com/product', image_url: 'https://example.com/image.jpg', image_source: 'Approved manufacturer source' };
+const product: InventoryProduct = { id: 'a', reference_id: '00000000-0000-4000-8000-000000000001', verified: true, active: true, enabled: true, available: true, brand: 'BrandA', function: 'Shampoo', price: '$30', size: '250 ml', purchase_url: 'https://example.com/product', image_url: 'https://example.com/image.jpg', image_source: 'Approved manufacturer source' };
 const ref = { ...reference, id: product.reference_id ?? '' };
 const choose = (p: InventoryProduct = product, r: ProductReference = ref, a = answers) => selectInventory([p], [r], a);
 describe('verified hair inventory recommendations', () => {

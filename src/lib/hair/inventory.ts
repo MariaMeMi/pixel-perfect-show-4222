@@ -18,7 +18,7 @@ export const suitabilitySchema = z.object({
 export type ProductReference = { id: string; kind: string; category: string | null; verified: boolean; suitability: unknown };
 export type InventoryProduct = {
   id: string; reference_id: string | null; verified: boolean; active: boolean; enabled: boolean; available: boolean;
-  function: string; price: string; size: string; purchase_url: string; image_url: string; image_source: string;
+  brand: string; function: string; price: string; size: string; purchase_url: string; image_url: string; image_source: string;
 };
 export const MAX_ROUTINE_STEPS = 4;
 export const MAX_RECOMMENDED_PRODUCTS = 5;
