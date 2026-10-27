@@ -3,13 +3,16 @@ import { useI18n, type Lang } from "@/lib/i18n";
 import ru from "@/locales/ui.ru.json";
 import de from "@/locales/ui.de.json";
 import salon from "@/locales/salon.json";
+import uk from "@/locales/salon.uk.json";
+import { Button } from "@/components/ui/button";
+import { useLocation } from "@tanstack/react-router";
 
 /**
  * Translates English text written directly in screens (not yet keyed in i18n)
  * using exact-match dictionaries keyed by the English source string.
  * Originals are remembered so switching back to English restores them.
  */
-const DICTS: Partial<Record<Lang, Record<string, string>>> = { ru: { ...salon.ru, ...ru }, de: { ...salon.de, ...de } };
+const DICTS: Partial<Record<Lang, Record<string, string>>> = { ru: { ...salon.ru, ...ru }, de: { ...salon.de, ...de }, uk };
 const ATTRS = ["placeholder", "aria-label", "title", "alt"] as const;
 const SKIP = new Set(["SCRIPT", "STYLE", "TEXTAREA", "CODE", "PRE"]);
 
@@ -95,22 +98,26 @@ export function AutoTranslate() {
   return null;
 }
 
-const LABELS: Record<Lang, string> = { en: "EN", de: "DE", ru: "RU" };
+const LABELS: Record<Lang, string> = { en: "EN", de: "DE", ru: "RU", uk: "UK" };
 
 export function LanguageSwitcher({ className = "" }: { className?: string }) {
   const { lang, setLang } = useI18n();
+  const isSalon = useLocation({ select: location => location.pathname.startsWith('/hair/') });
+  const languages: Lang[] = isSalon ? ["en", "de", "ru", "uk"] : ["en", "de", "ru"];
   return (
     <div data-no-translate className={`flex gap-1 rounded-full border border-border bg-card/90 p-1 backdrop-blur ${className}`}>
-      {(["en", "de", "ru"] as const).map((l) => (
-        <button
+      {languages.map((l) => (
+        <Button
           key={l}
           type="button"
-          aria-label={l === "en" ? "English" : l === "de" ? "Deutsch" : "Русский"}
+          variant="ghost"
+          aria-label={l === "en" ? "English" : l === "de" ? "Deutsch" : l === "uk" ? "Українська" : "Русский"}
+          aria-pressed={lang === l}
           onClick={() => setLang(l)}
-          className={`rounded-full px-2.5 py-1 text-xs font-medium ${lang === l ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
+          className={`h-auto rounded-full px-2.5 py-1 text-xs font-medium ${lang === l ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
         >
           {LABELS[l]}
-        </button>
+        </Button>
       ))}
     </div>
   );

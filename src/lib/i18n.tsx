@@ -2,8 +2,9 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import type { Context, ReactNode } from "react";
 import { loadProfile, saveProfile } from "./storage";
 import ruJson from "@/locales/ru.json";
+import { useLocation } from "@tanstack/react-router";
 
-export type Lang = "en" | "de" | "ru";
+export type Lang = "en" | "de" | "ru" | "uk";
 
 /**
  * Flat translation dictionary. English is the source of truth; German is the
@@ -366,6 +367,7 @@ const dictionaries: Record<Lang, Partial<Record<TKey, string>>> = {
   en,
   de,
   ru: ruJson as Partial<Record<TKey, string>>,
+  uk: {},
 };
 
 type I18nValue = {
@@ -379,19 +381,30 @@ const g = globalThis as unknown as { __roseI18nCtx?: Context<I18nValue | null> }
 const I18nContext = g.__roseI18nCtx ?? (g.__roseI18nCtx = createContext<I18nValue | null>(null));
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("en");
+  const [skinLang, setLangState] = useState<Lang>("en");
+  const [salonLang, setSalonLang] = useState<Lang>("en");
+  const isSalon = useLocation({ select: location => location.pathname.startsWith('/hair/') });
+  const lang = isSalon ? salonLang : skinLang;
 
   useEffect(() => {
     setLangState(loadProfile().language);
+    const saved = localStorage.getItem('rose:salon-language');
+    setSalonLang(saved === 'en' || saved === 'de' || saved === 'ru' || saved === 'uk' ? saved : loadProfile().language);
     const sync = () => setLangState(loadProfile().language);
     window.addEventListener("rosea:profile", sync);
     return () => window.removeEventListener("rosea:profile", sync);
   }, []);
 
   const setLang = useCallback((next: Lang) => {
+    if (isSalon) {
+      setSalonLang(next);
+      localStorage.setItem('rose:salon-language', next);
+      return;
+    }
+    if (next === 'uk') return;
     setLangState(next);
     saveProfile({ ...loadProfile(), language: next });
-  }, []);
+  }, [isSalon]);
 
   const t = useCallback(
     (key: TKey, vars?: Record<string, string | number>) => {

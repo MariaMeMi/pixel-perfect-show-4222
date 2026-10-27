@@ -3,7 +3,7 @@ import { getRequest } from '@tanstack/react-start/server';
 import { createClient } from '@supabase/supabase-js';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { z } from 'zod';
-import { answersSchema, resultSchema, settingsSchema, capabilitySchema, contactSchema, consentText, noticeVersion, statuses, brands, selectProducts, httpsUrl } from './rules';
+import { answersSchema, resultSchema, settingsSchema, capabilitySchema, contactSchema, consentText, noticeVersion, statuses, brands, selectProducts, httpsUrl, salonLanguageSchema, salonLanguageNames } from './rules';
 import type { Database } from '@/integrations/supabase/types';
 
 const slugSchema=z.object({slug:z.string().regex(/^[a-z0-9-]{1,80}$/)});
@@ -37,12 +37,12 @@ async function guest(data:z.infer<typeof capabilitySchema>) {
  if(!salon)throw new Error('Salon unavailable');
  return {db,row,salon:{...salon,settings:settingsSchema.parse(salon.settings)}};
 }
-export const generateHairRoutine=createServerFn({method:'POST'}).inputValidator((v:unknown)=>slugSchema.extend({answers:answersSchema,lang:z.enum(['en','de','ru']),sessionId:z.string().uuid()}).parse(v)).handler(async({data})=>{
+export const generateHairRoutine=createServerFn({method:'POST'}).inputValidator((v:unknown)=>slugSchema.extend({answers:answersSchema,lang:salonLanguageSchema,sessionId:z.string().uuid()}).parse(v)).handler(async({data})=>{
  const db=await limitedAdmin('hair-analysis',12); const {salon,products}=await salonPublic(data.slug);
  const key=process.env['LOVABLE_API_KEY'];if(!key)throw new Error('Hair consultations are temporarily unavailable.');
  const {createOpenAI}=await import('@ai-sdk/openai');const {streamText}=await import('ai');
  const openai=createOpenAI({apiKey:key,baseURL:'https://ai.gateway.lovable.dev/v1'});
- const response=streamText({model:openai('openai/gpt-6-astra'),system:`You are a cautious cosmetic hair-care assistant. Respond in ${data.lang==='ru'?'Russian':data.lang==='de'?'German':'English'}. Use only questionnaire answers; no photos were inspected. No diagnosis, prescriptions, invented ingredients, specific products, prices or availability. Avoid promising repair or growth. Provide gentle practical cosmetic routine guidance, mention a qualified professional for persistent scalp discomfort or sudden hair loss. Never import skin data. Return only JSON: {"summary":string,"routine":[{"title":string,"instruction":string}],"advice":string}. Use 3-5 routine steps.`,prompt:JSON.stringify(data.answers)});
+ const response=streamText({model:openai('openai/gpt-6-astra'),system:`You are a cautious cosmetic hair-care assistant. Respond in ${salonLanguageNames[data.lang]}. Use only questionnaire answers; no photos were inspected. No diagnosis, prescriptions, invented ingredients, specific products, prices or availability. Avoid promising repair or growth. Provide gentle practical cosmetic routine guidance, mention a qualified professional for persistent scalp discomfort or sudden hair loss. Never import skin data. Return only JSON: {"summary":string,"routine":[{"title":string,"instruction":string}],"advice":string}. Use 3-5 routine steps.`,prompt:JSON.stringify(data.answers)});
  let result;try{const raw=await response.text;result=resultSchema.parse(JSON.parse(raw.replace(/^```(?:json)?\s*/,'').replace(/\s*```$/,'')));}catch{throw new Error('We could not prepare your routine. Please try again.');}
  const secret=[...crypto.getRandomValues(new Uint8Array(32))].map(n=>n.toString(16).padStart(2,'0')).join('');
  const chosen=selectProducts(products,data.answers.concern);
