@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { HairAnswers } from './rules';
 
-const secureUrl = z.string().url().max(1000).refine(v => new URL(v).protocol === 'https:');
+const secureUrl = z.string().url().max(1000).refine(v => v.startsWith('https://'));
 export const inventorySchema = z.object({
   id: z.string().uuid().optional(), salonId: z.string().uuid(), referenceId: z.string().uuid(),
   price: z.string().trim().min(1).max(60).refine(v => /[0-9]/.test(v)),
