@@ -36,6 +36,7 @@ import { Route as AuthenticatedClinicianPatientsRouteImport } from './routes/_au
 import { Route as AuthenticatedClinicianPhotosRouteImport } from './routes/_authenticated/clinician/photos'
 import { Route as AuthenticatedClinicianProgressRouteImport } from './routes/_authenticated/clinician/progress'
 import { Route as AuthenticatedClinicianSettingsRouteImport } from './routes/_authenticated/clinician/settings'
+import { Route as AuthenticatedHairAdminRouteImport } from './routes/_authenticated/hair/admin'
 import { Route as HairSalonSalonSlugRouteImport } from './routes/hair.salon.$salonSlug'
 import { Route as AuthenticatedClinicianCasesIdRouteImport } from './routes/_authenticated/clinician/cases_.$id'
 import { Route as AuthenticatedClinicianPatientsIdRouteImport } from './routes/_authenticated/clinician/patients_.$id'
@@ -186,6 +187,11 @@ const AuthenticatedClinicianSettingsRoute =
     path: '/settings',
     getParentRoute: () => AuthenticatedClinicianRouteRoute,
   } as any)
+const AuthenticatedHairAdminRoute = AuthenticatedHairAdminRouteImport.update({
+  id: '/hair/admin',
+  path: '/hair/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const HairSalonSalonSlugRoute = HairSalonSalonSlugRouteImport.update({
   id: '/hair/salon/$salonSlug',
   path: '/hair/salon/$salonSlug',
@@ -259,6 +265,7 @@ export interface FileRoutesByFullPath {
   '/clinician/photos': typeof AuthenticatedClinicianPhotosRoute
   '/clinician/progress': typeof AuthenticatedClinicianProgressRoute
   '/clinician/settings': typeof AuthenticatedClinicianSettingsRoute
+  '/hair/admin': typeof AuthenticatedHairAdminRoute
   '/hair/salon/$salonSlug': typeof HairSalonSalonSlugRoute
   '/clinician/cases/$id': typeof AuthenticatedClinicianCasesIdRoute
   '/clinician/patients/$id': typeof AuthenticatedClinicianPatientsIdRoute
@@ -295,6 +302,7 @@ export interface FileRoutesByTo {
   '/clinician/photos': typeof AuthenticatedClinicianPhotosRoute
   '/clinician/progress': typeof AuthenticatedClinicianProgressRoute
   '/clinician/settings': typeof AuthenticatedClinicianSettingsRoute
+  '/hair/admin': typeof AuthenticatedHairAdminRoute
   '/hair/salon/$salonSlug': typeof HairSalonSalonSlugRoute
   '/clinician/cases/$id': typeof AuthenticatedClinicianCasesIdRoute
   '/clinician/patients/$id': typeof AuthenticatedClinicianPatientsIdRoute
@@ -333,6 +341,7 @@ export interface FileRoutesById {
   '/_authenticated/clinician/photos': typeof AuthenticatedClinicianPhotosRoute
   '/_authenticated/clinician/progress': typeof AuthenticatedClinicianProgressRoute
   '/_authenticated/clinician/settings': typeof AuthenticatedClinicianSettingsRoute
+  '/_authenticated/hair/admin': typeof AuthenticatedHairAdminRoute
   '/hair/salon/$salonSlug': typeof HairSalonSalonSlugRoute
   '/_authenticated/clinician/cases_/$id': typeof AuthenticatedClinicianCasesIdRoute
   '/_authenticated/clinician/patients_/$id': typeof AuthenticatedClinicianPatientsIdRoute
@@ -371,6 +380,7 @@ export interface FileRouteTypes {
     | '/clinician/photos'
     | '/clinician/progress'
     | '/clinician/settings'
+    | '/hair/admin'
     | '/hair/salon/$salonSlug'
     | '/clinician/cases/$id'
     | '/clinician/patients/$id'
@@ -407,6 +417,7 @@ export interface FileRouteTypes {
     | '/clinician/photos'
     | '/clinician/progress'
     | '/clinician/settings'
+    | '/hair/admin'
     | '/hair/salon/$salonSlug'
     | '/clinician/cases/$id'
     | '/clinician/patients/$id'
@@ -444,6 +455,7 @@ export interface FileRouteTypes {
     | '/_authenticated/clinician/photos'
     | '/_authenticated/clinician/progress'
     | '/_authenticated/clinician/settings'
+    | '/_authenticated/hair/admin'
     | '/hair/salon/$salonSlug'
     | '/_authenticated/clinician/cases_/$id'
     | '/_authenticated/clinician/patients_/$id'
@@ -674,6 +686,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedClinicianSettingsRouteImport
       parentRoute: typeof AuthenticatedClinicianRouteRoute
     }
+    '/_authenticated/hair/admin': {
+      id: '/_authenticated/hair/admin'
+      path: '/hair/admin'
+      fullPath: '/hair/admin'
+      preLoaderRoute: typeof AuthenticatedHairAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/hair/salon/$salonSlug': {
       id: '/hair/salon/$salonSlug'
       path: '/hair/salon/$salonSlug'
@@ -764,11 +783,13 @@ const AuthenticatedClinicianRouteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedClinicianRouteRoute: typeof AuthenticatedClinicianRouteRouteWithChildren
+  AuthenticatedHairAdminRoute: typeof AuthenticatedHairAdminRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedClinicianRouteRoute:
     AuthenticatedClinicianRouteRouteWithChildren,
+  AuthenticatedHairAdminRoute: AuthenticatedHairAdminRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
