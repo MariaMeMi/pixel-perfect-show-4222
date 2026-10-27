@@ -2,6 +2,8 @@ import { z } from 'zod';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 export const brands = ["L'Oréal Professionnel", 'Milbon', 'J Beverly Hills', 'Alfaparf Milano', 'Kérastase Paris'] as const;
+export const salonLanguageSchema = z.enum(['en', 'de', 'ru', 'uk']);
+export const salonLanguageNames = { en: 'English', de: 'German', ru: 'Russian', uk: 'Ukrainian' } as const;
 export const statuses = ['New', 'Contacted', 'Consultation Booked', 'Customer', 'Closed'] as const;
 export const questions = [
   { key: 'texture', label: 'What is your natural hair texture?', options: ['Straight', 'Wavy', 'Curly', 'Coily'] },

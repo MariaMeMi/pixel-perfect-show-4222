@@ -1,6 +1,11 @@
 import { describe,it,expect } from 'vitest';
-import { contactSchema, phoneSchema, selectProducts, metrics, csvCell } from './rules';
+import { contactSchema, phoneSchema, selectProducts, metrics, csvCell, salonLanguageSchema, salonLanguageNames } from './rules';
 describe('salon privacy and catalog rules',()=>{
+  it('accepts Ukrainian and selects Ukrainian routine output',()=>{
+    expect(salonLanguageSchema.parse('uk')).toBe('uk');
+    expect(salonLanguageNames[salonLanguageSchema.parse('uk')]).toBe('Ukrainian');
+    expect(salonLanguageSchema.safeParse('ua').success).toBe(false);
+  });
   it('requires service consent for contact sharing',()=>expect(contactSchema.safeParse({firstName:'Test',email:'test@example.com',phone:'+15125550123',serviceConsent:false,emailConsent:false,smsConsent:false,requestReport:false}).success).toBe(false));
   it('leaves marketing optional',()=>expect(contactSchema.parse({firstName:'Test',email:'test@example.com',phone:'(512) 555-0123',serviceConsent:true,emailConsent:false,smsConsent:false,requestReport:false}).emailConsent).toBe(false));
   it('normalizes US phone numbers to E.164',()=>expect(phoneSchema.parse('(512) 555-0123')).toBe('+15125550123'));

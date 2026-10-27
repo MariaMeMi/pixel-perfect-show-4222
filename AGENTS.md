@@ -21,3 +21,4 @@
 - Related documents use a separate private clinician-test-documents bucket with short-lived signed downloads; file association and library filters never replace account-scoped authorization.
 - UI text not yet keyed in i18n is translated at runtime by AutoTranslate using src/locales/ui.<lang>.json keyed by exact English source; when adding new English UI strings, add their ru/de entries there (or use i18n keys).
 - Salon hair flows live under /hair and bypass the consumer shell; salon-admin membership and RLS isolate salons, guest consultation secrets are hashed, and contact-free results never create leads.
+- Salon language selection is persisted separately from the consumer skin language; salon-only locales must not change the skin experience.
