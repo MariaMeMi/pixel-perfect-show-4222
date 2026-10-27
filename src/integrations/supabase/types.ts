@@ -781,6 +781,51 @@ export type Database = {
           },
         ]
       }
+      hair_product_references: {
+        Row: {
+          brand: string
+          category: string | null
+          description: string
+          id: string
+          intended_use: string
+          kind: string
+          name: string
+          product_identifier: string
+          reference_key: string
+          source_url: string
+          suitability: Json
+          verified: boolean
+        }
+        Insert: {
+          brand: string
+          category?: string | null
+          description?: string
+          id?: string
+          intended_use: string
+          kind: string
+          name: string
+          product_identifier?: string
+          reference_key: string
+          source_url?: string
+          suitability?: Json
+          verified?: boolean
+        }
+        Update: {
+          brand?: string
+          category?: string | null
+          description?: string
+          id?: string
+          intended_use?: string
+          kind?: string
+          name?: string
+          product_identifier?: string
+          reference_key?: string
+          source_url?: string
+          suitability?: Json
+          verified?: boolean
+        }
+        Relationships: []
+      }
       hair_request_limits: {
         Row: {
           count: number
@@ -951,44 +996,69 @@ export type Database = {
       hair_salon_products: {
         Row: {
           active: boolean
+          available: boolean
           brand: string
           concerns: string[]
           description: string
+          enabled: boolean
           function: string
           id: string
+          image_source: string
+          image_url: string
           name: string
           price: string
           purchase_url: string
+          reference_id: string | null
           salon_id: string
+          size: string
           verified: boolean
         }
         Insert: {
           active?: boolean
+          available?: boolean
           brand: string
           concerns?: string[]
           description?: string
+          enabled?: boolean
           function: string
           id?: string
+          image_source?: string
+          image_url?: string
           name: string
           price?: string
           purchase_url?: string
+          reference_id?: string | null
           salon_id: string
+          size?: string
           verified?: boolean
         }
         Update: {
           active?: boolean
+          available?: boolean
           brand?: string
           concerns?: string[]
           description?: string
+          enabled?: boolean
           function?: string
           id?: string
+          image_source?: string
+          image_url?: string
           name?: string
           price?: string
           purchase_url?: string
+          reference_id?: string | null
           salon_id?: string
+          size?: string
           verified?: boolean
         }
         Relationships: [
+          {
+            foreignKeyName: "hair_salon_products_reference_id_fkey"
+            columns: ["reference_id"]
+            isOneToOne: false
+            referencedRelation: "hair_product_references"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "hair_salon_products_salon_id_fkey"
             columns: ["salon_id"]
