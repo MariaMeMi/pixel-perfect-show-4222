@@ -4,6 +4,29 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.salon-workspace {
+  --background: oklch(0.99 0.003 155);
+  --foreground: oklch(0.29 0.015 160);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--foreground);
+  --primary: oklch(0.47 0.06 164);
+  --primary-foreground: oklch(0.99 0 0);
+  --accent: oklch(0.95 0.012 155);
+  --accent-foreground: var(--foreground);
+  --secondary: oklch(0.94 0.012 25);
+  --muted: oklch(0.96 0.004 155);
+  --muted-foreground: oklch(0.5 0.014 160);
+  --border: oklch(0.89 0.006 155);
+  --input: var(--border);
+  --ring: var(--primary);
+  --radius: 0.5rem;
+  --salon-cover-ink: oklch(0.99 0 0);
+  --salon-cover-shade: linear-gradient(90deg, oklch(0.15 0.01 155 / 75%), oklch(0.15 0.01 155 / 24%));
+}
+.salon-workspace h1, .salon-workspace h2, .salon-workspace h3 { letter-spacing: 0; }
+.salon-cover { color: var(--salon-cover-ink); }
+.salon-cover-shade { background: var(--salon-cover-shade); }
+
 .clinician-workspace {
   --background: oklch(0.98 0.002 160);
   --foreground: oklch(0.29 0.015 160);

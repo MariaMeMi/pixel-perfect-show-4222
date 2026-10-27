@@ -1,0 +1,3 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { SalonAdmin } from '@/components/hair/SalonAdmin';
+export const Route=createFileRoute('/_authenticated/hair/admin')({head:()=>({meta:[{title:'Salon Leads & Settings | Rose AI'},{name:'description',content:'Private salon lead management, verified product catalog and white-label consultation settings.'},{property:'og:title',content:'Rose AI Salon Workspace'},{property:'og:description',content:'Authorized salon leads, catalog and branding.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'},{name:'robots',content:'noindex'}]}),component:SalonAdmin});

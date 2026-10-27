@@ -2,13 +2,14 @@ import { useEffect } from "react";
 import { useI18n, type Lang } from "@/lib/i18n";
 import ru from "@/locales/ui.ru.json";
 import de from "@/locales/ui.de.json";
+import salon from "@/locales/salon.json";
 
 /**
  * Translates English text written directly in screens (not yet keyed in i18n)
  * using exact-match dictionaries keyed by the English source string.
  * Originals are remembered so switching back to English restores them.
  */
-const DICTS: Partial<Record<Lang, Record<string, string>>> = { ru, de };
+const DICTS: Partial<Record<Lang, Record<string, string>>> = { ru: { ...salon.ru, ...ru }, de: { ...salon.de, ...de } };
 const ATTRS = ["placeholder", "aria-label", "title", "alt"] as const;
 const SKIP = new Set(["SCRIPT", "STYLE", "TEXTAREA", "CODE", "PRE"]);
 
@@ -38,8 +39,8 @@ function translateText(node: Text, dict?: Record<string, string>) {
   const known = textOrig.get(node);
   const current = node.nodeValue ?? "";
   // If React replaced the text since our last pass, treat it as the new source.
-  const translatedKnown = known !== undefined ? lookup(dict, known) : undefined;
-  const source = known !== undefined && (current === known || current === translatedKnown) ? known : current;
+  const matchesKnown = known !== undefined && (current === known || Object.values(DICTS).some(d => current === lookup(d, known)));
+  const source = known !== undefined && matchesKnown ? known : current;
   textOrig.set(node, source);
   const next = lookup(dict, source) ?? source;
   if (node.nodeValue !== next) node.nodeValue = next;
@@ -52,7 +53,7 @@ function translateAttrs(el: Element, dict?: Record<string, string>) {
     const cur = el.getAttribute(a);
     if (cur == null) continue;
     const known = store[a];
-    const source = known !== undefined && (cur === known || cur === lookup(dict, known)) ? known : cur;
+    const source = known !== undefined && (cur === known || Object.values(DICTS).some(d => cur === lookup(d, known))) ? known : cur;
     store[a] = source;
     const next = lookup(dict, source) ?? source;
     if (cur !== next) el.setAttribute(a, next);

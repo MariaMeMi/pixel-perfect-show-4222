@@ -1,0 +1,5 @@
+CREATE TABLE public.hair_request_limits (key text PRIMARY KEY, window_start timestamptz NOT NULL DEFAULT now(), count integer NOT NULL DEFAULT 1);
+GRANT ALL ON public.hair_request_limits TO service_role;
+ALTER TABLE public.hair_request_limits ENABLE ROW LEVEL SECURITY;
+CREATE FUNCTION public.hair_consume_limit(k text, max_requests integer, seconds integer) RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ DECLARE n integer; BEGIN INSERT INTO public.hair_request_limits(key) VALUES(k) ON CONFLICT(key) DO UPDATE SET count=CASE WHEN hair_request_limits.window_start < now()-make_interval(secs=>seconds) THEN 1 ELSE hair_request_limits.count+1 END, window_start=CASE WHEN hair_request_limits.window_start < now()-make_interval(secs=>seconds) THEN now() ELSE hair_request_limits.window_start END RETURNING count INTO n; RETURN n<=max_requests; END $$;
+REVOKE ALL ON FUNCTION public.hair_consume_limit(text,integer,integer) FROM PUBLIC,anon,authenticated; GRANT EXECUTE ON FUNCTION public.hair_consume_limit(text,integer,integer) TO service_role;
