@@ -55,9 +55,9 @@ export function selectInventory<T extends InventoryProduct>(products: T[], refer
   for (const fn of ['Shampoo', 'Conditioner', 'Mask', 'Leave-in']) {
     const pool = candidates.filter(p => p.function === fn);
     if (!pool.length) continue;
-    const best = pool[0].score;
+    const best = pool[0]!.score;
     const tied = pool.filter(p => p.score === best);
-    const start = seed % tied.length;
+    const start = seed % tied.length || 0;
     const order = [...tied.slice(start), ...tied.slice(0, start)];
     const pick = order.find(p => !usedBrands.has(p.brand)) ?? order[0]!;
     usedBrands.add(pick.brand);

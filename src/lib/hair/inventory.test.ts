@@ -45,7 +45,7 @@ describe('verified hair inventory recommendations', () => {
     const refC = { ...ref, id: '00000000-0000-4000-8000-000000000003', category: 'Conditioner' };
     const conditionerA = { ...product, id: 'ca', brand: 'BrandA', function: 'Conditioner', reference_id: '00000000-0000-4000-8000-000000000003' };
     const conditionerB = { ...product, id: 'cb', brand: 'BrandB', function: 'Conditioner', reference_id: '00000000-0000-4000-8000-000000000003' };
-    const winner = s => selectInventory([conditionerA, conditionerB], [refC], answers, s)[0]?.brand;
+    const winner = (s: number) => selectInventory([conditionerA, conditionerB], [refC], answers, s)[0]?.brand;
     expect(new Set([winner(0), winner(1), winner(2), winner(3)]).size).toBeGreaterThan(1);
   });
   it('keeps one product per function and no more than five products', () => {
