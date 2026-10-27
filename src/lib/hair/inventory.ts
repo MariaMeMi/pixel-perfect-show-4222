@@ -2,11 +2,13 @@ import { z } from 'zod';
 import type { HairAnswers } from './rules';
 
 const secureUrl = z.string().url().max(1000).refine(v => v.startsWith('https://'));
+const optionalSecureUrl = z.union([z.literal(''), secureUrl]);
+// Retail details (price, size, image) are optional; only a secure purchase link is required.
 export const inventorySchema = z.object({
   id: z.string().uuid().optional(), salonId: z.string().uuid(), referenceId: z.string().uuid(),
-  price: z.string().trim().min(1).max(60).refine(v => /[0-9]/.test(v)),
-  size: z.string().trim().min(1).max(80), purchaseUrl: secureUrl, imageUrl: secureUrl,
-  imageSource: z.string().trim().min(1).max(600), enabled: z.boolean(), available: z.boolean(),
+  price: z.string().trim().max(60).refine(v => v === '' || /[0-9]/.test(v)),
+  size: z.string().trim().max(80), purchaseUrl: secureUrl, imageUrl: optionalSecureUrl,
+  imageSource: z.string().trim().max(600), enabled: z.boolean(), available: z.boolean(),
 });
 export const suitabilitySchema = z.object({
   concerns: z.array(z.string()).default([]), goals: z.array(z.string()).default([]),

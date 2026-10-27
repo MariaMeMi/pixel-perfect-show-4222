@@ -12,8 +12,9 @@ describe('verified hair inventory recommendations', () => {
   it('requires verified inventory', () => expect(choose({ ...product, verified: false })).toEqual([]));
   it('requires enabled salon stock', () => expect(choose({ ...product, enabled: false })).toEqual([]));
   it('requires availability', () => expect(choose({ ...product, available: false })).toEqual([]));
-  it('requires price, size, product link, image and approved image source', () => {
-    for (const field of ['price', 'size', 'purchase_url', 'image_url', 'image_source'] as const) expect(choose({ ...product, [field]: '' })).toEqual([]);
+  it('recommends without price, size or image when a secure purchase link exists', () => {
+    for (const field of ['price', 'size', 'image_url', 'image_source'] as const) expect(choose({ ...product, [field]: '' })).toEqual([expect.objectContaining({ id: 'a' })]);
+    expect(choose({ ...product, purchase_url: '' })).toEqual([]);
   });
   it('never fills routine slots with unsuitable products', () => expect(choose(product, ref, { ...answers, concern: 'Color maintenance' })).toEqual([]));
   it('does not assume sensitive scalp compatibility', () => expect(choose(product, ref, { ...answers, scalp: 'Sensitive' })).toEqual([]));
