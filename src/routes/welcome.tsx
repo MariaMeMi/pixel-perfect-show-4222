@@ -164,6 +164,7 @@ function WelcomePage() {
           Your photos and results stay private. See our <a href="/privacy" className="underline underline-offset-2">Privacy Policy</a>.
         </p>
         <Button asChild variant="link" size="sm" className="w-full"><Link to="/clinician/onboarding">For Clinicians · Early access</Link></Button>
+        <Button asChild variant="link" size="sm" className="w-full"><Link to="/hair/salon/mika-beauty-studio">Hair consultation · Mika Beauty Studio</Link></Button>
       </div>
     </div>
   );
