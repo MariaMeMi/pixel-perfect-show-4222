@@ -3,7 +3,7 @@ import { selectInventory, inventorySchema, MAX_RECOMMENDED_PRODUCTS, MAX_ROUTINE
 import { newResultSchema, type HairAnswers } from './rules';
 const answers: HairAnswers = { texture: 'Wavy', thickness: 'Fine', scalp: 'Balanced', concern: 'Dryness', goal: 'Softness and shine', color: 'Natural', washing: 'Every 2–3 days', heat: 'Occasionally' };
 const reference: ProductReference = { id: 'ref', verified: true, kind: 'product', category: 'Shampoo', suitability: { concerns: ['Dryness'], scalps: ['Balanced'] } };
-const product: InventoryProduct = { id: 'a', reference_id: '00000000-0000-4000-8000-000000000001', verified: true, active: true, enabled: true, available: true, function: 'Shampoo', price: '$30', size: '250 ml', purchase_url: 'https://example.com/product', image_url: 'https://example.com/image.jpg', image_source: 'Approved manufacturer source' };
+const product: InventoryProduct = { id: 'a', reference_id: '00000000-0000-4000-8000-000000000001', verified: true, active: true, enabled: true, available: true, brand: 'BrandA', function: 'Shampoo', price: '$30', size: '250 ml', purchase_url: 'https://example.com/product', image_url: 'https://example.com/image.jpg', image_source: 'Approved manufacturer source' };
 const ref = { ...reference, id: product.reference_id ?? '' };
 const choose = (p: InventoryProduct = product, r: ProductReference = ref, a = answers) => selectInventory([p], [r], a);
 describe('verified hair inventory recommendations', () => {
@@ -12,8 +12,9 @@ describe('verified hair inventory recommendations', () => {
   it('requires verified inventory', () => expect(choose({ ...product, verified: false })).toEqual([]));
   it('requires enabled salon stock', () => expect(choose({ ...product, enabled: false })).toEqual([]));
   it('requires availability', () => expect(choose({ ...product, available: false })).toEqual([]));
-  it('requires price, size, product link, image and approved image source', () => {
-    for (const field of ['price', 'size', 'purchase_url', 'image_url', 'image_source'] as const) expect(choose({ ...product, [field]: '' })).toEqual([]);
+  it('recommends without price, size or image when a secure purchase link exists', () => {
+    for (const field of ['price', 'size', 'image_url', 'image_source'] as const) expect(choose({ ...product, [field]: '' })).toEqual([expect.objectContaining({ id: 'a' })]);
+    expect(choose({ ...product, purchase_url: '' })).toEqual([]);
   });
   it('never fills routine slots with unsuitable products', () => expect(choose(product, ref, { ...answers, concern: 'Color maintenance' })).toEqual([]));
   it('does not assume sensitive scalp compatibility', () => expect(choose(product, ref, { ...answers, scalp: 'Sensitive' })).toEqual([]));
@@ -30,6 +31,22 @@ describe('verified hair inventory recommendations', () => {
   it('ranks concern match above goal-only matches', () => {
     const goalRef = { ...ref, id: '00000000-0000-4000-8000-000000000002', suitability: { goals: ['Softness and shine'], scalps: ['Balanced'] } };
     expect(selectInventory([{ ...product, id: 'z' }, { ...product, reference_id: goalRef.id }], [ref, goalRef], answers)[0]?.id).toBe('z');
+  });
+  it('spreads suitability ties across brands', () => {
+    const shampoo = { ...product, id: 'sb', brand: 'BrandB', function: 'Shampoo', reference_id: '00000000-0000-4000-8000-000000000001' };
+    const refC = { ...ref, id: '00000000-0000-4000-8000-000000000003', category: 'Conditioner' };
+    const conditionerA = { ...product, id: 'ca', brand: 'BrandA', function: 'Conditioner', reference_id: '00000000-0000-4000-8000-000000000003' };
+    const conditionerB = { ...product, id: 'cb', brand: 'BrandB', function: 'Conditioner', reference_id: '00000000-0000-4000-8000-000000000003' };
+    const result = selectInventory([shampoo, conditionerB, conditionerA], [ref, refC], answers, 0);
+    expect(result.find(p => p.function === 'Shampoo')?.brand).toBe('BrandB');
+    expect(result.find(p => p.function === 'Conditioner')?.brand).toBe('BrandA');
+  });
+  it('rotates the tie winner with the consultation seed', () => {
+    const refC = { ...ref, id: '00000000-0000-4000-8000-000000000003', category: 'Conditioner' };
+    const conditionerA = { ...product, id: 'ca', brand: 'BrandA', function: 'Conditioner', reference_id: '00000000-0000-4000-8000-000000000003' };
+    const conditionerB = { ...product, id: 'cb', brand: 'BrandB', function: 'Conditioner', reference_id: '00000000-0000-4000-8000-000000000003' };
+    const winner = (s: number) => selectInventory([conditionerA, conditionerB], [refC], answers, s)[0]?.brand;
+    expect(new Set([winner(0), winner(1), winner(2), winner(3)]).size).toBeGreaterThan(1);
   });
   it('keeps one product per function and no more than five products', () => {
     const categories = ['Shampoo', 'Conditioner', 'Mask', 'Leave-in'];

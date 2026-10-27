@@ -2,11 +2,13 @@ import { z } from 'zod';
 import type { HairAnswers } from './rules';
 
 const secureUrl = z.string().url().max(1000).refine(v => v.startsWith('https://'));
+const optionalSecureUrl = z.union([z.literal(''), secureUrl]);
+// Retail details (price, size, image) are optional; only a secure purchase link is required.
 export const inventorySchema = z.object({
   id: z.string().uuid().optional(), salonId: z.string().uuid(), referenceId: z.string().uuid(),
-  price: z.string().trim().min(1).max(60).refine(v => /[0-9]/.test(v)),
-  size: z.string().trim().min(1).max(80), purchaseUrl: secureUrl, imageUrl: secureUrl,
-  imageSource: z.string().trim().min(1).max(600), enabled: z.boolean(), available: z.boolean(),
+  price: z.string().trim().max(60).refine(v => v === '' || /[0-9]/.test(v)),
+  size: z.string().trim().max(80), purchaseUrl: secureUrl, imageUrl: optionalSecureUrl,
+  imageSource: z.string().trim().max(600), enabled: z.boolean(), available: z.boolean(),
 });
 export const suitabilitySchema = z.object({
   concerns: z.array(z.string()).default([]), goals: z.array(z.string()).default([]),
@@ -16,7 +18,7 @@ export const suitabilitySchema = z.object({
 export type ProductReference = { id: string; kind: string; category: string | null; verified: boolean; suitability: unknown };
 export type InventoryProduct = {
   id: string; reference_id: string | null; verified: boolean; active: boolean; enabled: boolean; available: boolean;
-  function: string; price: string; size: string; purchase_url: string; image_url: string; image_source: string;
+  brand: string; function: string; price: string; size: string; purchase_url: string; image_url: string; image_source: string;
 };
 export const MAX_ROUTINE_STEPS = 4;
 export const MAX_RECOMMENDED_PRODUCTS = 5;
@@ -25,7 +27,7 @@ export function completeInventory(p: InventoryProduct) {
     price: p.price, size: p.size, purchaseUrl: p.purchase_url, imageUrl: p.image_url, imageSource: p.image_source,
     enabled: p.enabled, available: p.available }).success;
 }
-export function selectInventory<T extends InventoryProduct>(products: T[], references: ProductReference[], answers: HairAnswers) {
+export function selectInventory<T extends InventoryProduct>(products: T[], references: ProductReference[], answers: HairAnswers, seed = defaultSeed(answers)) {
   const candidates = products.flatMap(p => {
     const r = references.find(r => r.id === p.reference_id);
     if (!p.verified || !p.active || !p.enabled || !p.available || !completeInventory(p) || !r?.verified || r.kind !== 'product') return [];
@@ -47,6 +49,22 @@ export function selectInventory<T extends InventoryProduct>(products: T[], refer
   });
   candidates.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
   const selected = new Map<string, T & { reasons: string[]; score: number }>();
-  for (const p of candidates) if (!selected.has(p.function)) selected.set(p.function, p);
+  const usedBrands = new Set<string>();
+  // One product per function; on a suitability tie, rotate the winner per consultation and
+  // prefer a brand not yet recommended so stocked brands get fair exposure.
+  for (const fn of ['Shampoo', 'Conditioner', 'Mask', 'Leave-in']) {
+    const pool = candidates.filter(p => p.function === fn);
+    if (!pool.length) continue;
+    const best = pool[0]!.score;
+    const tied = pool.filter(p => p.score === best);
+    const start = seed % tied.length || 0;
+    const order = [...tied.slice(start), ...tied.slice(0, start)];
+    const pick = order.find(p => !usedBrands.has(p.brand)) ?? order[0]!;
+    usedBrands.add(pick.brand);
+    selected.set(fn, pick);
+  }
   return [...selected.values()].slice(0, MAX_RECOMMENDED_PRODUCTS).map(({ score: _score, ...p }) => p);
+}
+function defaultSeed(answers: HairAnswers) {
+  return [...JSON.stringify(answers)].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7);
 }

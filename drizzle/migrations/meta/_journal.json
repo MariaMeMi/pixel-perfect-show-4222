@@ -64,6 +64,13 @@
       "when": 1793067960940,
       "tag": "0008_hair_reference_inventory",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793112516671,
+      "tag": "0009_hair_optional_retail_details",
+      "breakpoints": true
     }
   ]
 }

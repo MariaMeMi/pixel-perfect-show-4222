@@ -23,4 +23,4 @@
 - Salon hair flows live under /hair and bypass the consumer shell; salon-admin membership and RLS isolate salons, guest consultation secrets are hashed, and contact-free results never create leads.
 - Salon language selection is persisted separately from the consumer skin language; salon-only locales must not change the skin experience.
 - Hair product references are trusted, server-managed records; salon inventory retains its own IDs and owner-scoped permissions, and collection references cannot become retail products.
-- Hair recommendation eligibility uses verified reference suitability and complete available salon inventory, never AI-invented product facts or retail price ranking; historical reports retain their previous schema while new reports enforce current limits.
+- Hair recommendation eligibility uses verified reference suitability and available salon inventory (price, size and image are optional), never AI-invented product facts or retail price ranking; historical reports retain their previous schema while new reports enforce current limits.
