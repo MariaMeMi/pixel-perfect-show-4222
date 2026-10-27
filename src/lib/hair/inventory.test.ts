@@ -33,11 +33,11 @@ describe('verified hair inventory recommendations', () => {
     expect(selectInventory([{ ...product, id: 'z' }, { ...product, reference_id: goalRef.id }], [ref, goalRef], answers)[0]?.id).toBe('z');
   });
   it('spreads suitability ties across brands', () => {
-    const otherRef = { ...ref, id: '00000000-0000-4000-8000-000000000003', category: 'Conditioner' };
-    const shampooA = { ...product, id: 'sa', brand: 'BrandA', function: 'Shampoo', reference_id: '00000000-0000-4000-8000-000000000001' };
-    const shampooB = { ...product, id: 'sb', brand: 'BrandB', function: 'Shampoo', reference_id: '00000000-0000-4000-8000-000000000001' };
-    const conditioner = { ...product, id: 'ca', brand: 'BrandA', function: 'Conditioner', reference_id: '00000000-0000-4000-8000-000000000003' };
-    const result = selectInventory([shampooA, conditioner, shampooB], [ref, otherRef], answers);
+    const shampoo = { ...product, id: 'sb', brand: 'BrandB', function: 'Shampoo', reference_id: '00000000-0000-4000-8000-000000000001' };
+    const refC = { ...ref, id: '00000000-0000-4000-8000-000000000003', category: 'Conditioner' };
+    const conditionerA = { ...product, id: 'ca', brand: 'BrandA', function: 'Conditioner', reference_id: '00000000-0000-4000-8000-000000000003' };
+    const conditionerB = { ...product, id: 'cb', brand: 'BrandB', function: 'Conditioner', reference_id: '00000000-0000-4000-8000-000000000003' };
+    const result = selectInventory([shampoo, conditionerB, conditionerA], [ref, refC], answers);
     expect(result.find(p => p.function === 'Shampoo')?.brand).toBe('BrandB');
     expect(result.find(p => p.function === 'Conditioner')?.brand).toBe('BrandA');
   });
