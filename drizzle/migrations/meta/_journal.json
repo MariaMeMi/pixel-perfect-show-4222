@@ -43,6 +43,13 @@
       "when": 1793066700131,
       "tag": "0005_salon_hair_consultations",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793066730032,
+      "tag": "0006_salon_guest_request_limits",
+      "breakpoints": true
     }
   ]
 }

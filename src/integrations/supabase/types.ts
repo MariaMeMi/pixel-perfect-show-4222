@@ -781,6 +781,24 @@ export type Database = {
           },
         ]
       }
+      hair_request_limits: {
+        Row: {
+          count: number
+          key: string
+          window_start: string
+        }
+        Insert: {
+          count?: number
+          key: string
+          window_start?: string
+        }
+        Update: {
+          count?: number
+          key?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       hair_salon_admins: {
         Row: {
           salon_id: string
@@ -1169,6 +1187,10 @@ export type Database = {
           p_test: boolean
         }
         Returns: undefined
+      }
+      hair_consume_limit: {
+        Args: { k: string; max_requests: number; seconds: number }
+        Returns: boolean
       }
       is_clinician: { Args: never; Returns: boolean }
       is_hair_salon_admin: { Args: { sid: string }; Returns: boolean }
