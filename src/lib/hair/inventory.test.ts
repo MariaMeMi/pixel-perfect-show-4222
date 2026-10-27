@@ -32,6 +32,15 @@ describe('verified hair inventory recommendations', () => {
     const goalRef = { ...ref, id: '00000000-0000-4000-8000-000000000002', suitability: { goals: ['Softness and shine'], scalps: ['Balanced'] } };
     expect(selectInventory([{ ...product, id: 'z' }, { ...product, reference_id: goalRef.id }], [ref, goalRef], answers)[0]?.id).toBe('z');
   });
+  it('spreads suitability ties across brands', () => {
+    const otherRef = { ...ref, id: '00000000-0000-4000-8000-000000000003', category: 'Conditioner' };
+    const shampooA = { ...product, id: 'sa', brand: 'BrandA', function: 'Shampoo', reference_id: '00000000-0000-4000-8000-000000000001' };
+    const shampooB = { ...product, id: 'sb', brand: 'BrandB', function: 'Shampoo', reference_id: '00000000-0000-4000-8000-000000000001' };
+    const conditioner = { ...product, id: 'ca', brand: 'BrandA', function: 'Conditioner', reference_id: '00000000-0000-4000-8000-000000000003' };
+    const result = selectInventory([shampooA, conditioner, shampooB], [ref, otherRef], answers);
+    expect(result.find(p => p.function === 'Shampoo')?.brand).toBe('BrandB');
+    expect(result.find(p => p.function === 'Conditioner')?.brand).toBe('BrandA');
+  });
   it('keeps one product per function and no more than five products', () => {
     const categories = ['Shampoo', 'Conditioner', 'Mask', 'Leave-in'];
     const products = categories.flatMap((functionName, i) => [0, 1].map(n => ({ ...product, id: `${i}-${n}`, function: functionName, reference_id: `00000000-0000-4000-8000-00000000000${i + 1}` })));

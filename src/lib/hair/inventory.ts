@@ -49,6 +49,16 @@ export function selectInventory<T extends InventoryProduct>(products: T[], refer
   });
   candidates.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
   const selected = new Map<string, T & { reasons: string[]; score: number }>();
-  for (const p of candidates) if (!selected.has(p.function)) selected.set(p.function, p);
+  const usedBrands = new Set<string>();
+  // One product per function; on a suitability tie, prefer a brand not yet recommended.
+  for (const fn of ['Shampoo', 'Conditioner', 'Mask', 'Leave-in']) {
+    const pool = candidates.filter(p => p.function === fn);
+    if (!pool.length) continue;
+    const best = pool[0].score;
+    const tied = pool.filter(p => p.score === best);
+    const pick = tied.find(p => !usedBrands.has(p.brand)) ?? tied[0]!;
+    usedBrands.add(pick.brand);
+    selected.set(fn, pick);
+  }
   return [...selected.values()].slice(0, MAX_RECOMMENDED_PRODUCTS).map(({ score: _score, ...p }) => p);
 }
