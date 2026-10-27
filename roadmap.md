@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Extend hair advisor with a separate verified reference catalog, salon inventory requirements and suitability-based recommendations (four routine steps maximum, five products maximum), preserving skin flows and salon languages.
 - [x] Add Ukrainian to Mika’s salon language choices, questionnaire, privacy text and generated routines; verified selection persistence, all eight questions, real Ukrainian results, contact skipping and consultation deletion; 10 salon tests pass.
 - [x] Mika salon MVP: separate guest hair flow, editable branding, optional contact sharing, consent evidence, lead search/filters/status/CSV/deletion, AI routines, booking links and analytics; customer/admin flows, language switching, account isolation and 27 rule tests verified.
 - [ ] Mika customer launch: needs salon-verified catalog, privacy contact/retention review and a real requested-report inbox test; optional account-saved hair routines are not included in this MVP.
