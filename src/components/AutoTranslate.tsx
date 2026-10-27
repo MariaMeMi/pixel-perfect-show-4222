@@ -2,13 +2,14 @@ import { useEffect } from "react";
 import { useI18n, type Lang } from "@/lib/i18n";
 import ru from "@/locales/ui.ru.json";
 import de from "@/locales/ui.de.json";
+import salon from "@/locales/salon.json";
 
 /**
  * Translates English text written directly in screens (not yet keyed in i18n)
  * using exact-match dictionaries keyed by the English source string.
  * Originals are remembered so switching back to English restores them.
  */
-const DICTS: Partial<Record<Lang, Record<string, string>>> = { ru, de };
+const DICTS: Partial<Record<Lang, Record<string, string>>> = { ru: { ...salon.ru, ...ru }, de: { ...salon.de, ...de } };
 const ATTRS = ["placeholder", "aria-label", "title", "alt"] as const;
 const SKIP = new Set(["SCRIPT", "STYLE", "TEXTAREA", "CODE", "PRE"]);
 

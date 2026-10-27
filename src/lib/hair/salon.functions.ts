@@ -16,9 +16,10 @@ function publicClient() {
 async function salonPublic(slug:string) {
  const db=publicClient(); const {data:salon,error}=await db.from('hair_salons').select('id,slug,name,settings').eq('slug',slug).eq('active',true).single();
  if(error||!salon)throw new Error('This salon consultation is not available.');
+ const settings=settingsSchema.parse(salon.settings);
  const {data:products,error:pe}=await db.from('hair_salon_products').select('*').eq('salon_id',salon.id).eq('active',true).eq('verified',true);
  if(pe)throw new Error('Could not load the salon catalog');
- return {salon:{...salon,settings:settingsSchema.parse(salon.settings)},products:products??[]};
+ return {salon:{...salon,settings},products:(products??[]).filter(p=>settings.enabledBrands.some(b=>b===p.brand))};
 }
 export const getSalon=createServerFn({method:'GET'}).inputValidator((v:unknown)=>slugSchema.parse(v)).handler(async({data})=>salonPublic(data.slug));
 async function limitedAdmin(action:string,limit=20) {
@@ -81,7 +82,7 @@ export const salonAdminOverview=createServerFn({method:'POST'}).middleware([requ
  if(s.error||p.error||l.error||e.error)throw new Error('Could not load salon workspace');return {salons:(s.data??[]).map(x=>({...x,settings:settingsSchema.parse(x.settings)})),products:p.data??[],leads:l.data??[],events:e.data??[]};
 });
 export const saveSalonSettings=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>z.object({id:z.string().uuid(),name:z.string().trim().min(1).max(150),settings:settingsSchema}).parse(v)).handler(async({data,context})=>{const {data:row,error}=await context.supabase.from('hair_salons').update({name:data.name,settings:data.settings}).eq('id',data.id).select('id').single();if(error||!row)throw new Error('Salon unavailable or access denied');return {ok:true};});
-export const updateHairLead=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>z.object({id:z.string().uuid(),status:z.enum(statuses),emailConsent:z.boolean().optional()}).parse(v)).handler(async({data,context})=>{const change:{lead_status:typeof data.status;email_marketing_consent?:false;email_marketing_consent_timestamp?:null}={lead_status:data.status};if(data.emailConsent===false){change.email_marketing_consent=false;change.email_marketing_consent_timestamp=null;}const {data:row,error}=await context.supabase.from('hair_salon_leads').update(change).eq('id',data.id).select('id').single();if(error||!row)throw new Error('Lead unavailable or access denied');return {ok:true};});
+export const updateHairLead=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>z.object({id:z.string().uuid(),status:z.enum(statuses),emailConsent:z.boolean().optional()}).parse(v)).handler(async({data,context})=>{const change:{lead_status:typeof data.status;email_marketing_consent?:false}={lead_status:data.status};if(data.emailConsent===false)change.email_marketing_consent=false;const {data:row,error}=await context.supabase.from('hair_salon_leads').update(change).eq('id',data.id).select('id').single();if(error||!row)throw new Error('Lead unavailable or access denied');return {ok:true};});
 export const deleteHairLead=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>z.object({id:z.string().uuid()}).parse(v)).handler(async({data,context})=>{
  const {data:lead}=await context.supabase.from('hair_salon_leads').select('id,hair_profile_id,salon_id').eq('id',data.id).single();if(!lead)throw new Error('Lead unavailable or access denied');
  const {supabaseAdmin:db}=await import('@/integrations/supabase/client.server');const {error}=await db.from('hair_consultations').delete().eq('id',lead.hair_profile_id).eq('salon_id',lead.salon_id);if(error)throw new Error('Could not delete customer data');return {ok:true};

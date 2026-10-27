@@ -1,0 +1,8 @@
+ALTER TABLE public.hair_salon_leads ADD COLUMN email_marketing_opted_out_at timestamptz;
+CREATE FUNCTION public.hair_lead_consent_guard() RETURNS trigger LANGUAGE plpgsql SET search_path=public AS $$ BEGIN
+IF NEW.salon_id<>OLD.salon_id OR NEW.hair_profile_id<>OLD.hair_profile_id OR NEW.first_name<>OLD.first_name OR NEW.email<>OLD.email OR NEW.phone_number<>OLD.phone_number OR NEW.consultation_data_sharing_consent<>OLD.consultation_data_sharing_consent OR NEW.consultation_consent_timestamp<>OLD.consultation_consent_timestamp OR NEW.email_marketing_consent_timestamp IS DISTINCT FROM OLD.email_marketing_consent_timestamp OR NEW.sms_marketing_consent_timestamp IS DISTINCT FROM OLD.sms_marketing_consent_timestamp OR NEW.sms_marketing_consent<>OLD.sms_marketing_consent OR NEW.consent_notice_version<>OLD.consent_notice_version OR NEW.consent_source<>OLD.consent_source OR NEW.consent_evidence<>OLD.consent_evidence OR NEW.consultation_answers<>OLD.consultation_answers THEN RAISE EXCEPTION 'Consent evidence and customer association cannot change'; END IF;
+IF NEW.email_marketing_consent AND NOT OLD.email_marketing_consent THEN RAISE EXCEPTION 'Fresh customer consent required'; END IF;
+IF OLD.email_marketing_consent AND NOT NEW.email_marketing_consent THEN NEW.email_marketing_opted_out_at=now(); ELSE NEW.email_marketing_opted_out_at=OLD.email_marketing_opted_out_at; END IF;
+RETURN NEW; END $$;
+CREATE TRIGGER hair_lead_consent_guard BEFORE UPDATE ON public.hair_salon_leads FOR EACH ROW EXECUTE FUNCTION public.hair_lead_consent_guard();
+CREATE UNIQUE INDEX hair_events_no_product_dedupe ON public.hair_salon_events(salon_id,session_id,event) WHERE product_id IS NULL;

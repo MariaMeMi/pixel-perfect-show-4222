@@ -879,6 +879,7 @@ export type Database = {
           email: string
           email_marketing_consent: boolean
           email_marketing_consent_timestamp: string | null
+          email_marketing_opted_out_at: string | null
           first_name: string
           hair_profile_id: string
           id: string
@@ -899,6 +900,7 @@ export type Database = {
           email: string
           email_marketing_consent?: boolean
           email_marketing_consent_timestamp?: string | null
+          email_marketing_opted_out_at?: string | null
           first_name: string
           hair_profile_id: string
           id?: string
@@ -919,6 +921,7 @@ export type Database = {
           email?: string
           email_marketing_consent?: boolean
           email_marketing_consent_timestamp?: string | null
+          email_marketing_opted_out_at?: string | null
           first_name?: string
           hair_profile_id?: string
           id?: string
