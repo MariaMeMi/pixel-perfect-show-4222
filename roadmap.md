@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Salon white-label hair consultation: confirm first salon and missing existing hair flow, then implement branding, verified catalog, optional contact step, private lead management, consent, reports and analytics.
+- [ ] Salon white-label hair consultation for Mika Beauty Studio: separate new hair flow, branding, verified catalog, optional contact step, private lead management, consent, reports, analytics and verification.
 - [x] Extend clinician workspace: My Patients, My Cases, private Photo Library and documents, linked histories, archive/restore; authenticated uploads, downloads, retained files, comparisons, mobile views and account isolation verified. Real patient use remains blocked pending healthcare safeguards.
 - [x] Clinician MVP: separate entry and onboarding, dashboard, patient profiles, private photos, comparison, subjective progress and documentation; authenticated test flow and account isolation verified. Real patient use remains blocked pending healthcare safeguards.
 - [x] Botox AI feature (separate section, Home card)
