@@ -1,0 +1,7 @@
+import { Html, Head, Body, Container, Heading, Text, Link, Preview } from '@react-email/components';
+import type { TemplateEntry } from './registry';
+import type { HairResult } from '@/lib/hair/rules';
+function HairRoutine({name='',salon='',result,products=[],bookingUrl=''}:{name?:string;salon?:string;result?:HairResult;products?:string[];bookingUrl?:string}) {
+ return <Html><Head/><Preview>Your requested hair care routine</Preview><Body style={{backgroundColor:'#ffffff',fontFamily:'Arial,sans-serif'}}><Container style={{padding:'24px'}}><Heading>Your hair routine from {salon}</Heading><Text>Hello {name}, here is the hair care report you requested.</Text><Text>{result?.summary}</Text>{result?.routine.map((s,i)=><Text key={i}><strong>{s.title}</strong><br/>{s.instruction}</Text>)}{products.length>0&&<Text>Recommended products: {products.join(', ')}</Text>}<Text>{result?.advice}</Text>{bookingUrl&&<Link href={bookingUrl}>Book your requested consultation</Link>}<Text>Prepared with Rose AI. General hair care guidance, not a medical assessment.</Text></Container></Body></Html>;
+}
+export const template={component:HairRoutine,subject:'Your requested hair care routine',displayName:'Hair care report'} satisfies TemplateEntry;

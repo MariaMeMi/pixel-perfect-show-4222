@@ -1,4 +1,5 @@
 import { template as resultsReady } from './results-ready'
+import { template as hairRoutine } from './hair-routine'
 import type { ComponentType } from 'react'
 
 export interface TemplateEntry {
@@ -19,6 +20,7 @@ export interface TemplateEntry {
  *   // then add to TEMPLATES: 'welcome': welcomeTemplate
  */
 export const TEMPLATES: Record<string, TemplateEntry> = {
+  'hair-routine': hairRoutine,
   'results-ready': resultsReady,
   // Add templates here as they are created, e.g.:
   // 'welcome': welcomeTemplate,
