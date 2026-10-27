@@ -4,6 +4,7 @@ import ru from "@/locales/ui.ru.json";
 import de from "@/locales/ui.de.json";
 import salon from "@/locales/salon.json";
 import uk from "@/locales/salon.uk.json";
+import inventory from "@/locales/hair-inventory.json";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "@tanstack/react-router";
 
@@ -12,7 +13,7 @@ import { useLocation } from "@tanstack/react-router";
  * using exact-match dictionaries keyed by the English source string.
  * Originals are remembered so switching back to English restores them.
  */
-const DICTS: Partial<Record<Lang, Record<string, string>>> = { ru: { ...salon.ru, ...ru }, de: { ...salon.de, ...de }, uk };
+const DICTS: Partial<Record<Lang, Record<string, string>>> = { ru: { ...salon.ru, ...ru, ...inventory.ru }, de: { ...salon.de, ...de, ...inventory.de }, uk: { ...uk, ...inventory.uk } };
 const ATTRS = ["placeholder", "aria-label", "title", "alt"] as const;
 const SKIP = new Set(["SCRIPT", "STYLE", "TEXTAREA", "CODE", "PRE"]);
 
