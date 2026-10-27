@@ -27,7 +27,7 @@ export function completeInventory(p: InventoryProduct) {
     price: p.price, size: p.size, purchaseUrl: p.purchase_url, imageUrl: p.image_url, imageSource: p.image_source,
     enabled: p.enabled, available: p.available }).success;
 }
-export function selectInventory<T extends InventoryProduct>(products: T[], references: ProductReference[], answers: HairAnswers) {
+export function selectInventory<T extends InventoryProduct>(products: T[], references: ProductReference[], answers: HairAnswers, seed = defaultSeed(answers)) {
   const candidates = products.flatMap(p => {
     const r = references.find(r => r.id === p.reference_id);
     if (!p.verified || !p.active || !p.enabled || !p.available || !completeInventory(p) || !r?.verified || r.kind !== 'product') return [];
@@ -50,15 +50,21 @@ export function selectInventory<T extends InventoryProduct>(products: T[], refer
   candidates.sort((a, b) => b.score - a.score || a.id.localeCompare(b.id));
   const selected = new Map<string, T & { reasons: string[]; score: number }>();
   const usedBrands = new Set<string>();
-  // One product per function; on a suitability tie, prefer a brand not yet recommended.
+  // One product per function; on a suitability tie, rotate the winner per consultation and
+  // prefer a brand not yet recommended so stocked brands get fair exposure.
   for (const fn of ['Shampoo', 'Conditioner', 'Mask', 'Leave-in']) {
     const pool = candidates.filter(p => p.function === fn);
     if (!pool.length) continue;
     const best = pool[0].score;
     const tied = pool.filter(p => p.score === best);
-    const pick = tied.find(p => !usedBrands.has(p.brand)) ?? tied[0]!;
+    const start = seed % tied.length;
+    const order = [...tied.slice(start), ...tied.slice(0, start)];
+    const pick = order.find(p => !usedBrands.has(p.brand)) ?? order[0]!;
     usedBrands.add(pick.brand);
     selected.set(fn, pick);
   }
   return [...selected.values()].slice(0, MAX_RECOMMENDED_PRODUCTS).map(({ score: _score, ...p }) => p);
+}
+function defaultSeed(answers: HairAnswers) {
+  return [...JSON.stringify(answers)].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7);
 }

@@ -37,9 +37,17 @@ describe('verified hair inventory recommendations', () => {
     const refC = { ...ref, id: '00000000-0000-4000-8000-000000000003', category: 'Conditioner' };
     const conditionerA = { ...product, id: 'ca', brand: 'BrandA', function: 'Conditioner', reference_id: '00000000-0000-4000-8000-000000000003' };
     const conditionerB = { ...product, id: 'cb', brand: 'BrandB', function: 'Conditioner', reference_id: '00000000-0000-4000-8000-000000000003' };
-    const result = selectInventory([shampoo, conditionerB, conditionerA], [ref, refC], answers);
+    const result = selectInventory([shampoo, conditionerB, conditionerA], [ref, refC], answers, 0);
     expect(result.find(p => p.function === 'Shampoo')?.brand).toBe('BrandB');
     expect(result.find(p => p.function === 'Conditioner')?.brand).toBe('BrandA');
+  });
+  it('rotates the tie winner with the consultation seed', () => {
+    const refC = { ...ref, id: '00000000-0000-4000-8000-000000000003', category: 'Conditioner' };
+    const conditionerA = { ...product, id: 'ca', brand: 'BrandA', function: 'Conditioner', reference_id: '00000000-0000-4000-8000-000000000003' };
+    const conditionerB = { ...product, id: 'cb', brand: 'BrandB', function: 'Conditioner', reference_id: '00000000-0000-4000-8000-000000000003' };
+    const winner = s => selectInventory([conditionerA, conditionerB], [refC], answers, s)[0]?.brand;
+    expect(winner(0)).not.toBe(winner(1) === 'BrandA' ? undefined : undefined);
+    expect(new Set([winner(0), winner(1), winner(2), winner(3)]).size).toBeGreaterThan(1);
   });
   it('keeps one product per function and no more than five products', () => {
     const categories = ['Shampoo', 'Conditioner', 'Mask', 'Leave-in'];
