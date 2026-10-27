@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Add Ukrainian to Mika’s salon language choices, questionnaire, privacy text and generated routines; verify the guest flow.
+- [x] Add Ukrainian to Mika’s salon language choices, questionnaire, privacy text and generated routines; verified selection persistence, all eight questions, real Ukrainian results, contact skipping and consultation deletion; 10 salon tests pass.
 - [x] Mika salon MVP: separate guest hair flow, editable branding, optional contact sharing, consent evidence, lead search/filters/status/CSV/deletion, AI routines, booking links and analytics; customer/admin flows, language switching, account isolation and 27 rule tests verified.
 - [ ] Mika customer launch: needs salon-verified catalog, privacy contact/retention review and a real requested-report inbox test; optional account-saved hair routines are not included in this MVP.
 - [x] Extend clinician workspace: My Patients, My Cases, private Photo Library and documents, linked histories, archive/restore; authenticated uploads, downloads, retained files, comparisons, mobile views and account isolation verified. Real patient use remains blocked pending healthcare safeguards.
