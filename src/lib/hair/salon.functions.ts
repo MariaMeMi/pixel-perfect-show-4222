@@ -72,7 +72,7 @@ export const salonEvent=createServerFn({method:'POST'}).inputValidator((v:unknow
  const db=await limitedAdmin('hair-events',300);const {salon,products}=await salonPublic(data.slug);
  if(data.productId&&!products.some(p=>p.id===data.productId))throw new Error('Product unavailable');
  const {data:old}=await db.from('hair_salon_events').select('id').eq('salon_id',salon.id).eq('session_id',data.sessionId).eq('event',data.event).limit(1);
- if(!old?.length||data.productId)await db.from('hair_salon_events').insert({salon_id:salon.id,session_id:data.sessionId,event:data.event,product_id:data.productId});return {ok:true};
+ if(!old?.length||data.productId)await db.from('hair_salon_events').insert({salon_id:salon.id,session_id:data.sessionId,event:data.event,product_id:data.productId??null});return {ok:true};
 });
 export const salonAdminOverview=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).handler(async({context})=>{
  const {data:members,error}=await context.supabase.from('hair_salon_admins').select('salon_id');if(error)throw new Error('Could not load salon access');
