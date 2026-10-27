@@ -3,7 +3,8 @@ import { getRequest } from '@tanstack/react-start/server';
 import { createClient } from '@supabase/supabase-js';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { z } from 'zod';
-import { answersSchema, resultSchema, settingsSchema, capabilitySchema, contactSchema, consentText, noticeVersion, statuses, brands, selectProducts, httpsUrl, salonLanguageSchema, salonLanguageNames } from './rules';
+import { answersSchema, resultSchema, newResultSchema, settingsSchema, capabilitySchema, contactSchema, consentText, noticeVersion, statuses, brands, httpsUrl, salonLanguageSchema, salonLanguageNames } from './rules';
+import { inventorySchema, selectInventory, completeInventory } from './inventory';
 import type { Database } from '@/integrations/supabase/types';
 
 const slugSchema=z.object({slug:z.string().regex(/^[a-z0-9-]{1,80}$/)});
@@ -19,7 +20,9 @@ async function salonPublic(slug:string) {
  const settings=settingsSchema.parse(salon.settings);
  const {data:products,error:pe}=await db.from('hair_salon_products').select('*').eq('salon_id',salon.id).eq('active',true).eq('verified',true);
  if(pe)throw new Error('Could not load the salon catalog');
- return {salon:{...salon,settings},products:(products??[]).filter(p=>settings.enabledBrands.some(b=>b===p.brand))};
+ const {data:references,error:re}=await db.from('hair_product_references').select('*').eq('verified',true).eq('kind','product');
+ if(re)throw new Error('Could not load the salon catalog');
+ return {salon:{...salon,settings},references:references??[],products:(products??[]).filter(p=>p.enabled&&p.available&&completeInventory(p)&&references?.some(r=>r.id===p.reference_id)&&settings.enabledBrands.some(b=>b===p.brand))};
 }
 export const getSalon=createServerFn({method:'GET'}).inputValidator((v:unknown)=>slugSchema.parse(v)).handler(async({data})=>salonPublic(data.slug));
 async function limitedAdmin(action:string,limit=20) {
@@ -38,14 +41,14 @@ async function guest(data:z.infer<typeof capabilitySchema>) {
  return {db,row,salon:{...salon,settings:settingsSchema.parse(salon.settings)}};
 }
 export const generateHairRoutine=createServerFn({method:'POST'}).inputValidator((v:unknown)=>slugSchema.extend({answers:answersSchema,lang:salonLanguageSchema,sessionId:z.string().uuid()}).parse(v)).handler(async({data})=>{
- const db=await limitedAdmin('hair-analysis',12); const {salon,products}=await salonPublic(data.slug);
+ const db=await limitedAdmin('hair-analysis',12); const {salon,products,references}=await salonPublic(data.slug);
  const key=process.env['LOVABLE_API_KEY'];if(!key)throw new Error('Hair consultations are temporarily unavailable.');
  const {createOpenAI}=await import('@ai-sdk/openai');const {streamText}=await import('ai');
  const openai=createOpenAI({apiKey:key,baseURL:'https://ai.gateway.lovable.dev/v1'});
- const response=streamText({model:openai('openai/gpt-6-astra'),system:`You are a cautious cosmetic hair-care assistant. Respond in ${salonLanguageNames[data.lang]}. Use only questionnaire answers; no photos were inspected. No diagnosis, prescriptions, invented ingredients, specific products, prices or availability. Avoid promising repair or growth. Provide gentle practical cosmetic routine guidance, mention a qualified professional for persistent scalp discomfort or sudden hair loss. Never import skin data. Return only JSON: {"summary":string,"routine":[{"title":string,"instruction":string}],"advice":string}. Use 3-5 routine steps.`,prompt:JSON.stringify(data.answers)});
- let result;try{const raw=await response.text;result=resultSchema.parse(JSON.parse(raw.replace(/^```(?:json)?\s*/,'').replace(/\s*```$/,'')));}catch{throw new Error('We could not prepare your routine. Please try again.');}
+ const response=streamText({model:openai('openai/gpt-6-astra'),system:`You are a cautious cosmetic hair-care assistant. Respond in ${salonLanguageNames[data.lang]}. Use only questionnaire answers; no photos were inspected. No diagnosis, prescriptions, invented ingredients, specific products, prices or availability. Avoid promising repair or growth. Provide gentle practical cosmetic routine guidance, mention a qualified professional for persistent scalp discomfort or sudden hair loss. Never import skin data. Return only JSON: {"summary":string,"routine":[{"title":string,"instruction":string}],"advice":string}. Use 1-4 routine steps only: shampoo, conditioner, optional mask, optional leave-in or heat protectant. Never force optional steps when unnecessary. Do not add separate styling or drying steps.`,prompt:JSON.stringify(data.answers)});
+ let result;try{const raw=await response.text;result=newResultSchema.parse(JSON.parse(raw.replace(/^```(?:json)?\s*/,'').replace(/\s*```$/,'')));}catch{throw new Error('We could not prepare your routine. Please try again.');}
  const secret=[...crypto.getRandomValues(new Uint8Array(32))].map(n=>n.toString(16).padStart(2,'0')).join('');
- const chosen=selectProducts(products,data.answers.concern);
+ const chosen=selectInventory(products,references,data.answers);
  const stored={...result,productIds:chosen.map(p=>p.id)};
  const {data:row,error}=await db.from('hair_consultations').insert({salon_id:salon.id,secret_hash:await hash(secret),answers:data.answers,result:stored}).select('id').single();
  if(error||!row)throw new Error('Could not save your consultation.');
@@ -77,9 +80,10 @@ export const salonEvent=createServerFn({method:'POST'}).inputValidator((v:unknow
 });
 export const salonAdminOverview=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).handler(async({context})=>{
  const {data:members,error}=await context.supabase.from('hair_salon_admins').select('salon_id');if(error)throw new Error('Could not load salon access');
- const ids=(members??[]).map(m=>m.salon_id);if(!ids.length)return {salons:[],products:[],leads:[],events:[]};
+ const ids=(members??[]).map(m=>m.salon_id);if(!ids.length)return {salons:[],products:[],leads:[],events:[],references:[]};
  const [s,p,l,e]=await Promise.all([context.supabase.from('hair_salons').select('*').in('id',ids),context.supabase.from('hair_salon_products').select('*').in('salon_id',ids),context.supabase.from('hair_salon_leads').select('*').in('salon_id',ids).order('created_at',{ascending:false}),context.supabase.from('hair_salon_events').select('*').in('salon_id',ids).order('created_at',{ascending:false}).limit(10000)]);
- if(s.error||p.error||l.error||e.error)throw new Error('Could not load salon workspace');return {salons:(s.data??[]).map(x=>({...x,settings:settingsSchema.parse(x.settings)})),products:p.data??[],leads:l.data??[],events:e.data??[]};
+ const {data:references,error:re}=await context.supabase.from('hair_product_references').select('*').order('brand').order('name');
+ if(s.error||p.error||l.error||e.error||re)throw new Error('Could not load salon workspace');return {references:references??[],salons:(s.data??[]).map(x=>({...x,settings:settingsSchema.parse(x.settings)})),products:p.data??[],leads:l.data??[],events:e.data??[]};
 });
 export const saveSalonSettings=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>z.object({id:z.string().uuid(),name:z.string().trim().min(1).max(150),settings:settingsSchema}).parse(v)).handler(async({data,context})=>{const {data:row,error}=await context.supabase.from('hair_salons').update({name:data.name,settings:data.settings}).eq('id',data.id).select('id').single();if(error||!row)throw new Error('Salon unavailable or access denied');return {ok:true};});
 export const updateHairLead=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>z.object({id:z.string().uuid(),status:z.enum(statuses),emailConsent:z.boolean().optional()}).parse(v)).handler(async({data,context})=>{const change:{lead_status:typeof data.status;email_marketing_consent?:false}={lead_status:data.status};if(data.emailConsent===false)change.email_marketing_consent=false;const {data:row,error}=await context.supabase.from('hair_salon_leads').update(change).eq('id',data.id).select('id').single();if(error||!row)throw new Error('Lead unavailable or access denied');return {ok:true};});
@@ -87,7 +91,12 @@ export const deleteHairLead=createServerFn({method:'POST'}).middleware([requireS
  const {data:lead}=await context.supabase.from('hair_salon_leads').select('id,hair_profile_id,salon_id').eq('id',data.id).single();if(!lead)throw new Error('Lead unavailable or access denied');
  const {supabaseAdmin:db}=await import('@/integrations/supabase/client.server');const {error}=await db.from('hair_consultations').delete().eq('id',lead.hair_profile_id).eq('salon_id',lead.salon_id);if(error)throw new Error('Could not delete customer data');return {ok:true};
 });
-export const saveSalonProduct=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>z.object({id:z.string().uuid().optional(),salonId:z.string().uuid(),name:z.string().trim().min(1).max(180),brand:z.enum(brands),function:z.enum(['Shampoo','Conditioner','Mask','Leave-in','Styling']),concerns:z.array(z.string().max(50)).max(8),description:z.string().max(1000),purchaseUrl:httpsUrl,price:z.string().max(60),verified:z.literal(true),active:z.boolean()}).parse(v)).handler(async({data,context})=>{
- const row={salon_id:data.salonId,name:data.name,brand:data.brand,function:data.function,concerns:data.concerns,description:data.description,purchase_url:data.purchaseUrl,price:data.price,verified:true,active:data.active};
- const q=data.id?context.supabase.from('hair_salon_products').update(row).eq('id',data.id):context.supabase.from('hair_salon_products').insert(row);const {data:saved,error}=await q.select('id').single();if(error||!saved)throw new Error('Could not save this verified product');return {ok:true};
+export const saveSalonProduct=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator((v:unknown)=>inventorySchema.parse(v)).handler(async({data,context})=>{
+ const {data:membership,error:me}=await context.supabase.from('hair_salon_admins').select('salon_id').eq('salon_id',data.salonId).maybeSingle();
+ if(me||!membership)throw new Error('Salon unavailable or access denied');
+ const {data:reference,error:re}=await context.supabase.from('hair_product_references').select('*').eq('id',data.referenceId).eq('verified',true).eq('kind','product').single();
+ if(re||!reference?.category)throw new Error('Select a verified individual product reference.');
+ const row={salon_id:data.salonId,reference_id:reference.id,name:reference.name,brand:reference.brand,function:reference.category,description:reference.description,concerns:[],purchase_url:data.purchaseUrl,price:data.price,size:data.size,image_url:data.imageUrl,image_source:data.imageSource,verified:true,active:true,enabled:data.enabled,available:data.available};
+ const q=data.id?context.supabase.from('hair_salon_products').update(row).eq('id',data.id).eq('salon_id',data.salonId):context.supabase.from('hair_salon_products').insert(row);
+ const {data:saved,error}=await q.select('id').single();if(error||!saved)throw new Error('Could not save this verified product');return {ok:true};
 });

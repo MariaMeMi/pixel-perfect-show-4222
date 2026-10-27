@@ -1,5 +1,6 @@
 # Roadmap
-- [ ] Extend hair advisor with a separate verified reference catalog, salon inventory requirements and suitability-based recommendations (four routine steps maximum, five products maximum), preserving skin flows and salon languages.
+- [x] Extend hair advisor with separate reference catalog and salon inventory, required retail details, suitability ranking and four-step/five-product limits; 24 rule tests, authenticated inventory save/readback, collection/verification/isolation denial and real Ukrainian guest routine verified. QA stock removed; skin welcome unchanged.
+- [ ] Complete manufacturer verification of remaining hair references and populate Mika inventory: needs reliable product identifiers/official evidence and salon-provided real prices, sizes, purchase links, approved images and availability; only Vitamino Color Shampoo is verified so far.
 - [x] Add Ukrainian to Mika’s salon language choices, questionnaire, privacy text and generated routines; verified selection persistence, all eight questions, real Ukrainian results, contact skipping and consultation deletion; 10 salon tests pass.
 - [x] Mika salon MVP: separate guest hair flow, editable branding, optional contact sharing, consent evidence, lead search/filters/status/CSV/deletion, AI routines, booking links and analytics; customer/admin flows, language switching, account isolation and 27 rule tests verified.
 - [ ] Mika customer launch: needs salon-verified catalog, privacy contact/retention review and a real requested-report inbox test; optional account-saved hair routines are not included in this MVP.
@@ -15,4 +16,4 @@
 - [x] Add Rosie as an original rose-blossom cartoon onboarding guide and account-synced support companion
 - [x] Make photo frames tappable camera shutters and remove separate capture buttons
 - [x] AI Clinical Clues for clinician cases: AI Clues tab, 5-section analysis, ratings, save-to-notes, follow-up questions; verified end-to-end with a test account
-- [ ] AI Voice Notes for clinicians: record → transcribe → structured SOAP/general note → approve & save (spec uploaded; starts after Clues verification)
+- [ ] AI Voice Notes for clinicians: record → transcribe → structured SOAP/general note → approve & save; deferred to the separate clinician request, outside the current salon scope.

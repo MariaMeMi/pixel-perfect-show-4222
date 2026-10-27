@@ -24,6 +24,8 @@ export const answersSchema = z.object({
 export type HairAnswers = z.infer<typeof answersSchema>;
 export const resultSchema = z.object({ summary: z.string().min(1).max(1800), routine: z.array(z.object({ title: z.string().max(100), instruction: z.string().max(700) })).min(2).max(5), advice: z.string().max(700) });
 export type HairResult = z.infer<typeof resultSchema>;
+// Historical reports can retain their old five-step structure; new reports are capped at four.
+export const newResultSchema = resultSchema.extend({ routine: resultSchema.shape.routine.min(1).max(4) });
 export const httpsUrl = z.union([z.literal(''), z.string().url().max(1000).refine(v => new URL(v).protocol === 'https:', 'Use a secure https link')]);
 export const settingsSchema = z.object({
   description: z.string().max(600).default(''), location: z.string().max(200).default(''), contact: z.string().max(200).default(''), privacyContact: z.union([z.literal(''),z.string().email().max(254)]).default(''),
@@ -41,11 +43,6 @@ export const contactSchema = z.object({ firstName: z.string().trim().min(1).max(
 export const capabilitySchema = z.object({ id: z.string().uuid(), secret: z.string().regex(/^[a-f0-9]{64}$/) });
 export const noticeVersion = 'salon-hair-2026-10-27-v1';
 export function consentText(salon: string) { return `I agree to share my name, email address, phone number, and hair consultation answers with ${salon} so they can provide my requested consultation and recommendations.`; }
-export function selectProducts<T extends { verified: boolean; active: boolean; function: string; concerns: string[] }>(products: T[], concern: string) {
-  const chosen = new Map<string, T>();
-  for (const p of products.filter(p => p.verified && p.active).sort((a,b) => Number(b.concerns.includes(concern))-Number(a.concerns.includes(concern)))) if (!chosen.has(p.function)) chosen.set(p.function,p);
-  return [...chosen.values()].slice(0,5);
-}
 export function csvCell(v: unknown) { const s = String(v ?? ''); return '"' + (/^[\s]*[=+@\-\t\r]/.test(s) ? "'" + s : s).replaceAll('"','""') + '"'; }
 export function metrics(leads: {created_at:string; email_marketing_consent:boolean; sms_marketing_consent:boolean}[], events: {event:string;session_id:string}[], now: Date) {
   const unique = (name:string) => new Set(events.filter(e=>e.event===name).map(e=>e.session_id)).size;
