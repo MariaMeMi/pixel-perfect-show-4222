@@ -36,9 +36,11 @@ import { Route as AuthenticatedClinicianPatientsRouteImport } from './routes/_au
 import { Route as AuthenticatedClinicianPhotosRouteImport } from './routes/_authenticated/clinician/photos'
 import { Route as AuthenticatedClinicianProgressRouteImport } from './routes/_authenticated/clinician/progress'
 import { Route as AuthenticatedClinicianSettingsRouteImport } from './routes/_authenticated/clinician/settings'
+import { Route as HairSalonSalonSlugRouteImport } from './routes/hair.salon.$salonSlug'
 import { Route as AuthenticatedClinicianCasesIdRouteImport } from './routes/_authenticated/clinician/cases_.$id'
 import { Route as AuthenticatedClinicianPatientsIdRouteImport } from './routes/_authenticated/clinician/patients_.$id'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
+import { Route as HairSalonSalonSlugPrivacyRouteImport } from './routes/hair.salon.$salonSlug_.privacy'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -184,6 +186,11 @@ const AuthenticatedClinicianSettingsRoute =
     path: '/settings',
     getParentRoute: () => AuthenticatedClinicianRouteRoute,
   } as any)
+const HairSalonSalonSlugRoute = HairSalonSalonSlugRouteImport.update({
+  id: '/hair/salon/$salonSlug',
+  path: '/hair/salon/$salonSlug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedClinicianCasesIdRoute =
   AuthenticatedClinicianCasesIdRouteImport.update({
     id: '/cases_/$id',
@@ -200,6 +207,12 @@ const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
     path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const HairSalonSalonSlugPrivacyRoute =
+  HairSalonSalonSlugPrivacyRouteImport.update({
+    id: '/hair/salon/$salonSlug_/privacy',
+    path: '/hair/salon/$salonSlug/privacy',
     getParentRoute: () => rootRouteImport,
   } as any)
 const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
@@ -246,9 +259,11 @@ export interface FileRoutesByFullPath {
   '/clinician/photos': typeof AuthenticatedClinicianPhotosRoute
   '/clinician/progress': typeof AuthenticatedClinicianProgressRoute
   '/clinician/settings': typeof AuthenticatedClinicianSettingsRoute
+  '/hair/salon/$salonSlug': typeof HairSalonSalonSlugRoute
   '/clinician/cases/$id': typeof AuthenticatedClinicianCasesIdRoute
   '/clinician/patients/$id': typeof AuthenticatedClinicianPatientsIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/hair/salon/$salonSlug/privacy': typeof HairSalonSalonSlugPrivacyRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -280,9 +295,11 @@ export interface FileRoutesByTo {
   '/clinician/photos': typeof AuthenticatedClinicianPhotosRoute
   '/clinician/progress': typeof AuthenticatedClinicianProgressRoute
   '/clinician/settings': typeof AuthenticatedClinicianSettingsRoute
+  '/hair/salon/$salonSlug': typeof HairSalonSalonSlugRoute
   '/clinician/cases/$id': typeof AuthenticatedClinicianCasesIdRoute
   '/clinician/patients/$id': typeof AuthenticatedClinicianPatientsIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/hair/salon/$salonSlug/privacy': typeof HairSalonSalonSlugPrivacyRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -316,9 +333,11 @@ export interface FileRoutesById {
   '/_authenticated/clinician/photos': typeof AuthenticatedClinicianPhotosRoute
   '/_authenticated/clinician/progress': typeof AuthenticatedClinicianProgressRoute
   '/_authenticated/clinician/settings': typeof AuthenticatedClinicianSettingsRoute
+  '/hair/salon/$salonSlug': typeof HairSalonSalonSlugRoute
   '/_authenticated/clinician/cases_/$id': typeof AuthenticatedClinicianCasesIdRoute
   '/_authenticated/clinician/patients_/$id': typeof AuthenticatedClinicianPatientsIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/hair/salon/$salonSlug_/privacy': typeof HairSalonSalonSlugPrivacyRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -352,9 +371,11 @@ export interface FileRouteTypes {
     | '/clinician/photos'
     | '/clinician/progress'
     | '/clinician/settings'
+    | '/hair/salon/$salonSlug'
     | '/clinician/cases/$id'
     | '/clinician/patients/$id'
     | '/api/public/payments/webhook'
+    | '/hair/salon/$salonSlug/privacy'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -386,9 +407,11 @@ export interface FileRouteTypes {
     | '/clinician/photos'
     | '/clinician/progress'
     | '/clinician/settings'
+    | '/hair/salon/$salonSlug'
     | '/clinician/cases/$id'
     | '/clinician/patients/$id'
     | '/api/public/payments/webhook'
+    | '/hair/salon/$salonSlug/privacy'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -421,9 +444,11 @@ export interface FileRouteTypes {
     | '/_authenticated/clinician/photos'
     | '/_authenticated/clinician/progress'
     | '/_authenticated/clinician/settings'
+    | '/hair/salon/$salonSlug'
     | '/_authenticated/clinician/cases_/$id'
     | '/_authenticated/clinician/patients_/$id'
     | '/api/public/payments/webhook'
+    | '/hair/salon/$salonSlug_/privacy'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/transactional/preview'
@@ -450,7 +475,9 @@ export interface RootRouteChildren {
   ApiBotoxRoute: typeof ApiBotoxRoute
   ApiRosieChatRoute: typeof ApiRosieChatRoute
   ClinicianOnboardingRoute: typeof ClinicianOnboardingRoute
+  HairSalonSalonSlugRoute: typeof HairSalonSalonSlugRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
+  HairSalonSalonSlugPrivacyRoute: typeof HairSalonSalonSlugPrivacyRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
@@ -647,6 +674,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedClinicianSettingsRouteImport
       parentRoute: typeof AuthenticatedClinicianRouteRoute
     }
+    '/hair/salon/$salonSlug': {
+      id: '/hair/salon/$salonSlug'
+      path: '/hair/salon/$salonSlug'
+      fullPath: '/hair/salon/$salonSlug'
+      preLoaderRoute: typeof HairSalonSalonSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/clinician/cases_/$id': {
       id: '/_authenticated/clinician/cases_/$id'
       path: '/cases/$id'
@@ -666,6 +700,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/payments/webhook'
       fullPath: '/api/public/payments/webhook'
       preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hair/salon/$salonSlug_/privacy': {
+      id: '/hair/salon/$salonSlug_/privacy'
+      path: '/hair/salon/$salonSlug/privacy'
+      fullPath: '/hair/salon/$salonSlug/privacy'
+      preLoaderRoute: typeof HairSalonSalonSlugPrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lovable/email/auth/preview': {
@@ -754,7 +795,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiBotoxRoute: ApiBotoxRoute,
   ApiRosieChatRoute: ApiRosieChatRoute,
   ClinicianOnboardingRoute: ClinicianOnboardingRoute,
+  HairSalonSalonSlugRoute: HairSalonSalonSlugRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
+  HairSalonSalonSlugPrivacyRoute: HairSalonSalonSlugPrivacyRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
