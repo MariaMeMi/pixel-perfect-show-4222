@@ -30,6 +30,10 @@ import { Route as ApiAnalyzeRouteImport } from './routes/api/analyze'
 import { Route as ApiBotoxRouteImport } from './routes/api/botox'
 import { Route as ApiRosieChatRouteImport } from './routes/api/rosie-chat'
 import { Route as ClinicianOnboardingRouteImport } from './routes/clinician.onboarding'
+import { Route as CommunityIndexRouteImport } from './routes/community.index'
+import { Route as CommunityGuidelinesRouteImport } from './routes/community.guidelines'
+import { Route as CommunityModerationRouteImport } from './routes/community.moderation'
+import { Route as CommunityNewRouteImport } from './routes/community.new'
 import { Route as AuthenticatedClinicianCasesRouteImport } from './routes/_authenticated/clinician/cases'
 import { Route as AuthenticatedClinicianDashboardRouteImport } from './routes/_authenticated/clinician/dashboard'
 import { Route as AuthenticatedClinicianPatientsRouteImport } from './routes/_authenticated/clinician/patients'
@@ -37,6 +41,10 @@ import { Route as AuthenticatedClinicianPhotosRouteImport } from './routes/_auth
 import { Route as AuthenticatedClinicianProgressRouteImport } from './routes/_authenticated/clinician/progress'
 import { Route as AuthenticatedClinicianSettingsRouteImport } from './routes/_authenticated/clinician/settings'
 import { Route as AuthenticatedHairAdminRouteImport } from './routes/_authenticated/hair/admin'
+import { Route as CommunityCategorySlugRouteImport } from './routes/community.category.$slug'
+import { Route as CommunityEditIdRouteImport } from './routes/community.edit.$id'
+import { Route as CommunityPostIdRouteImport } from './routes/community.post.$id'
+import { Route as CommunityProfileUsernameRouteImport } from './routes/community.profile.$username'
 import { Route as HairSalonSalonSlugRouteImport } from './routes/hair.salon.$salonSlug'
 import { Route as AuthenticatedClinicianCasesIdRouteImport } from './routes/_authenticated/clinician/cases_.$id'
 import { Route as AuthenticatedClinicianPatientsIdRouteImport } from './routes/_authenticated/clinician/patients_.$id'
@@ -151,6 +159,26 @@ const ClinicianOnboardingRoute = ClinicianOnboardingRouteImport.update({
   path: '/clinician/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CommunityIndexRoute = CommunityIndexRouteImport.update({
+  id: '/community/',
+  path: '/community/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityGuidelinesRoute = CommunityGuidelinesRouteImport.update({
+  id: '/community/guidelines',
+  path: '/community/guidelines',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityModerationRoute = CommunityModerationRouteImport.update({
+  id: '/community/moderation',
+  path: '/community/moderation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityNewRoute = CommunityNewRouteImport.update({
+  id: '/community/new',
+  path: '/community/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedClinicianCasesRoute =
   AuthenticatedClinicianCasesRouteImport.update({
     id: '/cases',
@@ -192,6 +220,27 @@ const AuthenticatedHairAdminRoute = AuthenticatedHairAdminRouteImport.update({
   path: '/hair/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const CommunityCategorySlugRoute = CommunityCategorySlugRouteImport.update({
+  id: '/community/category/$slug',
+  path: '/community/category/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityEditIdRoute = CommunityEditIdRouteImport.update({
+  id: '/community/edit/$id',
+  path: '/community/edit/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityPostIdRoute = CommunityPostIdRouteImport.update({
+  id: '/community/post/$id',
+  path: '/community/post/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityProfileUsernameRoute =
+  CommunityProfileUsernameRouteImport.update({
+    id: '/community/profile/$username',
+    path: '/community/profile/$username',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const HairSalonSalonSlugRoute = HairSalonSalonSlugRouteImport.update({
   id: '/hair/salon/$salonSlug',
   path: '/hair/salon/$salonSlug',
@@ -259,6 +308,10 @@ export interface FileRoutesByFullPath {
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
   '/clinician/onboarding': typeof ClinicianOnboardingRoute
+  '/community/guidelines': typeof CommunityGuidelinesRoute
+  '/community/moderation': typeof CommunityModerationRoute
+  '/community/new': typeof CommunityNewRoute
+  '/community/': typeof CommunityIndexRoute
   '/clinician/cases': typeof AuthenticatedClinicianCasesRoute
   '/clinician/dashboard': typeof AuthenticatedClinicianDashboardRoute
   '/clinician/patients': typeof AuthenticatedClinicianPatientsRoute
@@ -266,6 +319,10 @@ export interface FileRoutesByFullPath {
   '/clinician/progress': typeof AuthenticatedClinicianProgressRoute
   '/clinician/settings': typeof AuthenticatedClinicianSettingsRoute
   '/hair/admin': typeof AuthenticatedHairAdminRoute
+  '/community/category/$slug': typeof CommunityCategorySlugRoute
+  '/community/edit/$id': typeof CommunityEditIdRoute
+  '/community/post/$id': typeof CommunityPostIdRoute
+  '/community/profile/$username': typeof CommunityProfileUsernameRoute
   '/hair/salon/$salonSlug': typeof HairSalonSalonSlugRoute
   '/clinician/cases/$id': typeof AuthenticatedClinicianCasesIdRoute
   '/clinician/patients/$id': typeof AuthenticatedClinicianPatientsIdRoute
@@ -296,6 +353,10 @@ export interface FileRoutesByTo {
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
   '/clinician/onboarding': typeof ClinicianOnboardingRoute
+  '/community/guidelines': typeof CommunityGuidelinesRoute
+  '/community/moderation': typeof CommunityModerationRoute
+  '/community/new': typeof CommunityNewRoute
+  '/community': typeof CommunityIndexRoute
   '/clinician/cases': typeof AuthenticatedClinicianCasesRoute
   '/clinician/dashboard': typeof AuthenticatedClinicianDashboardRoute
   '/clinician/patients': typeof AuthenticatedClinicianPatientsRoute
@@ -303,6 +364,10 @@ export interface FileRoutesByTo {
   '/clinician/progress': typeof AuthenticatedClinicianProgressRoute
   '/clinician/settings': typeof AuthenticatedClinicianSettingsRoute
   '/hair/admin': typeof AuthenticatedHairAdminRoute
+  '/community/category/$slug': typeof CommunityCategorySlugRoute
+  '/community/edit/$id': typeof CommunityEditIdRoute
+  '/community/post/$id': typeof CommunityPostIdRoute
+  '/community/profile/$username': typeof CommunityProfileUsernameRoute
   '/hair/salon/$salonSlug': typeof HairSalonSalonSlugRoute
   '/clinician/cases/$id': typeof AuthenticatedClinicianCasesIdRoute
   '/clinician/patients/$id': typeof AuthenticatedClinicianPatientsIdRoute
@@ -335,6 +400,10 @@ export interface FileRoutesById {
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
   '/clinician/onboarding': typeof ClinicianOnboardingRoute
+  '/community/guidelines': typeof CommunityGuidelinesRoute
+  '/community/moderation': typeof CommunityModerationRoute
+  '/community/new': typeof CommunityNewRoute
+  '/community/': typeof CommunityIndexRoute
   '/_authenticated/clinician/cases': typeof AuthenticatedClinicianCasesRoute
   '/_authenticated/clinician/dashboard': typeof AuthenticatedClinicianDashboardRoute
   '/_authenticated/clinician/patients': typeof AuthenticatedClinicianPatientsRoute
@@ -342,6 +411,10 @@ export interface FileRoutesById {
   '/_authenticated/clinician/progress': typeof AuthenticatedClinicianProgressRoute
   '/_authenticated/clinician/settings': typeof AuthenticatedClinicianSettingsRoute
   '/_authenticated/hair/admin': typeof AuthenticatedHairAdminRoute
+  '/community/category/$slug': typeof CommunityCategorySlugRoute
+  '/community/edit/$id': typeof CommunityEditIdRoute
+  '/community/post/$id': typeof CommunityPostIdRoute
+  '/community/profile/$username': typeof CommunityProfileUsernameRoute
   '/hair/salon/$salonSlug': typeof HairSalonSalonSlugRoute
   '/_authenticated/clinician/cases_/$id': typeof AuthenticatedClinicianCasesIdRoute
   '/_authenticated/clinician/patients_/$id': typeof AuthenticatedClinicianPatientsIdRoute
@@ -374,6 +447,10 @@ export interface FileRouteTypes {
     | '/api/botox'
     | '/api/rosie-chat'
     | '/clinician/onboarding'
+    | '/community/guidelines'
+    | '/community/moderation'
+    | '/community/new'
+    | '/community/'
     | '/clinician/cases'
     | '/clinician/dashboard'
     | '/clinician/patients'
@@ -381,6 +458,10 @@ export interface FileRouteTypes {
     | '/clinician/progress'
     | '/clinician/settings'
     | '/hair/admin'
+    | '/community/category/$slug'
+    | '/community/edit/$id'
+    | '/community/post/$id'
+    | '/community/profile/$username'
     | '/hair/salon/$salonSlug'
     | '/clinician/cases/$id'
     | '/clinician/patients/$id'
@@ -411,6 +492,10 @@ export interface FileRouteTypes {
     | '/api/botox'
     | '/api/rosie-chat'
     | '/clinician/onboarding'
+    | '/community/guidelines'
+    | '/community/moderation'
+    | '/community/new'
+    | '/community'
     | '/clinician/cases'
     | '/clinician/dashboard'
     | '/clinician/patients'
@@ -418,6 +503,10 @@ export interface FileRouteTypes {
     | '/clinician/progress'
     | '/clinician/settings'
     | '/hair/admin'
+    | '/community/category/$slug'
+    | '/community/edit/$id'
+    | '/community/post/$id'
+    | '/community/profile/$username'
     | '/hair/salon/$salonSlug'
     | '/clinician/cases/$id'
     | '/clinician/patients/$id'
@@ -449,6 +538,10 @@ export interface FileRouteTypes {
     | '/api/botox'
     | '/api/rosie-chat'
     | '/clinician/onboarding'
+    | '/community/guidelines'
+    | '/community/moderation'
+    | '/community/new'
+    | '/community/'
     | '/_authenticated/clinician/cases'
     | '/_authenticated/clinician/dashboard'
     | '/_authenticated/clinician/patients'
@@ -456,6 +549,10 @@ export interface FileRouteTypes {
     | '/_authenticated/clinician/progress'
     | '/_authenticated/clinician/settings'
     | '/_authenticated/hair/admin'
+    | '/community/category/$slug'
+    | '/community/edit/$id'
+    | '/community/post/$id'
+    | '/community/profile/$username'
     | '/hair/salon/$salonSlug'
     | '/_authenticated/clinician/cases_/$id'
     | '/_authenticated/clinician/patients_/$id'
@@ -487,6 +584,14 @@ export interface RootRouteChildren {
   ApiBotoxRoute: typeof ApiBotoxRoute
   ApiRosieChatRoute: typeof ApiRosieChatRoute
   ClinicianOnboardingRoute: typeof ClinicianOnboardingRoute
+  CommunityGuidelinesRoute: typeof CommunityGuidelinesRoute
+  CommunityModerationRoute: typeof CommunityModerationRoute
+  CommunityNewRoute: typeof CommunityNewRoute
+  CommunityIndexRoute: typeof CommunityIndexRoute
+  CommunityCategorySlugRoute: typeof CommunityCategorySlugRoute
+  CommunityEditIdRoute: typeof CommunityEditIdRoute
+  CommunityPostIdRoute: typeof CommunityPostIdRoute
+  CommunityProfileUsernameRoute: typeof CommunityProfileUsernameRoute
   HairSalonSalonSlugRoute: typeof HairSalonSalonSlugRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   HairSalonSalonSlugPrivacyRoute: typeof HairSalonSalonSlugPrivacyRoute
@@ -644,6 +749,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClinicianOnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/community/': {
+      id: '/community/'
+      path: '/community'
+      fullPath: '/community/'
+      preLoaderRoute: typeof CommunityIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community/guidelines': {
+      id: '/community/guidelines'
+      path: '/community/guidelines'
+      fullPath: '/community/guidelines'
+      preLoaderRoute: typeof CommunityGuidelinesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community/moderation': {
+      id: '/community/moderation'
+      path: '/community/moderation'
+      fullPath: '/community/moderation'
+      preLoaderRoute: typeof CommunityModerationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community/new': {
+      id: '/community/new'
+      path: '/community/new'
+      fullPath: '/community/new'
+      preLoaderRoute: typeof CommunityNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/clinician/cases': {
       id: '/_authenticated/clinician/cases'
       path: '/cases'
@@ -692,6 +825,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/hair/admin'
       preLoaderRoute: typeof AuthenticatedHairAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/community/category/$slug': {
+      id: '/community/category/$slug'
+      path: '/community/category/$slug'
+      fullPath: '/community/category/$slug'
+      preLoaderRoute: typeof CommunityCategorySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community/edit/$id': {
+      id: '/community/edit/$id'
+      path: '/community/edit/$id'
+      fullPath: '/community/edit/$id'
+      preLoaderRoute: typeof CommunityEditIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community/post/$id': {
+      id: '/community/post/$id'
+      path: '/community/post/$id'
+      fullPath: '/community/post/$id'
+      preLoaderRoute: typeof CommunityPostIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community/profile/$username': {
+      id: '/community/profile/$username'
+      path: '/community/profile/$username'
+      fullPath: '/community/profile/$username'
+      preLoaderRoute: typeof CommunityProfileUsernameRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/hair/salon/$salonSlug': {
       id: '/hair/salon/$salonSlug'
@@ -816,6 +977,14 @@ const rootRouteChildren: RootRouteChildren = {
   ApiBotoxRoute: ApiBotoxRoute,
   ApiRosieChatRoute: ApiRosieChatRoute,
   ClinicianOnboardingRoute: ClinicianOnboardingRoute,
+  CommunityGuidelinesRoute: CommunityGuidelinesRoute,
+  CommunityModerationRoute: CommunityModerationRoute,
+  CommunityNewRoute: CommunityNewRoute,
+  CommunityIndexRoute: CommunityIndexRoute,
+  CommunityCategorySlugRoute: CommunityCategorySlugRoute,
+  CommunityEditIdRoute: CommunityEditIdRoute,
+  CommunityPostIdRoute: CommunityPostIdRoute,
+  CommunityProfileUsernameRoute: CommunityProfileUsernameRoute,
   HairSalonSalonSlugRoute: HairSalonSalonSlugRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   HairSalonSalonSlugPrivacyRoute: HairSalonSalonSlugPrivacyRoute,

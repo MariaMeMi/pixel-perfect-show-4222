@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Flame, Sparkles, TrendingDown, TrendingUp } from "lucide-react";
+import { ArrowRight, Flame, Sparkles, TrendingDown, TrendingUp, Users } from "lucide-react";
 import heroImg from "@/assets/hero-skin.jpg";
 import { Chip } from "@/components/Chip";
 import { useI18n } from "@/lib/i18n";
@@ -157,6 +157,21 @@ function HomePage() {
       </Link>
 
       <BotoxCard />
+
+      <Link to="/community" className="surface block p-5 active:scale-[0.99] transition-transform">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="eyebrow">Community</p>
+            <p className="mt-1 font-display text-xl text-foreground">You're not alone with this</p>
+            <p className="mt-1 text-sm leading-relaxed text-secondary-foreground">
+              Share experiences and support with people who get it — pseudonymously.
+            </p>
+          </div>
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-primary">
+            <Users className="h-5 w-5" strokeWidth={1.7} />
+          </span>
+        </div>
+      </Link>
 
       <section className="surface grid grid-cols-3 divide-x divide-border/70 p-5">
         <div className="pr-3">

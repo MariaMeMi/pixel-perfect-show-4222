@@ -2,7 +2,7 @@ import { LanguageSwitcher } from "@/components/AutoTranslate";
 import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { Camera, Home, LineChart, BookOpen, Sparkles, User } from "lucide-react";
+import { Camera, Home, LineChart, BookOpen, Sparkles, User, Users } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +14,7 @@ const tabs = [
   { to: "/my-routine", icon: Sparkles, key: "nav.routine" },
   { to: "/progress", icon: LineChart, key: "nav.progress" },
   { to: "/learn", icon: BookOpen, key: "nav.learn" },
+  { to: "/community", icon: Users, key: "nav.community" },
   { to: "/profile", icon: User, key: "nav.profile" },
 ] as const;
 

@@ -20,6 +20,7 @@ const en = {
   "nav.routine": "Routine",
   "nav.progress": "Progress",
   "nav.learn": "Learn",
+  "nav.community": "Community",
   "nav.profile": "Profile",
 
   "greeting.morning": "Good morning",
@@ -194,6 +195,7 @@ const de: Partial<Record<TKey, string>> = {
   "nav.routine": "Routine",
   "nav.progress": "Verlauf",
   "nav.learn": "Wissen",
+  "nav.community": "Community",
   "nav.profile": "Profil",
 
   "greeting.morning": "Guten Morgen",

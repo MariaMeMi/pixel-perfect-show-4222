@@ -71,6 +71,20 @@
       "when": 1793112516671,
       "tag": "0009_hair_optional_retail_details",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1794005791380,
+      "tag": "0010_create_community_forum",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1794005812135,
+      "tag": "0011_community_media_storage_policies",
+      "breakpoints": true
     }
   ]
 }
