@@ -1,3 +1,4 @@
+import { aiHeaders } from "@/lib/ai-auth-header";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -39,7 +40,7 @@ async function saveMessages(messages: UIMessage[]) {
 function RosieConversation({ initialMessages }: { initialMessages: UIMessage[] }) {
   const [input, setInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/rosie-chat" }), []);
+  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/rosie-chat", headers: async () => { const h = await aiHeaders(); delete h["Content-Type"]; return h; } }), []);
   const { messages, sendMessage, status, stop, error } = useChat({
     id: "rosie-one-conversation",
     messages: initialMessages,

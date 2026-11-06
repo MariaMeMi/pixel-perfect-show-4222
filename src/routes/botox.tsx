@@ -1,3 +1,4 @@
+import { aiHeaders } from "@/lib/ai-auth-header";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Check, Copy, ImageUp, Plus, ShieldCheck, Sparkles, Trash2, X } from "lucide-react";
@@ -95,7 +96,7 @@ function BotoxPage() {
     try {
       const res = await fetch("/api/botox", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: await aiHeaders(),
         body: JSON.stringify({ images: all, lang }),
       });
       const data = await res.json();
