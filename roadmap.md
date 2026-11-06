@@ -18,3 +18,5 @@
 - [x] Make photo frames tappable camera shutters and remove separate capture buttons
 - [x] AI Clinical Clues for clinician cases: AI Clues tab, 5-section analysis, ratings, save-to-notes, follow-up questions; verified end-to-end with a test account
 - [ ] AI Voice Notes for clinicians: record → transcribe → structured SOAP/general note → approve & save; deferred to the separate clinician request, outside the current salon scope.
+
+- [ ] Community forum MVP: categories, posts, comments, reactions, pseudonymous profiles, reporting, blocking, moderation dashboard, community photo storage, EN/DE/RU UI; preserve existing features.
