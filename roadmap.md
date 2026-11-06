@@ -19,4 +19,4 @@
 - [x] AI Clinical Clues for clinician cases: AI Clues tab, 5-section analysis, ratings, save-to-notes, follow-up questions; verified end-to-end with a test account
 - [ ] AI Voice Notes for clinicians: record → transcribe → structured SOAP/general note → approve & save; deferred to the separate clinician request, outside the current salon scope.
 
-- [ ] Community forum MVP: categories, posts, comments, reactions, pseudonymous profiles, reporting, blocking, moderation dashboard, community photo storage, EN/DE/RU UI; preserve existing features.
+- [x] Community forum MVP: six categories, posts, comments, reactions, pseudonymous profiles, reporting, blocking, moderation dashboard, private photo storage with signed URLs, EN/DE/RU UI; public browsing, signed-in posting/commenting/reactions, rate limiting, own-content report hiding, anonymous posting block and Russian mobile UI browser-verified; 4 rule tests pass. Moderation dashboard verified by code only (test account is not a moderator).

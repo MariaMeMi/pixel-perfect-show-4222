@@ -24,3 +24,4 @@
 - Salon language selection is persisted separately from the consumer skin language; salon-only locales must not change the skin experience.
 - Hair product references are trusted, server-managed records; salon inventory retains its own IDs and owner-scoped permissions, and collection references cannot become retail products.
 - Hair recommendation eligibility uses verified reference suitability and available salon inventory (price, size and image are optional), never AI-invented product facts or retail price ranking; historical reports retain their previous schema while new reports enforce current limits.
+- Community forum lives under /community inside the consumer shell; members post under pseudonymous community_profiles (never real names/emails), writes go through requireSupabaseAuth server functions with forum_consume_limit rate limiting, and community photos use the private community-media bucket with signed URLs because workspace policy blocks public buckets.
