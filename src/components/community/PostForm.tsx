@@ -87,7 +87,7 @@ export function PostForm({
       }
       let imagePath: string | undefined;
       if (image) imagePath = await uploadCommunityImage(userId, image);
-      const { id } = await createForumPost({ data: { categorySlug, title, body, imagePath } });
+      const { id } = await createForumPost({ data: { categorySlug, title, body, ...(imagePath ? { imagePath } : {}) } });
       navigate({ to: "/community/post/$id", params: { id } });
     } catch (e) {
       const message = e instanceof Error ? e.message : "";

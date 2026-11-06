@@ -119,7 +119,7 @@ export function ReportButton({ postId, commentId, signedIn }: { postId?: string;
   const submit = async () => {
     setState("sending");
     try {
-      await reportForumContent({ data: { postId, commentId, reason, details } });
+      await reportForumContent({ data: { ...(postId ? { postId } : {}), ...(commentId ? { commentId } : {}), reason, details } });
       setState("done");
     } catch {
       setState("error");
