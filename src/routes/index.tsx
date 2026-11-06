@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowRight, Flame, Sparkles, TrendingDown, TrendingUp } from "lucide-react";
+import { ArrowRight, Flame, Sparkles, TrendingDown, TrendingUp, Users } from "lucide-react";
 import heroImg from "@/assets/hero-skin.jpg";
 import { Chip } from "@/components/Chip";
 import { useI18n } from "@/lib/i18n";
