@@ -1283,5 +1283,8 @@
   "Botox & aesthetics": "Ботокс и эстетика",
   "Educational talk about cosmetic treatments and consultations.": "Образовательные обсуждения косметических процедур и консультаций.",
   "General chat": "Общий разговор",
-  "Everything else community-related.": "Всё остальное, связанное с сообществом."
+  "Everything else community-related.": "Всё остальное, связанное с сообществом.",
+  "You've reached today's limit. Please try again tomorrow.": "Вы достигли дневного лимита. Попробуйте снова завтра.",
+  "You've reached this month's limit. Please try again later.": "Вы достигли месячного лимита. Попробуйте позже.",
+  "This feature is temporarily unavailable. Please try again soon.": "Функция временно недоступна. Попробуйте чуть позже."
 }
