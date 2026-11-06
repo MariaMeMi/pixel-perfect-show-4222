@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Review English source throughout the app and improve Russian localization only; preserve keys, other languages, design and behavior, verify language switching and mobile text fit.
 - [x] Extend hair advisor with separate reference catalog and salon inventory, required retail details, suitability ranking and four-step/five-product limits; 24 rule tests, authenticated inventory save/readback, collection/verification/isolation denial and real Ukrainian guest routine verified. QA stock removed; skin welcome unchanged.
 - [ ] Complete manufacturer verification of remaining hair references and populate Mika inventory: needs reliable product identifiers/official evidence and salon-provided real prices, sizes, purchase links, approved images and availability; only Vitamino Color Shampoo is verified so far.
 - [x] Add Ukrainian to Mika’s salon language choices, questionnaire, privacy text and generated routines; verified selection persistence, all eight questions, real Ukrainian results, contact skipping and consultation deletion; 10 salon tests pass.
