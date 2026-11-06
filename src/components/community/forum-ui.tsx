@@ -34,7 +34,7 @@ export function CommunityNotice() {
   );
 }
 
-export function PostCard({ post, commentCount }: { post: ForumPost; commentCount?: number }) {
+export function PostCard({ post, commentCount }: { post: ForumPost; commentCount?: number | undefined }) {
   const author = post.community_profiles;
   return (
     <Link

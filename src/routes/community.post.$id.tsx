@@ -88,7 +88,7 @@ function PostPage() {
     setSending(true);
     setError(null);
     try {
-      await addForumComment({ data: { postId: id, parentId: replyTo ?? undefined, body: draft } });
+      await addForumComment({ data: { postId: id, ...(replyTo ? { parentId: replyTo } : {}), body: draft } });
       setDraft("");
       setReplyTo(null);
       await reload();
@@ -111,13 +111,19 @@ function PostPage() {
 
   return (
     <div className="space-y-5">
-      <Link
-        to={post.forum_categories ? "/community/category/$slug" : "/community"}
-        params={post.forum_categories ? { slug: post.forum_categories.slug } : undefined}
-        className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="h-3.5 w-3.5" /> {post.forum_categories?.name ?? "Community"}
-      </Link>
+      {post.forum_categories ? (
+        <Link
+          to="/community/category/$slug"
+          params={{ slug: post.forum_categories.slug }}
+          className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" /> {post.forum_categories.name}
+        </Link>
+      ) : (
+        <Link to="/community" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="h-3.5 w-3.5" /> Community
+        </Link>
+      )}
 
       <article className="space-y-3 rounded-2xl border border-border bg-card p-5">
         <h1 className="text-xl font-bold leading-snug text-foreground">{post.title}</h1>

@@ -36,9 +36,9 @@ function ModerationInner() {
   const [busy, setBusy] = useState<string | null>(null);
 
   const reload = useCallback(async () => {
-    const { moderator } = await isForumModerator({ data: {} });
+    const { moderator } = await isForumModerator();
     setAllowed(moderator);
-    if (moderator) setQueue((await getModerationQueue({ data: {} })) as Queue);
+    if (moderator) setQueue((await getModerationQueue()) as Queue);
   }, []);
 
   useEffect(() => {
