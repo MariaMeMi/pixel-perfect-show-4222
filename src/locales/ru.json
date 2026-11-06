@@ -156,5 +156,6 @@
   "common.cancel": "Отмена",
   "common.back": "Назад",
   "common.delete": "Удалить",
-  "common.save": "Сохранить"
+  "common.save": "Сохранить",
+  "nav.community": "Сообщество"
 }
