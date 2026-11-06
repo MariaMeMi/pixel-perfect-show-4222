@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, PenLine } from "lucide-react";
-import { getCategoryBySlug, getCommentCounts, getMyBlockedIds, getReactionsCountForPosts, getSessionUserId, listPosts, type ForumCategory, type ForumPost } from "@/lib/community/queries";
+import { getCategoryBySlug, getCommentCounts, getMyBlockedIds, getSessionUserId, listPosts, type ForumCategory, type ForumPost } from "@/lib/community/queries";
 import { CommunityNotice, PostCard } from "@/components/community/forum-ui";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
