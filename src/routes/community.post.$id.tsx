@@ -138,7 +138,7 @@ function PostPage() {
           <div className="flex items-center gap-3">
             {isOwn && (
               <>
-                <Link to="/community/new" search={{ edit: post.id }} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+                <Link to="/community/edit/$id" params={{ id: post.id }} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
                   <Pencil className="h-3.5 w-3.5" /> Edit
                 </Link>
                 <button type="button" onClick={removePost} className="flex items-center gap-1 text-xs text-muted-foreground hover:text-destructive">
