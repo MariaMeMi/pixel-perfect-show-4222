@@ -1,3 +1,4 @@
+import { enforceAiLimit } from "@/lib/ai-limits.server";
 import { createFileRoute } from "@tanstack/react-router";
 
 const SCHEMA = {
@@ -59,6 +60,8 @@ export const Route = createFileRoute("/api/analyze")({
         if (!image || !image.startsWith("data:image/")) {
           return Response.json({ error: "A photo is required." }, { status: 400 });
         }
+        const limited = await enforceAiLimit(request, "rosacea");
+        if (limited) return limited;
 
         const upstream = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
           method: "POST",

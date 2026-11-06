@@ -1,3 +1,4 @@
+import { enforceAiLimit } from "@/lib/ai-limits.server";
 import { createFileRoute } from "@tanstack/react-router";
 
 const AREA = {
@@ -55,6 +56,8 @@ export const Route = createFileRoute("/api/botox")({
         if (![1, 4].includes(images.length) || images.some((i) => typeof i !== "string" || !i.startsWith("data:image/"))) {
           return Response.json({ error: "One baseline photo or four expression photos are required." }, { status: 400 });
         }
+        const limited = await enforceAiLimit(request, "botox");
+        if (limited) return limited;
         const baselineOnly = images.length === 1;
         const labels = ["Relaxed", "Raised eyebrows", "Smile", "Gentle frown"];
 

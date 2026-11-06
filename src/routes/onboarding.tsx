@@ -1,3 +1,4 @@
+import { aiHeaders } from "@/lib/ai-auth-header";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, Check, Loader2 } from "lucide-react";
@@ -108,10 +109,11 @@ function Onboarding() {
     setI(buildSteps(d).indexOf("building")); setBuilt(0);
     const date = new Date().toISOString();
     let entryId: string | undefined;
+    const headers = await aiHeaders();
     const wantLines = wantsBotox(d) || d.goals.includes("lines");
     setLinePending(wantLines);
     const linesP = wantLines
-      ? fetch("/api/botox", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ images: [photo], lang }) })
+      ? fetch("/api/botox", { method: "POST", headers, body: JSON.stringify({ images: [photo], lang }) })
            .then(async (r) => {
              const j = await r.json();
              if (r.ok && j.forehead && j.glabella && j.eyes) {
@@ -126,7 +128,7 @@ function Onboarding() {
            .finally(() => setLinePending(false))
       : Promise.resolve();
     try {
-      const res = await fetch("/api/analyze", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ image: photo, lang }) });
+      const res = await fetch("/api/analyze", { method: "POST", headers, body: JSON.stringify({ image: photo, lang }) });
       const a = (await res.json()) as Partial<Analysis> & { error?: string };
       if (res.ok && typeof a.score === "number") {
         track("baseline_photo_analysis_completed", "onboarding");

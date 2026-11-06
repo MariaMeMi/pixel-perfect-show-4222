@@ -1,3 +1,4 @@
+import { enforceAiLimit } from "@/lib/ai-limits.server";
 import { createFileRoute } from "@tanstack/react-router";
 import { createOpenAI } from "@ai-sdk/openai";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
@@ -36,6 +37,8 @@ export const Route = createFileRoute("/api/rosie-chat")({
           }
           const apiKey = process.env["LOVABLE_API_KEY"];
           if (!apiKey) return Response.json({ message: "Rosie is not configured yet." }, { status: 401 });
+          const limited = await enforceAiLimit(request, "rosie");
+          if (limited) return limited;
 
           const run = createAiRunIdFetch(request.headers.get("X-Lovable-AIG-Run-ID") ?? undefined);
           const openai = createOpenAI({

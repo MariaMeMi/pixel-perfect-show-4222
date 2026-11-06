@@ -1,3 +1,4 @@
+import { aiHeaders } from "@/lib/ai-auth-header";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ImageUp, Lock, Sun, Sparkles, UserRound, X } from "lucide-react";
@@ -143,7 +144,7 @@ function AnalyzePage() {
     try {
       const res = await fetch("/api/analyze", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: await aiHeaders(),
         body: JSON.stringify({ image: photo, lang }),
       });
       const data = (await res.json()) as Partial<Analysis> & { error?: string };
