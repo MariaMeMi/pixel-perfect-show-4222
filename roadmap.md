@@ -21,3 +21,4 @@
 - [ ] AI Voice Notes for clinicians: record → transcribe → structured SOAP/general note → approve & save; deferred to the separate clinician request, outside the current salon scope.
 
 - [x] Community forum MVP: six categories, posts, comments, reactions, pseudonymous profiles, reporting, blocking, moderation dashboard, private photo storage with signed URLs, EN/DE/RU UI; public browsing, signed-in posting/commenting/reactions, rate limiting, own-content report hiding, anonymous posting block and Russian mobile UI browser-verified; 4 rule tests pass. Moderation dashboard verified by code only (test account is not a moderator).
+- [ ] Make community forum photos private: the forum photo storage rule currently lets anyone download any forum photo; bind reads to the uploader (or serve only short-lived signed URLs) and re-verify that photos still display for readers. Chosen to publish first with this open; bucket currently holds no files.
