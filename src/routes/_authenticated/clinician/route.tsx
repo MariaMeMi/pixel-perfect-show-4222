@@ -4,7 +4,7 @@ import { ClinicianShell } from "@/components/clinician/Shell";
 export const Route = createFileRoute("/_authenticated/clinician")({
   beforeLoad: async () => {
     const profile = await clinicianStatus();
-    if (!profile) throw redirect({ to: "/clinician/onboarding" });
+    if (!profile) throw redirect({ to: "/", replace: true });
     return { clinician: profile };
   },
   component: () => (

@@ -15,8 +15,11 @@ import {
 import { scoreLabelKey } from "@/components/ScoreRing";
 import type { Entry } from "@/lib/types";
 import { bt } from "@/lib/botox";
+import { dashboardDestination } from "@/lib/clinician/navigation";
 
 export const Route = createFileRoute("/")({
+  validateSearch: (s: Record<string, unknown>): { skin?: boolean } =>
+    s['skin'] === true || s['skin'] === 'true' ? { skin: true } : {},
   head: () => ({
     meta: [
       { title: "Rose AI — your everyday skin companion for rosacea" },
@@ -45,6 +48,7 @@ function greetingKey() {
 }
 
 function HomePage() {
+  const { skin } = Route.useSearch();
   const { t } = useI18n();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [name, setName] = useState("");
@@ -65,15 +69,17 @@ function HomePage() {
       const { data } = await supabase.auth.getSession();
       if (cancelled) return;
       if (data.session) {
-        const {data:clinician} = await supabase.from('clinician_profiles').select('user_id').maybeSingle();
+        const { data: authorized, error } = await supabase.rpc('is_clinician');
         if (cancelled) return;
-        if (clinician) { void navigate({to:'/clinician/dashboard',replace:true}); return; }
+        // A failed permission check must never send a customer into the clinician shell.
+        const target = dashboardDestination(!error && authorized === true, completed, skin === true);
+        if (target === '/clinician/dashboard') { void navigate({ to: target, replace: true }); return; }
       }
       if (completed) { setReady(true); return; }
       void navigate({ to: data.session ? "/onboarding" : "/welcome", replace: true });
     })();
     return () => { cancelled = true; };
-  }, [navigate]);
+  }, [navigate, skin]);
 
   useEffect(() => {
     const sync = () => {

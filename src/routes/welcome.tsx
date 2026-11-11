@@ -10,6 +10,7 @@ import { ONBOARDING_KEY } from "@/lib/onboarding/flow";
 import { Link } from '@tanstack/react-router';
 import { Button } from '@/components/ui/button';
 import { Flower2, Stethoscope } from 'lucide-react';
+import { dashboardDestination } from '@/lib/clinician/navigation';
 
 export const Route = createFileRoute("/welcome")({
   validateSearch: (s: Record<string, unknown>): {clinician?: boolean} => (s['clinician'] === true || s['clinician'] === 'true' ? {clinician:true} : {}),
@@ -47,10 +48,10 @@ function WelcomePage() {
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
   async function continueSignedIn() {
-    const {data,error} = await supabase.from('clinician_profiles').select('user_id').maybeSingle();
+    const {data,error} = await supabase.rpc('is_clinician');
     if(error) { setError('Could not load your account. Please try again.'); setReady(true); return; }
-    if(!data && !search.clinician) await supabase.rpc('record_consumer_choice');
-    void navigate({to:data?'/clinician/dashboard':destination(),replace:true});
+    if(data !== true && !search.clinician) await supabase.rpc('record_consumer_choice');
+    void navigate({to:data === true ? dashboardDestination(true, onboardingCompleted()) : destination(),replace:true});
   }
 
   // Signed-in users continue where they left off; this page is only for signed-out visitors.

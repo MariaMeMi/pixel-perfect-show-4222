@@ -14,6 +14,9 @@ const idSchema = z.object({ id: z.string().uuid() });
 export const clinicianStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    const { data: authorized, error: roleError } = await context.supabase.rpc("is_clinician");
+    if (roleError) throw new Error("Could not verify clinician access");
+    if (authorized !== true) return null;
     const { data, error } = await context.supabase
       .from("clinician_profiles")
       .select("*")
