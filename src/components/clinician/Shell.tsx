@@ -52,7 +52,7 @@ export function ClinicianShell({ children }: { children: ReactNode }) {
         <div className="mt-auto space-y-3">
           <p className="text-xs text-muted-foreground">Early access · Unverified credentials</p>
           <Button asChild variant="ghost" size="sm">
-            <Link to="/">
+            <Link to="/" search={{ skin: true }}>
               <ArrowLeft />
               My skin workspace
             </Link>
