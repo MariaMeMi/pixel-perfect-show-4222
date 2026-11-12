@@ -92,6 +92,13 @@
       "when": 1794008995027,
       "tag": "0012_replace_duplicate_forum_posts",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1794521706564,
+      "tag": "0013_tighten_community_reads",
+      "breakpoints": true
     }
   ]
 }
