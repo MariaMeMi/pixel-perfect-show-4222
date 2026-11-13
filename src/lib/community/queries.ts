@@ -102,6 +102,7 @@ export async function getPostLikes(postIds: string[], userId: string | null): Pr
   const counts: Record<string, number> = {};
   const mine = new Set<string>();
   for (const r of data ?? []) {
+    if (!r.post_id) continue;
     counts[r.post_id] = (counts[r.post_id] ?? 0) + 1;
     if (userId && r.user_id === userId) mine.add(r.post_id);
   }
