@@ -1,7 +1,7 @@
 import { aiHeaders } from "@/lib/ai-auth-header";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Check, Loader2 } from "lucide-react";
+import { ArrowLeft, Check, Loader2, Users } from "lucide-react";
 import { toast } from "sonner";
 import { Chips, OptionCard, ProgressBar, Question, SingleList } from "@/components/onboarding/ui";
 import { BaselineCapture } from "@/components/onboarding/BaselineCapture";
@@ -315,6 +315,7 @@ function Onboarding() {
       <div className="mt-6 flex flex-col gap-2">
          <Button type="button" onClick={() => navigate({ to: "/routine" })} className="h-auto w-full rounded-full gradient-rose py-4 text-sm text-primary-foreground">Build My Routine</Button>
          <Button type="button" variant="outline" onClick={() => navigate({ to: "/progress" })} className="h-auto w-full rounded-full py-3.5 text-sm">Start my skin timeline</Button>
+         <Button type="button" variant="outline" onClick={() => navigate({ to: "/community" })} className="h-auto w-full rounded-full py-3.5 text-sm"><Users className="mr-1.5 h-4 w-4" />Meet others with rosacea</Button>
          <Button type="button" variant="ghost" onClick={() => navigate({ to: "/profile" })} className="h-auto w-full rounded-full py-3.5 text-sm">Edit my profile</Button>
       </div>
     </div>;
