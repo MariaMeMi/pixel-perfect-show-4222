@@ -1,0 +1,1 @@
+DELETE FROM public.email_leads WHERE email = 'mary.qa.onboarding+20261113@example.com';
