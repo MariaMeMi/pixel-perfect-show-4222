@@ -1,7 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { MessageSquare, PenLine, Search, Users } from "lucide-react";
-import { listCategories, listPosts, getCommentCounts, getMyBlockedIds, getSessionUserId, type ForumCategory, type ForumPost } from "@/lib/community/queries";
+import { listCategories, listPosts, getCommentCounts, getPostLikes, getMyBlockedIds, getSessionUserId, type ForumCategory, type ForumPost } from "@/lib/community/queries";
+import { toggleForumReaction } from "@/lib/community/functions";
 import { CommunityNotice, PostCard } from "@/components/community/forum-ui";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -24,8 +25,11 @@ function CommunityHome() {
   const [categories, setCategories] = useState<ForumCategory[]>([]);
   const [posts, setPosts] = useState<ForumPost[]>([]);
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
+  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
+  const [myLikes, setMyLikes] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let cancelled = false;
@@ -35,16 +39,46 @@ function CommunityHome() {
       const { posts: recent } = await listPosts({ perPage: 20 });
       const visible = recent.filter((p) => !blocked.has(p.author_id));
       const counts = await getCommentCounts(visible.map((p) => p.id));
+      const likes = await getPostLikes(visible.map((p) => p.id), userId);
       if (cancelled) return;
       setCategories(cats);
       setPosts(visible);
       setCommentCounts(counts);
+      setLikeCounts(likes.counts);
+      setMyLikes(likes.mine);
       setLoading(false);
     })();
     return () => {
       cancelled = true;
     };
   }, []);
+
+  const toggleLike = async (postId: string) => {
+    const userId = await getSessionUserId();
+    if (!userId) {
+      navigate({ to: "/welcome" });
+      return;
+    }
+    const wasLiked = myLikes.has(postId);
+    setMyLikes((prev) => {
+      const next = new Set(prev);
+      if (wasLiked) next.delete(postId);
+      else next.add(postId);
+      return next;
+    });
+    setLikeCounts((prev) => ({ ...prev, [postId]: Math.max(0, (prev[postId] ?? 0) + (wasLiked ? -1 : 1)) }));
+    try {
+      await toggleForumReaction({ data: { postId, kind: "heart" } });
+    } catch {
+      setMyLikes((prev) => {
+        const next = new Set(prev);
+        if (wasLiked) next.add(postId);
+        else next.delete(postId);
+        return next;
+      });
+      setLikeCounts((prev) => ({ ...prev, [postId]: Math.max(0, (prev[postId] ?? 0) + (wasLiked ? 1 : -1)) }));
+    }
+  };
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -109,7 +143,14 @@ function CommunityHome() {
         ) : (
           <div className="space-y-3">
             {filtered.map((p) => (
-              <PostCard key={p.id} post={p} commentCount={commentCounts[p.id]} />
+              <PostCard
+                key={p.id}
+                post={p}
+                commentCount={commentCounts[p.id]}
+                likeCount={likeCounts[p.id]}
+                liked={myLikes.has(p.id)}
+                onToggleLike={() => toggleLike(p.id)}
+              />
             ))}
           </div>
         )}
