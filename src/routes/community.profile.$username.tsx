@@ -1,8 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Ban, UserRound } from "lucide-react";
-import { getProfileByUsername, listPosts, getCommentCounts, getSessionUserId, getMyBlockedIds, type ForumPost, type ForumProfile } from "@/lib/community/queries";
-import { setForumBlock } from "@/lib/community/functions";
+import { getProfileByUsername, listPosts, getCommentCounts, getPostLikes, getSessionUserId, getMyBlockedIds, type ForumPost, type ForumProfile } from "@/lib/community/queries";
+import { setForumBlock, toggleForumReaction } from "@/lib/community/functions";
 import { PostCard } from "@/components/community/forum-ui";
 import { Button } from "@/components/ui/button";
 
@@ -25,8 +25,11 @@ function ProfilePage() {
   const [profile, setProfile] = useState<ForumProfile | null | undefined>(undefined);
   const [posts, setPosts] = useState<ForumPost[]>([]);
   const [commentCounts, setCommentCounts] = useState<Record<string, number>>({});
+  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
+  const [myLikes, setMyLikes] = useState<Set<string>>(new Set());
   const [viewerId, setViewerId] = useState<string | null>(null);
   const [isBlocked, setIsBlocked] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     let cancelled = false;
@@ -42,10 +45,13 @@ function ProfilePage() {
         uid ? getMyBlockedIds(uid) : new Set<string>(),
       ]);
       const commentCounts = await getCommentCounts(rows.map((r) => r.id));
+      const likes = await getPostLikes(rows.map((r) => r.id), uid);
       if (cancelled) return;
       setViewerId(uid);
       setPosts(rows);
       setCommentCounts({ ...counts, ...commentCounts });
+      setLikeCounts(likes.counts);
+      setMyLikes(likes.mine);
       setIsBlocked(blocked.has(p.user_id));
     })();
     return () => {
@@ -65,6 +71,33 @@ function ProfilePage() {
     );
 
   const isSelf = viewerId === profile.user_id;
+
+  const toggleLike = async (postId: string) => {
+    const userId = await getSessionUserId();
+    if (!userId) {
+      navigate({ to: "/welcome" });
+      return;
+    }
+    const wasLiked = myLikes.has(postId);
+    setMyLikes((prev) => {
+      const next = new Set(prev);
+      if (wasLiked) next.delete(postId);
+      else next.add(postId);
+      return next;
+    });
+    setLikeCounts((prev) => ({ ...prev, [postId]: Math.max(0, (prev[postId] ?? 0) + (wasLiked ? -1 : 1)) }));
+    try {
+      await toggleForumReaction({ data: { postId, kind: "heart" } });
+    } catch {
+      setMyLikes((prev) => {
+        const next = new Set(prev);
+        if (wasLiked) next.add(postId);
+        else next.delete(postId);
+        return next;
+      });
+      setLikeCounts((prev) => ({ ...prev, [postId]: Math.max(0, (prev[postId] ?? 0) + (wasLiked ? 1 : -1)) }));
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -101,7 +134,14 @@ function ProfilePage() {
         ) : (
           <div className="space-y-3">
             {posts.map((p) => (
-              <PostCard key={p.id} post={p} commentCount={commentCounts[p.id]} />
+              <PostCard
+                key={p.id}
+                post={p}
+                commentCount={commentCounts[p.id]}
+                likeCount={likeCounts[p.id]}
+                liked={myLikes.has(p.id)}
+                onToggleLike={() => toggleLike(p.id)}
+              />
             ))}
           </div>
         )}
