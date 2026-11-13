@@ -78,7 +78,7 @@ function Onboarding() {
   const next = () => {
     if (step === "welcome") once("onboarding_started");
     if (step === "goals") once("goal_selected");
-    if (step === "r_influences" || (step === "r_tried" && d.tried.includes(NONE_TRIED))) once("treatment_history_completed");
+    if (step === "r_tried") once("treatment_history_completed");
     setI((n) => Math.min(n + 1, steps.length - 1));
   };
   const back = () => setI((n) => Math.max(0, n - 1));

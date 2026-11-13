@@ -102,13 +102,12 @@ export const wantsBotox = (d: OnboardingData) => d.goals.includes("botox") || d.
 export function buildSteps(d: OnboardingData): StepId[] {
   const s: StepId[] = ["welcome", "goals"];
   if (d.goals.includes("redness")) {
-    s.push("r_diagnosed", "r_symptoms", "r_understand", "r_tried");
-    followUpTreatments(d.tried).forEach((t) => s.push(`r_follow:${t}`));
-    s.push("r_influences");
+    // Kept short on purpose: more than half of starters left mid-questionnaire.
+    s.push("r_diagnosed", "r_symptoms", "r_tried");
   }
-  if (d.goals.includes("lines")) s.push("l_areas", "l_doing");
-  if (wantsBotox(d)) s.push("b_when", "b_areas", "b_product");
-  if (d.goals.includes("dryness")) s.push("d_experience", "d_using");
+  if (d.goals.includes("lines")) s.push("l_areas");
+  if (wantsBotox(d)) s.push("b_when", "b_areas");
+  if (d.goals.includes("dryness")) s.push("d_experience");
   s.push("reflection", "baseline", "signup", "building", "gate", "profile");
   return s;
 }

@@ -123,16 +123,17 @@ function WelcomePage() {
         </div>
 
         {mode === 'choose' && !skinSelected && !search.clinician ? <div className="space-y-3">
-          <h2 className="text-center text-xl">How would you like to use Rose AI?</h2>
+          <button type="button" disabled={!!busy} onClick={() => { track("onboarding_started", "onboarding", "guest"); void navigate({ to: "/onboarding", replace: true }); }} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-base font-medium text-primary-foreground shadow-sm disabled:opacity-60">Continue without signing up</button>
+          <h2 className="pt-2 text-center text-xl">How would you like to use Rose AI?</h2>
           <Button variant="outline" className="h-auto w-full justify-start gap-3 whitespace-normal rounded-md p-4 text-left" onClick={() => setSkinSelected(true)}><Flower2/><span><span className="block font-semibold">For my skin</span><span className="block text-xs font-normal text-muted-foreground">Track your skin changes and progress.</span></span></Button>
           <Button asChild variant="outline" className="h-auto w-full justify-start gap-3 whitespace-normal rounded-md p-4 text-left"><Link to="/clinician/onboarding"><Stethoscope/><span><span className="block font-semibold">I'm a clinician</span><span className="block text-xs font-normal text-muted-foreground">Manage patient photos and track treatment progress.</span></span></Link></Button>
           <Button variant="link" className="w-full" onClick={() => setMode('signin')}>I already have an account</Button>
         </div> : mode === "choose" && <div className="space-y-2.5">
+          {!search.clinician && <><button type="button" disabled={!!busy} onClick={() => { track("onboarding_started", "onboarding", "guest"); void navigate({ to: "/onboarding", replace: true }); }} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-base font-medium text-primary-foreground shadow-sm disabled:opacity-60">Continue without signing up</button><p className="pt-1 text-center text-xs text-muted-foreground">Or save your results with a free account</p></>}
           <button type="button" disabled={!!busy} onClick={() => social("google")} className={btn}>{busy === "google" ? <Loader2 className="h-4 w-4 animate-spin" /> : <span className="font-semibold">G</span>} Continue with Google</button>
           <button type="button" disabled={!!busy} onClick={() => social("apple")} className={btn}>{busy === "apple" ? <Loader2 className="h-4 w-4 animate-spin" /> : <span></span>} Continue with Apple</button>
           <button type="button" disabled={!!busy} onClick={() => setMode("signup")} className={btn}><Mail className="h-4 w-4" /> Sign up with email</button>
           <button type="button" disabled={!!busy} onClick={() => setMode("signin")} className="w-full pt-1 text-sm font-medium text-primary underline underline-offset-2">I already have an account</button>
-          {!search.clinician && <button type="button" disabled={!!busy} onClick={() => { track("onboarding_started", "onboarding", "guest"); void navigate({ to: "/onboarding", replace: true }); }} className="w-full pt-1 text-xs text-muted-foreground underline underline-offset-2">Maybe later</button>}
         </div>}
 
         {mode === "signup" && <form onSubmit={withEmail} className="space-y-3">
