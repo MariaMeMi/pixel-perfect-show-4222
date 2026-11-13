@@ -34,7 +34,19 @@ export function CommunityNotice() {
   );
 }
 
-export function PostCard({ post, commentCount }: { post: ForumPost; commentCount?: number | undefined }) {
+export function PostCard({
+  post,
+  commentCount,
+  likeCount,
+  liked,
+  onToggleLike,
+}: {
+  post: ForumPost;
+  commentCount?: number | undefined;
+  likeCount?: number | undefined;
+  liked?: boolean;
+  onToggleLike?: () => void;
+}) {
   const author = post.community_profiles;
   return (
     <Link
@@ -56,8 +68,26 @@ export function PostCard({ post, commentCount }: { post: ForumPost; commentCount
         ) : (
           <span>Community member</span>
         )}
-        <span className="flex items-center gap-1">
-          <MessageCircle className="h-3.5 w-3.5" /> {commentCount ?? 0}
+        <span className="flex items-center gap-3">
+          <button
+            type="button"
+            title="Like"
+            aria-label="Like this discussion"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleLike?.();
+            }}
+            className={cn(
+              "flex items-center gap-1 transition-colors",
+              liked ? "font-medium text-primary" : "hover:text-foreground",
+            )}
+          >
+            <Heart className={cn("h-3.5 w-3.5", liked && "fill-primary")} /> {likeCount ?? 0}
+          </button>
+          <span className="flex items-center gap-1">
+            <MessageCircle className="h-3.5 w-3.5" /> {commentCount ?? 0}
+          </span>
         </span>
       </div>
     </Link>

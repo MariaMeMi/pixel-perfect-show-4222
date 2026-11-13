@@ -90,6 +90,25 @@ export async function getReactions(postId: string, userId: string | null): Promi
   return { counts, mine };
 }
 
+/** Heart ("like") reactions per post: counts plus the posts the given user liked. */
+export async function getPostLikes(postIds: string[], userId: string | null): Promise<{ counts: Record<string, number>; mine: Set<string> }> {
+  if (!postIds.length) return { counts: {}, mine: new Set() };
+  const { data } = await supabase
+    .from("forum_reactions")
+    .select("post_id,user_id")
+    .in("post_id", postIds)
+    .eq("kind", "heart")
+    .is("comment_id", null);
+  const counts: Record<string, number> = {};
+  const mine = new Set<string>();
+  for (const r of data ?? []) {
+    if (!r.post_id) continue;
+    counts[r.post_id] = (counts[r.post_id] ?? 0) + 1;
+    if (userId && r.user_id === userId) mine.add(r.post_id);
+  }
+  return { counts, mine };
+}
+
 export async function getCommentCounts(postIds: string[]): Promise<Record<string, number>> {
   if (!postIds.length) return {};
   const { data } = await supabase.from("forum_comments").select("post_id").in("post_id", postIds).eq("status", "visible");
