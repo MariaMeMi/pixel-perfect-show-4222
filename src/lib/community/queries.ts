@@ -141,8 +141,15 @@ export async function getMyBlockedIds(userId: string): Promise<Set<string>> {
 }
 
 export async function getSignedMediaUrl(path: string): Promise<string | null> {
-  const { data } = await supabase.storage.from("community-media").createSignedUrl(path, 3600);
-  return data?.signedUrl ?? null;
+  const { data } = await supabase.storage.from("community-media").createSignedUrl(path, 600);
+  if (data?.signedUrl) return data.signedUrl;
+  try {
+    const { signVisiblePostImage } = await import("./functions");
+    const res = await signVisiblePostImage({ data: { path } });
+    return res.url;
+  } catch {
+    return null;
+  }
 }
 
 export async function uploadCommunityImage(userId: string, file: File): Promise<string> {

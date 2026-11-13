@@ -296,3 +296,19 @@ export const isForumModerator = createServerFn({ method: "POST" })
     const { data } = await ctx.supabase.rpc("is_forum_moderator");
     return { moderator: data === true };
   });
+
+// Public forum images: signed server-side only for photos attached to visible posts.
+export const signVisiblePostImage = createServerFn({ method: "POST" })
+  .inputValidator((d: { path: string }) => {
+    const path = String(d?.path ?? "");
+    if (!/^[0-9a-f-]{36}\/[0-9a-f-]{36}\.(jpg|png)$/i.test(path)) throw new Error("Invalid path");
+    return { path };
+  })
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: post } = await supabaseAdmin
+      .from("forum_posts").select("id").eq("image_path", data.path).eq("status", "visible").maybeSingle();
+    if (!post) return { url: null as string | null };
+    const { data: signed } = await supabaseAdmin.storage.from("community-media").createSignedUrl(data.path, 600);
+    return { url: signed?.signedUrl ?? null };
+  });
