@@ -23,7 +23,8 @@
   --salon-cover-ink: oklch(0.99 0 0);
   --salon-cover-shade: linear-gradient(90deg, oklch(0.15 0.01 155 / 75%), oklch(0.15 0.01 155 / 24%));
 }
-.salon-workspace h1, .salon-workspace h2, .salon-workspace h3 { letter-spacing: 0; }
+.salon-workspace h1, .salon-workspace h2, .salon-workspace h3 { letter-spacing: 0; font-weight: 500; }
+.salon-workspace { font-weight: 400; }
 .salon-cover { color: var(--salon-cover-ink); }
 .salon-cover-shade { background: var(--salon-cover-shade); }
 
@@ -44,7 +45,8 @@
   --ring: var(--primary);
   --radius: 0.5rem;
 }
-.clinician-workspace h1, .clinician-workspace h2, .clinician-workspace h3 { font-family: var(--font-sans); letter-spacing: 0; }
+.clinician-workspace h1, .clinician-workspace h2, .clinician-workspace h3 { font-family: var(--font-sans); letter-spacing: 0; font-weight: 500; }
+.clinician-workspace { font-weight: 400; }
 
 /*
  * Rosea design system — premium consumer skincare aesthetic.
@@ -108,20 +110,20 @@
 
   /* Brighter premium palette: blush ground, white surfaces, deep rose, near-black ink, muted plum */
   --background: #FBE7ED;
-  --foreground: #231B22;
+  --foreground: #1A1219;
   --card: #FFFFFF;
-  --card-foreground: #231B22;
+  --card-foreground: #1A1219;
   --popover: #FFFFFF;
-  --popover-foreground: #231B22;
+  --popover-foreground: #1A1219;
 
   --primary: #C71549;
   --primary-foreground: #FFFFFF;
   --secondary: #FDF3F6;
-  --secondary-foreground: #8A4357;
+  --secondary-foreground: #7A3A4C;
   --muted: #FCEFF3;
-  --muted-foreground: #6E4A57;
+  --muted-foreground: #5C3846;
   --accent: #F9DCE5;
-  --accent-foreground: #8A4357;
+  --accent-foreground: #7A3A4C;
   --destructive: oklch(0.55 0.2 27);
   --destructive-foreground: #FFFFFF;
 
@@ -132,14 +134,14 @@
   --blush: #F7D3DE;
   --blush-deep: #C71549;
   --sand: #FDF1F4;
-  --clay: #8A4357;
+  --clay: #7A3A4C;
   --sage: oklch(0.62 0.05 150);
 
   --chart-1: #C71549;
   --chart-2: #8A4357;
   --chart-3: oklch(0.62 0.05 150);
   --chart-4: #E88AA6;
-  --chart-5: #231B22;
+  --chart-5: #1A1219;
 
   --gradient-dawn: linear-gradient(160deg, #FFFFFF, #FDEFF3);
   --gradient-rose: linear-gradient(135deg, #D41C53, #B0103F);
@@ -149,11 +151,11 @@
   --shadow-lift: 0 2px 6px rgb(138 67 87 / 7%), 0 26px 52px -24px rgb(199 21 73 / 30%);
 
   --sidebar: #FBE7ED;
-  --sidebar-foreground: #231B22;
+  --sidebar-foreground: #1A1219;
   --sidebar-primary: #C71549;
   --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #F9DCE5;
-  --sidebar-accent-foreground: #8A4357;
+  --sidebar-accent-foreground: #7A3A4C;
   --sidebar-border: #F0C9D5;
   --sidebar-ring: #C71549;
 }
@@ -171,6 +173,7 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-weight: 500;
     font-feature-settings: "ss01";
     -webkit-font-smoothing: antialiased;
   }
@@ -179,9 +182,22 @@
   h2,
   h3 {
     font-family: var(--font-display);
-    font-weight: 500;
     letter-spacing: -0.01em;
     color: var(--color-foreground);
+  }
+
+  h1 {
+    font-weight: 700;
+  }
+
+  h2,
+  h3 {
+    font-weight: 600;
+  }
+
+  /* Display serif used outside real headings (Home title, scores, card titles) */
+  .font-display:not(h1):not(h2):not(h3) {
+    font-weight: 600;
   }
 }
 
@@ -211,7 +227,7 @@
   font-size: 0.6875rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-clay);
 }
 

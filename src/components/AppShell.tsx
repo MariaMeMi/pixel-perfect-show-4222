@@ -58,7 +58,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             await supabase.auth.signOut();
             window.location.assign("/welcome");
           }}
-          className="fixed right-3 top-3 z-50 rounded-full border border-border bg-card/90 px-3.5 py-2 text-xs font-medium text-muted-foreground backdrop-blur"
+          className="fixed right-3 top-3 z-50 rounded-full border border-border bg-card/90 px-3.5 py-2 text-xs font-semibold text-muted-foreground backdrop-blur"
         >
           {t("profile.signOut")}
         </button>
@@ -76,8 +76,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                   to={to}
                   search={to === "/" ? { skin: true } : {}}
                   className={cn(
-                    "flex flex-col items-center gap-1 py-3 text-[0.6875rem] transition-colors",
-                    active ? "text-primary" : "text-muted-foreground",
+                    "flex flex-col items-center gap-1 py-3 text-[0.6875rem] font-medium transition-colors",
+                    active ? "text-primary font-semibold" : "text-muted-foreground",
                   )}
                 >
                   <span
@@ -103,7 +103,7 @@ export function PageHeader({ title, subtitle }: { title: string; subtitle?: stri
   return (
     <header className="mb-6">
       <h1 className="text-[2rem] leading-tight text-foreground">{title}</h1>
-      {subtitle ? <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p> : null}
+      {subtitle ? <p className="mt-1 text-sm font-medium text-muted-foreground">{subtitle}</p> : null}
     </header>
   );
 }

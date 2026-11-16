@@ -123,7 +123,7 @@ export function EmailGate({
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground shadow-[var(--shadow-lift)] disabled:opacity-60"
+          className="w-full rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-lift)] disabled:opacity-60"
         >
           {c.cta}
         </button>

@@ -129,7 +129,7 @@ function PostPage() {
         <h1 className="text-xl font-bold leading-snug text-foreground">{post.title}</h1>
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           {author ? (
-            <Link to="/community/profile/$username" params={{ username: author.username }} className="font-medium text-foreground/80 hover:text-primary">
+            <Link to="/community/profile/$username" params={{ username: author.username }} className="font-medium text-foreground hover:text-primary">
               {author.display_name} · @{author.username}
             </Link>
           ) : (
@@ -137,7 +137,7 @@ function PostPage() {
           )}
           <span>{timeAgo(post.created_at)}</span>
         </div>
-        <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90">{post.body}</p>
+        <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">{post.body}</p>
         {post.image_path && <SignedImage path={post.image_path} alt="Photo shared with this post" />}
         <div className="flex items-center justify-between border-t border-border pt-3">
           <ReactionBar targetKey={`post:${post.id}`} counts={counts} mine={mine} disabled={!userId} onToggle={(kind) => toggle(kind, { postId: post.id })} />
@@ -251,7 +251,7 @@ function CommentCard({
       <div className="rounded-2xl border border-border bg-card p-4">
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           {author ? (
-            <Link to="/community/profile/$username" params={{ username: author.username }} className="font-medium text-foreground/80 hover:text-primary">
+            <Link to="/community/profile/$username" params={{ username: author.username }} className="font-medium text-foreground hover:text-primary">
               {author.display_name} · @{author.username}
             </Link>
           ) : (
@@ -259,7 +259,7 @@ function CommentCard({
           )}
           <span>{timeAgo(comment.created_at)}</span>
         </div>
-        <p className="mt-2 whitespace-pre-wrap text-sm text-foreground/90">{comment.body}</p>
+        <p className="mt-2 whitespace-pre-wrap text-sm text-foreground">{comment.body}</p>
         <div className="mt-3 flex items-center justify-between">
           <ReactionBar targetKey={`comment:${comment.id}`} counts={counts} mine={mine} disabled={!userId} onToggle={(kind) => onToggle(kind, comment.id)} />
           <div className="flex items-center gap-3">
@@ -287,12 +287,12 @@ function CommentCard({
             ) : (
               <div key={r.id} className="rounded-2xl border border-border bg-card p-3.5">
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span className="font-medium text-foreground/80">
+                  <span className="font-medium text-foreground">
                     {r.community_profiles ? `${r.community_profiles.display_name} · @${r.community_profiles.username}` : "Community member"}
                   </span>
                   <span>{timeAgo(r.created_at)}</span>
                 </div>
-                <p className="mt-1.5 whitespace-pre-wrap text-sm text-foreground/90">{r.body}</p>
+                <p className="mt-1.5 whitespace-pre-wrap text-sm text-foreground">{r.body}</p>
                 <div className="mt-2 flex items-center justify-between">
                   <ReactionBar targetKey={`comment:${r.id}`} counts={counts} mine={mine} disabled={!userId} onToggle={(kind) => onToggle(kind, r.id)} />
                   <div className="flex items-center gap-3">

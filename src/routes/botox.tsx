@@ -132,7 +132,7 @@ function BotoxPage() {
               sessionStorage.setItem("rosea.botox.ack", "1");
               setAccepted(true);
             }}
-            className="w-full rounded-full gradient-rose py-3.5 text-sm font-medium text-primary-foreground"
+            className="w-full rounded-full gradient-rose py-3.5 text-sm font-semibold text-primary-foreground"
           >
             {t("understand")}
           </button>
@@ -228,7 +228,7 @@ function BotoxPage() {
         <button
           type="button"
           onClick={() => setView("capture")}
-          className="w-full rounded-full gradient-rose py-3.5 text-sm font-medium text-primary-foreground"
+          className="w-full rounded-full gradient-rose py-3.5 text-sm font-semibold text-primary-foreground"
         >
           {t("homeCta")}
         </button>
@@ -488,7 +488,7 @@ function Capture({
               setQuality(null);
               onPhoto(p);
             }}
-            className="rounded-full gradient-rose py-3.5 text-sm font-medium text-primary-foreground"
+            className="rounded-full gradient-rose py-3.5 text-sm font-semibold text-primary-foreground"
           >
             {t("next")}
           </button>
@@ -640,7 +640,7 @@ function Result({
         <button
           type="button"
           onClick={onSave}
-          className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-3.5 text-sm font-medium text-primary-foreground"
+          className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-3.5 text-sm font-semibold text-primary-foreground"
         >
           <Check className="h-4 w-4" /> {t("save")}
         </button>

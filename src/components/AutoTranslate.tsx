@@ -115,7 +115,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
           aria-label={l === "en" ? "English" : l === "de" ? "Deutsch" : l === "uk" ? "Українська" : "Русский"}
           aria-pressed={lang === l}
           onClick={() => setLang(l)}
-          className={`h-auto rounded-full px-2.5 py-1 text-xs font-medium ${lang === l ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
+          className={`h-auto rounded-full px-2.5 py-1 text-xs font-semibold ${lang === l ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
         >
           {LABELS[l]}
         </Button>

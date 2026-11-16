@@ -37,14 +37,14 @@ function MyRoutine() {
   if (!saved || !plan) return (
     <div className="mx-auto max-w-md pt-10 text-center">
       <h1 className="font-display text-3xl text-foreground">No routine saved yet</h1>
-      <Link to="/routine" className="mt-6 inline-block rounded-full gradient-rose px-6 py-3.5 text-sm font-medium text-primary-foreground">Build My Routine</Link>
+      <Link to="/routine" className="mt-6 inline-block rounded-full gradient-rose px-6 py-3.5 text-sm font-semibold text-primary-foreground">Build My Routine</Link>
     </div>
   );
   return (
     <div className="mx-auto max-w-md space-y-6 pb-10">
       <p className="eyebrow pt-2">My Routine · saved {new Date(saved.savedAt).toLocaleDateString()}</p>
       <PlanView plan={plan} products={products} budget={budgetTier(saved.answers.budget)} chosen={chosen} setChosen={update} />
-      <Link to="/routine" className="block rounded-full border border-border bg-card py-3.5 text-center text-sm font-medium text-foreground">Rebuild my routine</Link>
+      <Link to="/routine" className="block rounded-full border border-border bg-card py-3.5 text-center text-sm font-semibold text-foreground">Rebuild my routine</Link>
       <p className="text-[0.7rem] leading-relaxed text-muted-foreground">{DISCLAIMER}</p>
     </div>
   );

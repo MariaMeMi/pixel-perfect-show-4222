@@ -196,11 +196,11 @@ function Onboarding() {
     valid = r.stillUsing !== undefined && !!r.rating;
     body = <Question title={`You mentioned ${t.split(" / ")[0]}.`} hint="This is your own experience — Rose AI doesn't judge whether a treatment worked.">
       <div className="space-y-5">
-        <div><p className="mb-2 text-sm font-medium text-foreground">Are you currently using it?</p>
+        <div><p className="mb-2 text-sm font-semibold text-foreground">Are you currently using it?</p>
           <div className="flex gap-2">{(["Yes", "No"] as const).map((o) => <button key={o} type="button" onClick={() => up({ stillUsing: o === "Yes" })} className={`flex-1 rounded-full border py-3 text-sm ${r.stillUsing === (o === "Yes") ? "border-primary bg-accent text-foreground" : "border-border bg-card text-muted-foreground"}`}>{o}</button>)}</div></div>
-        <div><p className="mb-2 text-sm font-medium text-foreground">What did you notice while using it?</p>
+        <div><p className="mb-2 text-sm font-semibold text-foreground">What did you notice while using it?</p>
           <Chips options={RATINGS.map((x) => x[1])} value={r.rating ? [RATINGS.find((x) => x[0] === r.rating)![1]] : []} onToggle={(l) => up({ rating: RATINGS.find((x) => x[1] === l)![0] })} /></div>
-        {r.stillUsing === false && <div><p className="mb-2 text-sm font-medium text-foreground">Why did you stop?</p><Chips options={STOP_REASONS} value={r.stopReasons} onToggle={(v) => up({ stopReasons: toggle(r.stopReasons, v) })} /></div>}
+        {r.stillUsing === false && <div><p className="mb-2 text-sm font-semibold text-foreground">Why did you stop?</p><Chips options={STOP_REASONS} value={r.stopReasons} onToggle={(v) => up({ stopReasons: toggle(r.stopReasons, v) })} /></div>}
       </div>
     </Question>;
   } else if (step === "r_influences") {
@@ -294,7 +294,7 @@ function Onboarding() {
             <Button key={area} type="button" variant={activeLine === area ? "secondary" : "ghost"} onClick={() => setActiveLine(area)} className="h-auto min-h-10 whitespace-normal px-1.5 py-2 text-center text-xs leading-tight">{LINE_NAMES[area]}</Button>
           )}</div>
           <div className="mt-4 border-t border-border pt-4">
-            <p className="text-sm font-medium text-foreground">{LINE_NAMES[activeLine]} · {LEVELS[lineRes[activeLine].level]}</p>
+            <p className="text-sm font-semibold text-foreground">{LINE_NAMES[activeLine]} · {LEVELS[lineRes[activeLine].level]}</p>
             <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{lineRes[activeLine].noticed}</p>
           </div>
         </div>
@@ -334,7 +334,7 @@ function Onboarding() {
       <RosieGuide step={step} />
       <div className="flex-1">{body}</div>
       {showNav && <button type="button" disabled={!valid} onClick={next}
-        className="mt-8 rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground transition-opacity disabled:opacity-40">{cta}</button>}
+        className="mt-8 rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground transition-opacity disabled:opacity-40">{cta}</button>}
     </div>
   );
 }

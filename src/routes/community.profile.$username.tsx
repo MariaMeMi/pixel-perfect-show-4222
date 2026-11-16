@@ -111,7 +111,7 @@ function ProfilePage() {
         </div>
         <h1 className="mt-3 text-xl font-bold text-foreground">{profile.display_name}</h1>
         <p className="text-sm text-muted-foreground">@{profile.username}</p>
-        {profile.bio && <p className="mt-2 text-sm text-foreground/80">{profile.bio}</p>}
+        {profile.bio && <p className="mt-2 text-sm text-foreground">{profile.bio}</p>}
         {viewerId && !isSelf && (
           <Button
             variant="outline"

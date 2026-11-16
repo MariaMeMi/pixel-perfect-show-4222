@@ -107,7 +107,7 @@ function WelcomePage() {
     else setMode("sent");
   }
 
-  const btn = "flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card py-3.5 text-sm font-medium text-foreground disabled:opacity-60";
+  const btn = "flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card py-3.5 text-sm font-semibold text-foreground disabled:opacity-60";
 
   if (!ready) return <div className="min-h-[70vh]" aria-hidden="true" />;
 
@@ -125,8 +125,8 @@ function WelcomePage() {
         {mode === 'choose' && !skinSelected && !search.clinician ? <div className="space-y-3">
           <button type="button" disabled={!!busy} onClick={() => { track("onboarding_started", "onboarding", "guest"); void navigate({ to: "/onboarding", replace: true }); }} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-base font-semibold text-primary-foreground shadow-[var(--shadow-lift)] disabled:opacity-60">Continue without signing up</button>
           <h2 className="pt-2 text-center text-xl">How would you like to use Rose AI?</h2>
-          <Button variant="outline" className="h-auto w-full justify-start gap-3 whitespace-normal rounded-md p-4 text-left" onClick={() => setSkinSelected(true)}><Flower2/><span><span className="block font-semibold">For my skin</span><span className="block text-xs font-normal text-muted-foreground">Track your skin changes and progress.</span></span></Button>
-          <Button asChild variant="outline" className="h-auto w-full justify-start gap-3 whitespace-normal rounded-md p-4 text-left"><Link to="/clinician/onboarding"><Stethoscope/><span><span className="block font-semibold">I'm a clinician</span><span className="block text-xs font-normal text-muted-foreground">Manage patient photos and track treatment progress.</span></span></Link></Button>
+          <Button variant="outline" className="h-auto w-full justify-start gap-3 whitespace-normal rounded-md p-4 text-left" onClick={() => setSkinSelected(true)}><Flower2/><span><span className="block font-semibold">For my skin</span><span className="block text-xs font-medium text-muted-foreground">Track your skin changes and progress.</span></span></Button>
+          <Button asChild variant="outline" className="h-auto w-full justify-start gap-3 whitespace-normal rounded-md p-4 text-left"><Link to="/clinician/onboarding"><Stethoscope/><span><span className="block font-semibold">I'm a clinician</span><span className="block text-xs font-medium text-muted-foreground">Manage patient photos and track treatment progress.</span></span></Link></Button>
           <Button variant="link" className="w-full" onClick={() => setMode('signin')}>I already have an account</Button>
         </div> : mode === "choose" && <div className="space-y-2.5">
           {!search.clinician && <><button type="button" disabled={!!busy} onClick={() => { track("onboarding_started", "onboarding", "guest"); void navigate({ to: "/onboarding", replace: true }); }} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-base font-semibold text-primary-foreground shadow-[var(--shadow-lift)] disabled:opacity-60">Continue without signing up</button><p className="pt-1 text-center text-xs text-muted-foreground">Or save your results with a free account</p></>}
@@ -141,7 +141,7 @@ function WelcomePage() {
             className="w-full rounded-2xl border border-border bg-card px-4 py-3.5 text-base text-foreground outline-none focus:border-primary" />
           <input type="password" autoComplete="new-password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password (8+ characters)"
             className="w-full rounded-2xl border border-border bg-card px-4 py-3.5 text-base text-foreground outline-none focus:border-primary" />
-          <button type="submit" disabled={!!busy} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground disabled:opacity-60">
+          <button type="submit" disabled={!!busy} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground disabled:opacity-60">
             {busy === "email" && <Loader2 className="h-4 w-4 animate-spin" />} Create my account</button>
           <button type="button" onClick={() => setMode("choose")} className="w-full text-xs text-muted-foreground">← Other options</button>
         </form>}
@@ -151,14 +151,14 @@ function WelcomePage() {
             className="w-full rounded-2xl border border-border bg-card px-4 py-3.5 text-base text-foreground outline-none focus:border-primary" />
           <input type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Your password"
             className="w-full rounded-2xl border border-border bg-card px-4 py-3.5 text-base text-foreground outline-none focus:border-primary" />
-          <button type="submit" disabled={!!busy} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground disabled:opacity-60">
+          <button type="submit" disabled={!!busy} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground disabled:opacity-60">
             {busy === "email" && <Loader2 className="h-4 w-4 animate-spin" />} Sign in</button>
           <button type="button" onClick={() => setMode("choose")} className="w-full text-xs text-muted-foreground">← Other options</button>
         </form>}
 
         {mode === "sent" && <div className="space-y-3">
           <p className="text-sm text-foreground">Check your inbox to confirm <b>{email}</b>. Once confirmed, you'll be signed in and your starting point is ready.</p>
-          <button type="button" onClick={() => void navigate({ to: "/onboarding", replace: true })} className="w-full rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground">Continue for now</button>
+          <button type="button" onClick={() => void navigate({ to: "/onboarding", replace: true })} className="w-full rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground">Continue for now</button>
         </div>}
 
         {error && <p className="text-xs text-destructive">{error}</p>}
