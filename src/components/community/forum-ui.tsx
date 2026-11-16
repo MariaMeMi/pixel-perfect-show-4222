@@ -64,7 +64,7 @@ export function PostCard({
       <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{post.body}</p>
       <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
         {author ? (
-          <span className="font-medium text-foreground/80">{author.display_name} · @{author.username}</span>
+          <span className="font-medium text-foreground">{author.display_name} · @{author.username}</span>
         ) : (
           <span>Community member</span>
         )}
