@@ -45,7 +45,7 @@
   --ring: var(--primary);
   --radius: 0.5rem;
 }
-.clinician-workspace h1, .clinician-workspace h2, .clinician-workspace h3 { font-family: var(--font-sans); letter-spacing: 0; font-weight: 600; }
+.clinician-workspace h1, .clinician-workspace h2, .clinician-workspace h3 { font-family: var(--font-sans); letter-spacing: 0; font-weight: 500; }
 .clinician-workspace { font-weight: 400; }
 
 /*
