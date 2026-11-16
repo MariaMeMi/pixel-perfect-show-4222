@@ -30,8 +30,8 @@ export function OptionCard({ label, text, icon, selected, onClick }: { label: st
     >
       {icon && <span className="text-2xl" aria-hidden>{icon}</span>}
       <span className="flex-1">
-        <span className="block text-[15px] font-medium text-foreground">{label}</span>
-        {text && <span className="mt-0.5 block text-xs text-muted-foreground">{text}</span>}
+        <span className="block text-[15px] font-semibold text-foreground">{label}</span>
+        {text && <span className="mt-0.5 block text-xs font-medium text-muted-foreground">{text}</span>}
       </span>
       <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border ${selected ? "border-primary gradient-rose text-primary-foreground" : "border-border"}`}>
         {selected && <Check className="h-3.5 w-3.5" />}
