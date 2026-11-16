@@ -1,0 +1,13 @@
+ALTER TABLE public.products DROP CONSTRAINT IF EXISTS products_category_check;
+ALTER TABLE public.products ADD CONSTRAINT products_category_check CHECK (category IN ('cleanser','micellar','calming','redness_moisturizer','moisturizer','rescue','sunscreen','antioxidant','anti_aging','toner','serum','mask','treatment','eye_care','complexion'));
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS subcategory text NOT NULL DEFAULT '';
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS verification_status text NOT NULL DEFAULT 'verified' CHECK (verification_status IN ('verified','pending','excluded'));
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS verification_note text NOT NULL DEFAULT '';
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS irritation_notes text NOT NULL DEFAULT '';
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS shades text[] NOT NULL DEFAULT '{}';
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS finish text NOT NULL DEFAULT '';
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS coverage text NOT NULL DEFAULT '';
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS normalized_key text GENERATED ALWAYS AS (lower(regexp_replace(brand || name, '[^a-zA-Z0-9]', '', 'g'))) STORED;
+CREATE UNIQUE INDEX IF NOT EXISTS products_normalized_key_category_uniq ON public.products (normalized_key, category);
+DROP POLICY IF EXISTS "Active products are public" ON public.products;
+CREATE POLICY "Active verified products are public" ON public.products FOR SELECT TO anon, authenticated USING (active AND verification_status = 'verified');
