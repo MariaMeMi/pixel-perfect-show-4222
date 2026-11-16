@@ -123,7 +123,7 @@ function WelcomePage() {
         </div>
 
         {mode === 'choose' && !skinSelected && !search.clinician ? <div className="space-y-3">
-          <button type="button" disabled={!!busy} onClick={() => { track("onboarding_started", "onboarding", "guest"); void navigate({ to: "/onboarding", replace: true }); }} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-base font-medium text-primary-foreground shadow-sm disabled:opacity-60">Continue without signing up</button>
+          <button type="button" disabled={!!busy} onClick={() => { track("onboarding_started", "onboarding", "guest"); void navigate({ to: "/onboarding", replace: true }); }} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-base font-semibold text-primary-foreground shadow-[var(--shadow-lift)] disabled:opacity-60">Continue without signing up</button>
           <h2 className="pt-2 text-center text-xl">How would you like to use Rose AI?</h2>
           <Button variant="outline" className="h-auto w-full justify-start gap-3 whitespace-normal rounded-md p-4 text-left" onClick={() => setSkinSelected(true)}><Flower2/><span><span className="block font-semibold">For my skin</span><span className="block text-xs font-normal text-muted-foreground">Track your skin changes and progress.</span></span></Button>
           <Button asChild variant="outline" className="h-auto w-full justify-start gap-3 whitespace-normal rounded-md p-4 text-left"><Link to="/clinician/onboarding"><Stethoscope/><span><span className="block font-semibold">I'm a clinician</span><span className="block text-xs font-normal text-muted-foreground">Manage patient photos and track treatment progress.</span></span></Link></Button>
