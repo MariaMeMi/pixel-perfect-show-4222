@@ -336,7 +336,7 @@ function JourneyPage() {
       <div className="animate-rise space-y-5">
         <h1 className="text-[1.9rem] leading-tight text-foreground">{c.preview}</h1>
         <img src={url} alt={c.preview} className="mx-auto w-full max-w-xs rounded-3xl border border-border shadow-[var(--shadow-lift)]" />
-        <button onClick={share} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground shadow-[var(--shadow-lift)]">
+        <button onClick={share} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-lift)]">
           <Share2 className="h-4 w-4" /> {c.share}
         </button>
         <button onClick={download} className="flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card py-4 text-sm text-foreground">
@@ -420,7 +420,7 @@ function JourneyPage() {
         ) : null}
       </section>
 
-      <button disabled={busy || !entries.length} onClick={generate} className="w-full rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground shadow-[var(--shadow-lift)] disabled:opacity-60">
+      <button disabled={busy || !entries.length} onClick={generate} className="w-full rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-lift)] disabled:opacity-60">
         {c.create}
       </button>
       <p className="text-center text-xs text-muted-foreground">{c.note}</p>

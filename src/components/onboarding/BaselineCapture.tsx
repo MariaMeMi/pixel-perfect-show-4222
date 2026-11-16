@@ -83,10 +83,10 @@ export function BaselineCapture({ photo, retainPhotos, onStart, onPhoto }: { pho
 
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { onFile(e.target.files?.[0]); e.target.value = ""; }} />
       {stream ? (
-        <button type="button" onClick={stop} className="mx-auto flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium text-foreground"><X className="h-4 w-4" />Cancel camera</button>
+        <button type="button" onClick={stop} className="mx-auto flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-semibold text-foreground"><X className="h-4 w-4" />Cancel camera</button>
       ) : (
         <div className="flex flex-col gap-2">
-          <button type="button" onClick={() => { onStart(); fileRef.current?.click(); }} className="flex items-center justify-center gap-2 rounded-full border border-border bg-card py-3.5 text-sm font-medium text-foreground"><Upload className="h-4 w-4" />Upload a photo</button>
+          <button type="button" onClick={() => { onStart(); fileRef.current?.click(); }} className="flex items-center justify-center gap-2 rounded-full border border-border bg-card py-3.5 text-sm font-semibold text-foreground"><Upload className="h-4 w-4" />Upload a photo</button>
         </div>
       )}
     </div>

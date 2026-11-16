@@ -163,7 +163,7 @@ function ResultsPage() {
         <div className="space-y-3">
           <button
             onClick={() => save()}
-            className="w-full rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground shadow-[var(--shadow-lift)] active:scale-[0.99]"
+            className="w-full rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-lift)] active:scale-[0.99]"
           >
             {t("checkin.finish")}
           </button>
@@ -293,7 +293,7 @@ function ResultsPage() {
 
       <button
         onClick={() => setStep("checkin")}
-        className="w-full rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground shadow-[var(--shadow-lift)] active:scale-[0.99]"
+        className="w-full rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-lift)] active:scale-[0.99]"
       >
         {t("results.save")}
       </button>

@@ -107,7 +107,7 @@ function WelcomePage() {
     else setMode("sent");
   }
 
-  const btn = "flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card py-3.5 text-sm font-medium text-foreground disabled:opacity-60";
+  const btn = "flex w-full items-center justify-center gap-2 rounded-full border border-border bg-card py-3.5 text-sm font-semibold text-foreground disabled:opacity-60";
 
   if (!ready) return <div className="min-h-[70vh]" aria-hidden="true" />;
 
@@ -141,7 +141,7 @@ function WelcomePage() {
             className="w-full rounded-2xl border border-border bg-card px-4 py-3.5 text-base text-foreground outline-none focus:border-primary" />
           <input type="password" autoComplete="new-password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password (8+ characters)"
             className="w-full rounded-2xl border border-border bg-card px-4 py-3.5 text-base text-foreground outline-none focus:border-primary" />
-          <button type="submit" disabled={!!busy} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground disabled:opacity-60">
+          <button type="submit" disabled={!!busy} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground disabled:opacity-60">
             {busy === "email" && <Loader2 className="h-4 w-4 animate-spin" />} Create my account</button>
           <button type="button" onClick={() => setMode("choose")} className="w-full text-xs text-muted-foreground">← Other options</button>
         </form>}
@@ -151,14 +151,14 @@ function WelcomePage() {
             className="w-full rounded-2xl border border-border bg-card px-4 py-3.5 text-base text-foreground outline-none focus:border-primary" />
           <input type="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Your password"
             className="w-full rounded-2xl border border-border bg-card px-4 py-3.5 text-base text-foreground outline-none focus:border-primary" />
-          <button type="submit" disabled={!!busy} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground disabled:opacity-60">
+          <button type="submit" disabled={!!busy} className="flex w-full items-center justify-center gap-2 rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground disabled:opacity-60">
             {busy === "email" && <Loader2 className="h-4 w-4 animate-spin" />} Sign in</button>
           <button type="button" onClick={() => setMode("choose")} className="w-full text-xs text-muted-foreground">← Other options</button>
         </form>}
 
         {mode === "sent" && <div className="space-y-3">
           <p className="text-sm text-foreground">Check your inbox to confirm <b>{email}</b>. Once confirmed, you'll be signed in and your starting point is ready.</p>
-          <button type="button" onClick={() => void navigate({ to: "/onboarding", replace: true })} className="w-full rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground">Continue for now</button>
+          <button type="button" onClick={() => void navigate({ to: "/onboarding", replace: true })} className="w-full rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground">Continue for now</button>
         </div>}
 
         {error && <p className="text-xs text-destructive">{error}</p>}

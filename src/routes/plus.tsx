@@ -83,7 +83,7 @@ function PlusPage() {
           <h1 className="font-display text-[2rem] leading-tight text-foreground">Welcome to Rosea Plus 🌹</h1>
           <p className="text-sm text-secondary-foreground">Your full skin journey is unlocked.</p>
           {expiry && <p className="text-xs text-muted-foreground">Access until {expiry}</p>}
-          <Link to="/progress" className="mt-2 inline-block rounded-full gradient-rose px-6 py-3 text-sm font-medium text-primary-foreground">See my progress</Link>
+          <Link to="/progress" className="mt-2 inline-block rounded-full gradient-rose px-6 py-3 text-sm font-semibold text-primary-foreground">See my progress</Link>
         </div>
       ) : (
         <div className="surface-lift gradient-dawn space-y-5 p-7">
@@ -103,7 +103,7 @@ function PlusPage() {
           {busy === "verify" ? (
             <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Confirming your payment…</p>
           ) : plus.loading ? null : !plus.signedIn ? (
-            <Link to="/welcome" className="block w-full rounded-full gradient-rose py-4 text-center text-sm font-medium text-primary-foreground">Sign in to unlock Rosea Plus</Link>
+            <Link to="/welcome" className="block w-full rounded-full gradient-rose py-4 text-center text-sm font-semibold text-primary-foreground">Sign in to unlock Rosea Plus</Link>
           ) : checkout ? (
             <div className="overflow-hidden rounded-2xl bg-card">
               <EmbeddedCheckoutProvider stripe={getStripe()} options={{ fetchClientSecret }}>
@@ -111,7 +111,7 @@ function PlusPage() {
               </EmbeddedCheckoutProvider>
             </div>
           ) : (
-            <button onClick={() => setCheckout(true)} className="w-full rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground">
+            <button onClick={() => setCheckout(true)} className="w-full rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground">
               Unlock Rosea Plus — $14.99
             </button>
           )}

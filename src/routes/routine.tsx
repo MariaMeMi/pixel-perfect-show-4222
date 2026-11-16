@@ -88,7 +88,7 @@ function RoutinePage() {
           </button>;
         })}
       </div>
-      <button type="button" disabled={!valid} onClick={next} className="mt-8 rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground disabled:opacity-40">
+      <button type="button" disabled={!valid} onClick={next} className="mt-8 rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground disabled:opacity-40">
         {i === QUESTIONS.length - 1 ? "See my routine" : q.optional && !val ? "Skip" : "Continue"}
       </button>
     </div>
@@ -127,7 +127,7 @@ function Results({ answers, onRestart }: { answers: Answers; onRestart: () => vo
       </section>}
 
       <div className="flex flex-col gap-2">
-        <button type="button" onClick={save} className="rounded-full gradient-rose py-4 text-sm font-medium text-primary-foreground">Save to My Routine</button>
+        <button type="button" onClick={save} className="rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground">Save to My Routine</button>
         <EmailRoutine plan={plan} products={shopList} />
         <button type="button" onClick={onRestart} className="py-2 text-xs text-muted-foreground underline underline-offset-2">Start over</button>
       </div>
@@ -198,7 +198,7 @@ function StepCard({ n, step, products, plan, budget, chosen, setChosen }: { n: n
     <div className="flex items-start gap-3">
       <span className="font-display text-xl text-primary">{String(n).padStart(2, "0")}</span>
       <div className="flex-1">
-        <p className="text-[15px] font-medium text-foreground">{step.label}{step.optional && <span className="ml-2 text-xs font-normal text-muted-foreground">optional</span>}</p>
+        <p className="text-[15px] font-semibold text-foreground">{step.label}{step.optional && <span className="ml-2 text-xs font-medium text-muted-foreground">optional</span>}</p>
         {step.rx && <p className="mt-1 text-sm text-muted-foreground">{step.why}</p>}
         {cur && <div className="mt-3 rounded-2xl bg-accent/50 p-4">
           <p className="eyebrow">{cur.id === p?.best?.id ? "Best match" : "Your pick"}</p>
@@ -257,10 +257,10 @@ function EmailRoutine({ plan, products }: { plan: Plan; products: Product[] }) {
     if (res.ok) { track("results_emailed", "routine"); toast.success("Your routine is on its way."); setOpen(false); }
     else toast.error("Something went wrong. Please try again.");
   }
-  if (!open) return <button type="button" onClick={() => setOpen(true)} className="rounded-full border border-border bg-card py-3.5 text-sm font-medium text-foreground">Email my routine</button>;
+  if (!open) return <button type="button" onClick={() => setOpen(true)} className="rounded-full border border-border bg-card py-3.5 text-sm font-semibold text-foreground">Email my routine</button>;
   return <form onSubmit={send} className="surface space-y-3 p-4">
     <input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="w-full rounded-2xl border border-border bg-card px-4 py-3 text-base text-foreground outline-none focus:border-primary" />
-    <button type="submit" disabled={busy} className="w-full rounded-full gradient-rose py-3.5 text-sm font-medium text-primary-foreground disabled:opacity-60">Send</button>
+    <button type="submit" disabled={busy} className="w-full rounded-full gradient-rose py-3.5 text-sm font-semibold text-primary-foreground disabled:opacity-60">Send</button>
     <p className="text-[0.7rem] text-muted-foreground">We'll email your routine and occasional product updates. See our <Link to="/privacy" className="underline">Privacy Policy</Link>.</p>
   </form>;
 }

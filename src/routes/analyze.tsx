@@ -194,7 +194,7 @@ function AnalyzePage() {
       </header>
 
       <div className="grid grid-cols-2 gap-1 rounded-full border border-border bg-card p-1 text-sm">
-        <span className="rounded-full gradient-rose py-2 text-center font-medium text-primary-foreground">
+        <span className="rounded-full gradient-rose py-2 text-center font-semibold text-primary-foreground">
           {lang === "de" ? "Rötung AI" : "Redness AI"}
         </span>
         <Link to="/botox" className="rounded-full py-2 text-center text-muted-foreground">
@@ -281,7 +281,7 @@ function AnalyzePage() {
           <>
             <button
               onClick={analyze}
-              className="w-full rounded-full gradient-rose py-4 text-sm font-medium tracking-wide text-primary-foreground shadow-[var(--shadow-lift)] active:scale-[0.99]"
+              className="w-full rounded-full gradient-rose py-4 text-sm font-semibold tracking-wide text-primary-foreground shadow-[var(--shadow-lift)] active:scale-[0.99]"
             >
               {t("analyze.analyze")}
             </button>

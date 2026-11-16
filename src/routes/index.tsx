@@ -242,7 +242,7 @@ function HomePage() {
       <section className="surface gradient-dawn flex gap-3 p-5">
         <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-primary" strokeWidth={1.6} />
         <div>
-          <p className="text-sm font-medium text-foreground">{t("home.tipTitle")}</p>
+          <p className="text-sm font-semibold text-foreground">{t("home.tipTitle")}</p>
           <p className="mt-1 text-sm leading-relaxed text-secondary-foreground">{t("home.tip")}</p>
         </div>
       </section>
