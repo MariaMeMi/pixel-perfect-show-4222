@@ -1472,17 +1472,25 @@ export type Database = {
           brand: string
           category: string
           concerns: string[]
+          coverage: string
           created_at: string
+          finish: string
           fragrance_free: boolean | null
           id: string
           image_url: string | null
+          irritation_notes: string
           key_ingredients: string[]
           name: string
           normal_url: string | null
+          normalized_key: string | null
           price_tier: number
           purpose: string
           rank: number
+          shades: string[]
           sponsored: boolean
+          subcategory: string
+          verification_note: string
+          verification_status: string
           why: string
         }
         Insert: {
@@ -1493,17 +1501,25 @@ export type Database = {
           brand: string
           category: string
           concerns?: string[]
+          coverage?: string
           created_at?: string
+          finish?: string
           fragrance_free?: boolean | null
           id?: string
           image_url?: string | null
+          irritation_notes?: string
           key_ingredients?: string[]
           name: string
           normal_url?: string | null
+          normalized_key?: string | null
           price_tier: number
           purpose?: string
           rank?: number
+          shades?: string[]
           sponsored?: boolean
+          subcategory?: string
+          verification_note?: string
+          verification_status?: string
           why?: string
         }
         Update: {
@@ -1514,17 +1530,25 @@ export type Database = {
           brand?: string
           category?: string
           concerns?: string[]
+          coverage?: string
           created_at?: string
+          finish?: string
           fragrance_free?: boolean | null
           id?: string
           image_url?: string | null
+          irritation_notes?: string
           key_ingredients?: string[]
           name?: string
           normal_url?: string | null
+          normalized_key?: string | null
           price_tier?: number
           purpose?: string
           rank?: number
+          shades?: string[]
           sponsored?: boolean
+          subcategory?: string
+          verification_note?: string
+          verification_status?: string
           why?: string
         }
         Relationships: []
