@@ -100,22 +100,22 @@ export const wantsBotox = (d: OnboardingData) => d.goals.includes("botox") || d.
 
 /** Builds the ordered step list from the answers so far (progressive disclosure). */
 export function buildSteps(d: OnboardingData): StepId[] {
-  const s: StepId[] = ["welcome", "goals"];
-  if (d.goals.includes("redness")) {
-    // Kept short on purpose: more than half of starters left mid-questionnaire.
-    s.push("r_diagnosed", "r_symptoms", "r_tried");
-  }
-  if (d.goals.includes("lines")) s.push("l_areas");
-  if (wantsBotox(d)) s.push("b_when", "b_areas");
-  if (d.goals.includes("dryness")) s.push("d_experience");
-  s.push("reflection", "baseline", "signup", "building", "gate", "profile");
+  // Ask only for goals, redness symptoms and (if relevant) treatment timing
+  // before the photo. Detailed history can be recorded after the first result.
+  const s: StepId[] = ["goals"];
+  if (d.goals.includes("redness")) s.push("r_symptoms");
+  if (wantsBotox(d)) s.push("b_when");
+  s.push("baseline", "signup", "building", "gate", "profile");
   return s;
 }
 
 /** Profile sections shown on the reflection and final screens — only what the user told us. */
 export function profileSections(d: OnboardingData): { label: string; items: string[] }[] {
   const out: { label: string; items: string[] }[] = [];
-  const goalTitles = d.goals.map((g) => GOALS.find((x) => x.key === g)!.title);
+  const goalTitles = d.goals.flatMap((g) => {
+    const goal = GOALS.find((x) => x.key === g);
+    return goal ? [goal.title] : [];
+  });
   out.push({ label: "Your goal", items: d.understand ? [d.understand] : goalTitles });
   const tracking = [
     ...d.symptoms.filter((x) => x !== "Something else"),

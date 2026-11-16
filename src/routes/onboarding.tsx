@@ -67,7 +67,8 @@ function Onboarding() {
   const retainPhotos = useMemo(() => (typeof window === "undefined" ? true : loadProfile().retainPhotos), []);
 
   useEffect(() => {
-    if (step === "r_diagnosed") once("redness_branch_started");
+    if (step === "goals") once("onboarding_started");
+    if (step === "r_symptoms") once("redness_branch_started");
     if (step === "l_areas") once("wrinkle_branch_started");
     if (step === "b_when") once("botox_branch_started");
     if (step === "d_experience") once("dryness_branch_started");
