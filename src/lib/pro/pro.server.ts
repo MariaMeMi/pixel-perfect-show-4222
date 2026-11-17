@@ -71,7 +71,15 @@ export async function recordRefund(charge: Stripe.Charge, env: StripeEnv) {
   if (!charge.amount_refunded) return;
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const invRef = (charge as Stripe.Charge & { invoice?: string | { id: string } | null }).invoice;
-  const invId = typeof invRef === "string" ? invRef : invRef?.id;
+  let invId = typeof invRef === "string" ? invRef : invRef?.id;
+  const pi = typeof charge.payment_intent === "string" ? charge.payment_intent : charge.payment_intent?.id;
+  if (!invId && pi) {
+    // Newer Stripe API versions link charges to invoices through invoice payments.
+    const { createStripeClient } = await import("../stripe.server");
+    const list = await createStripeClient(env).invoicePayments.list({ payment: { type: "payment_intent", payment_intent: pi }, limit: 1 });
+    const inv = list.data[0]?.invoice;
+    invId = typeof inv === "string" ? inv : inv?.id;
+  }
   let paid: { user_id: string | null; price_id: string | null; pricing_group: string; stripe_subscription_id: string | null } | null = null;
   if (invId) {
     const { data } = await supabaseAdmin.from("payment_events").select("user_id, price_id, pricing_group, stripe_subscription_id").eq("stripe_object_id", invId).maybeSingle();
