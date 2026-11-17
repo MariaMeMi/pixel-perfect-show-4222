@@ -1,6 +1,6 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SlidersHorizontal, Heart, Columns2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProductInfo } from '@/components/products/ProductInfo';
@@ -28,6 +28,8 @@ function ProductLibrary() {
   const [open, setOpen] = useState(false);
   const [compare, setCompare] = useState<string[]>([]);
   const [comparing, setComparing] = useState(false);
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
   function update(patch: Partial<typeof defaults>) { void navigate({ to: '/products', search: { ...filters, ...patch, page: patch.page ?? 1 }, replace: true }); }
   const options = (key: 'brand' | 'coverage' | 'finish') => [...new Set(products.map(p => p[key]).filter(Boolean))].sort();
   const ranked = filters.view === 'all' ? [...products] : rankCatalog(products, preferences);
@@ -55,7 +57,7 @@ function ProductLibrary() {
     {preferences.urgent && <p className="text-sm text-destructive">Please see a professional first. Browsing is not a treatment recommendation.</p>}
     {!preferences.tags.length && filters.view !== 'all' && <p className="text-xs text-muted-foreground">No saved preferences yet. All verified products are available.</p>}
     <input aria-label="Search products" placeholder="Search products" value={filters.q} onChange={e => update({ q: e.target.value })} className="w-full rounded-md border border-border bg-card px-3 py-3 text-base text-foreground" />
-    <div className="flex flex-wrap gap-2"><Button variant="outline" onClick={() => setOpen(!open)} aria-expanded={open}><SlidersHorizontal />Filters</Button><Button variant={filters.favorites ? 'default' : 'outline'} onClick={() => update({ favorites: !filters.favorites })}><Heart />Favorites</Button><Button variant="ghost" onClick={() => update(defaults)}>Clear filters</Button></div>
+    <div className="flex flex-wrap gap-2"><Button variant="outline" disabled={!ready} onClick={() => setOpen(!open)} aria-expanded={open}><SlidersHorizontal />Filters</Button><Button variant={filters.favorites ? 'default' : 'outline'} onClick={() => update({ favorites: !filters.favorites })}><Heart />Favorites</Button><Button variant="ghost" onClick={() => update(defaults)}>Clear filters</Button></div>
     {open && <div className="grid grid-cols-2 gap-3 border-y border-border py-4">
       {select('Category', 'category', categoryNames)}{select('Skin type', 'skin', ['dry', 'oily', 'combination', 'sensitive'])}{select('Skin concern', 'concern', ['redness', 'rosacea', 'dryness', 'acne', 'irritation', 'fine lines'])}{select('Brand', 'brand', options('brand'))}
       {['min', 'max'].map(key => <label key={key} className="text-xs font-semibold text-foreground">{key === 'min' ? 'Minimum price (USD)' : 'Maximum price (USD)'}<input aria-label={key === 'min' ? 'Minimum price (USD)' : 'Maximum price (USD)'} type="number" min="0" value={key === 'min' ? filters.min : filters.max} onChange={e => update({ [key]: e.target.value })} className="mt-1 w-full rounded-md border border-border bg-card p-2 text-sm" /></label>)}
