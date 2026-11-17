@@ -22,13 +22,13 @@ export const Route = createFileRoute("/")({
     s['skin'] === true || s['skin'] === 'true' ? { skin: true } : {},
   head: () => ({
     meta: [
-      { title: "Rose AI — your everyday skin companion for rosacea and sensitive skin" },
+      { title: "Rose AI — your everyday companion for rosacea and sensitive skin" },
       {
         name: "description",
         content:
           "Check your skin with a photo, understand today's redness and follow your progress over time.",
       },
-      { property: "og:title", content: "Rose AI — your everyday skin companion for rosacea and sensitive skin" },
+      { property: "og:title", content: "Rose AI — your everyday companion for rosacea and sensitive skin" },
       {
         property: "og:description",
         content: "A calm, private way to track facial redness day by day.",

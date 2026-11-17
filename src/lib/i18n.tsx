@@ -13,7 +13,7 @@ export type Lang = "en" | "de" | "ru" | "uk";
  */
 const en = {
   "app.name": "Rose AI",
-  "app.tagline": "Your everyday skin companion for rosacea and sensitive skin.",
+  "app.tagline": "Your everyday companion for rosacea and sensitive skin.",
 
   "nav.home": "Home",
   "nav.analyze": "Analyze",
@@ -189,7 +189,7 @@ const en = {
 export type TKey = keyof typeof en;
 
 const de: Partial<Record<TKey, string>> = {
-  "app.tagline": "Deine tägliche Hautbegleitung bei Rosazea und empfindlicher Haut.",
+  "app.tagline": "Dein täglicher Begleiter bei Rosazea und empfindlicher Haut.",
   "nav.home": "Start",
   "nav.analyze": "Analyse",
   "nav.routine": "Routine",
