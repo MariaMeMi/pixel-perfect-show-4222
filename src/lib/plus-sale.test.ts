@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { plusOnSale } from "./plus-sale";
 
-describe("Rosea Plus sale during Pro price test", () => {
-  it("is hidden for English users", () => expect(plusOnSale("en")).toBe(false));
-  it("stays on sale for German users", () => expect(plusOnSale("de")).toBe(true));
-  it("stays on sale for Russian users", () => expect(plusOnSale("ru")).toBe(true));
+describe("old Rosea Plus $14.99 offer", () => {
+  it("is not sold in English", () => expect(plusOnSale("en")).toBe(false));
+  it("is not sold in German", () => expect(plusOnSale("de")).toBe(false));
+  it("is not sold in Russian", () => expect(plusOnSale("ru")).toBe(false));
 });

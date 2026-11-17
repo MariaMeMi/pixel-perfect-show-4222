@@ -2,20 +2,34 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { getStripeEnvironment } from "@/lib/stripe";
 
-export type PlusState = { loading: boolean; signedIn: boolean; isPlus: boolean; expiresAt: string | null; refresh: () => void };
+export type PlusState = {
+  loading: boolean; signedIn: boolean;
+  /** Paid access of any kind (legacy Plus or active Pro subscription). */
+  isPlus: boolean;
+  isPro: boolean; hasSubscription: boolean; cancelAtPeriodEnd: boolean;
+  expiresAt: string | null; refresh: () => void;
+};
+const EMPTY = { loading: false, signedIn: false, isPlus: false, isPro: false, hasSubscription: false, cancelAtPeriodEnd: false, expiresAt: null as string | null };
 
-/** Reads the signed-in user's own plan (RLS limits this to their row). UX only; server re-checks. */
+/** Reads the signed-in user's own plan rows (RLS limits to their rows). UX only; server re-checks. */
 export function usePlus(): PlusState {
-  const [s, setS] = useState({ loading: true, signedIn: false, isPlus: false, expiresAt: null as string | null });
+  const [s, setS] = useState({ ...EMPTY, loading: true });
   const load = useCallback(async () => {
     const { data: { session } } = await supabase.auth.getSession();
-    if (!session) return setS({ loading: false, signedIn: false, isPlus: false, expiresAt: null });
+    if (!session) return setS(EMPTY);
     let env: "sandbox" | "live" = "sandbox";
     try { env = getStripeEnvironment(); } catch { /* not configured */ }
-    const { data } = await supabase.from("user_plans").select("plan, plus_expires_at")
-      .eq("user_id", session.user.id).eq("environment", env).maybeSingle();
-    const exp = data?.plus_expires_at ?? null;
-    setS({ loading: false, signedIn: true, isPlus: data?.plan === "plus" && !!exp && new Date(exp) > new Date(), expiresAt: exp });
+    const [{ data: plan }, { data: sub }] = await Promise.all([
+      supabase.from("user_plans").select("plan, plus_expires_at").eq("user_id", session.user.id).eq("environment", env).maybeSingle(),
+      supabase.from("subscriptions").select("status, current_period_end, cancel_at_period_end")
+        .eq("user_id", session.user.id).eq("environment", env).order("created_at", { ascending: false }).limit(1).maybeSingle(),
+    ]);
+    const plusExp = plan?.plus_expires_at ?? null;
+    const legacy = plan?.plan === "plus" && !!plusExp && new Date(plusExp) > new Date();
+    const end = sub?.current_period_end ?? null;
+    const isPro = !!sub && ["active", "trialing", "past_due"].includes(sub.status) && (!end || new Date(end) > new Date());
+    setS({ loading: false, signedIn: true, isPlus: legacy || isPro, isPro, hasSubscription: !!sub,
+      cancelAtPeriodEnd: !!sub?.cancel_at_period_end, expiresAt: isPro ? end : plusExp });
   }, []);
   useEffect(() => { void load(); }, [load]);
   return { ...s, refresh: () => void load() };
