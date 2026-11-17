@@ -28,7 +28,7 @@ function ProductLibrary() {
   const [open, setOpen] = useState(false);
   const [compare, setCompare] = useState<string[]>([]);
   const [comparing, setComparing] = useState(false);
-  function update(patch: Partial<typeof defaults>) { void navigate({ search: prev => ({ ...prev, ...patch, page: patch.page ?? 1 }), replace: true }); }
+  function update(patch: Partial<typeof defaults>) { void navigate({ to: '/products', search: { ...filters, ...patch, page: patch.page ?? 1 }, replace: true }); }
   const options = (key: 'brand' | 'coverage' | 'finish') => [...new Set(products.map(p => p[key]).filter(Boolean))].sort();
   const ranked = filters.view === 'all' ? [...products] : rankCatalog(products, preferences);
   const found = ranked.filter(p => {
