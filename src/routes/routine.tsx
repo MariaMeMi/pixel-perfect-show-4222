@@ -9,7 +9,7 @@ import { submitEmail } from "@/lib/experiment.functions";
 import { track } from "@/lib/experiment";
 import { useI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { PREFERENCES_KEY } from "@/lib/products/catalog";
+import { PREFERENCES_KEY, catalogSearchDefaults } from "@/lib/products/catalog";
 import {
   QUESTIONS, buildPlan, budgetTier, emptyAnswers, pickProducts, shopUrl, tierLabel,
   type Answers, type Plan, type Product, type Step,
@@ -168,7 +168,7 @@ export function PlanView({ plan, products, budget, chosen, setChosen }: { plan: 
 
     <RoutineList title="Your morning routine" steps={plan.am} products={products} plan={plan} budget={budget} chosen={chosen} setChosen={setChosen} />
     <RoutineList title="Your evening routine" steps={plan.pm} products={products} plan={plan} budget={budget} chosen={chosen} setChosen={setChosen} />
-    <Button asChild className="h-auto w-full whitespace-normal py-4"><Link to="/products" search={{}}>Explore All Products</Link></Button>
+    <Button asChild className="h-auto w-full whitespace-normal py-4"><Link to="/products" search={catalogSearchDefaults}>Explore All Products</Link></Button>
 
     {plan.hydrateFirst && <section className="surface p-5"><p className="eyebrow">Add anti-aging step</p><p className="mt-1 text-sm text-muted-foreground">Once your skin feels comfortable for a few weeks, you can explore adding one gentle anti-aging product — see Advanced / Optional below.</p></section>}
 

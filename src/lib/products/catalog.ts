@@ -6,6 +6,7 @@ export type Preferences = { tags: string[]; budget: number; sensitive: boolean; 
 export const noPreferences: Preferences = { tags: [], budget: 0, sensitive: false, rescue: false, urgent: false };
 export const FAVORITES_KEY = 'rose.products.favorites.v1';
 export const PREFERENCES_KEY = 'rose.products.preferences.v1';
+export const catalogSearchDefaults = { view: 'recommended', q: '', category: '', skin: '', concern: '', brand: '', min: '', max: '', fragrance: false, spf: '', coverage: '', finish: '', sort: 'match', favorites: false, page: 1 };
 export const categoryNames = ['Cleansers', 'Toners & Essences', 'Serums', 'Moisturizers & Barrier Creams', 'Masks & Treatments', 'Sunscreen / SPF', 'Foundations', 'BB & CC Creams', 'Cushions', 'Tinted SPF'];
 export function categoryName(p: Pick<CatalogProduct, 'category' | 'subcategory'>) {
   if (p.category === 'complexion') {

@@ -9,6 +9,7 @@ import { FaceMap } from "@/components/FaceMap";
 import { FaceLines } from "@/components/FaceLines";
 import { ScoreRing } from "@/components/ScoreRing";
 import { Button } from "@/components/ui/button";
+import { catalogSearchDefaults } from "@/lib/products/catalog";
 import { track } from "@/lib/experiment";
 import { EmailGate } from "@/components/EmailGate";
 import { RESUME_KEY, SaveDay1 } from "@/components/onboarding/SaveDay1";
@@ -320,7 +321,7 @@ function Onboarding() {
       </section>}
       <div className="mt-6 flex flex-col gap-2">
          <Button type="button" onClick={() => navigate({ to: "/routine" })} className="h-auto w-full rounded-full gradient-rose py-4 text-sm text-primary-foreground">Build My Routine</Button>
-         <Button asChild variant="outline" className="h-auto w-full py-4"><Link to="/products" search={{}}>Explore All Products</Link></Button>
+         <Button asChild variant="outline" className="h-auto w-full py-4"><Link to="/products" search={catalogSearchDefaults}>Explore All Products</Link></Button>
          <Button type="button" variant="outline" onClick={() => navigate({ to: "/progress" })} className="h-auto w-full rounded-full py-3.5 text-sm">Start my skin timeline</Button>
          <Button type="button" variant="outline" onClick={() => navigate({ to: "/community" })} className="h-auto w-full rounded-full py-3.5 text-sm"><Users className="mr-1.5 h-4 w-4" />Meet others with rosacea</Button>
          <Button type="button" variant="ghost" onClick={() => navigate({ to: "/profile" })} className="h-auto w-full rounded-full py-3.5 text-sm">Edit my profile</Button>
