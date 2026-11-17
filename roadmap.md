@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Apply revised tagline “Your everyday companion for rosacea and sensitive skin.” and verify Welcome/Home at phone and desktop widths.
+- [x] Apply revised tagline “Your everyday companion for rosacea and sensitive skin.”; Welcome/Home verified at phone and desktop widths in EN/DE/RU, with guest continuation to onboarding checked.
 - [x] Add verified product library linked from skin/onboarding/routine results: all 46 public products queried in bounded database pages, preference ranking reuses routine scoring, filters/details/device favorites/comparison and EN/DE/RU mobile views browser-tested; routine-to-library flow and 12 rule tests pass. Existing recommendations and records preserved; missing product data stays unfilled.
 - [x] Shorten consumer onboarding to goals and essential follow-ups before the photo; photo, signup, email and results steps preserved. Four rule tests pass; mobile guest redness and all-goals paths verified through the photo screen.
 - [x] Fix customer/clinician dashboard routing with is_clinician() permission checks and explicit skin-workspace Home navigation; browser-tested customer Home/login and direct clinician URL denial, clinician dashboard and skin return; customer Data API reads return no private records, all clinician tables have RLS enabled, and 22 clinician/navigation tests pass.
