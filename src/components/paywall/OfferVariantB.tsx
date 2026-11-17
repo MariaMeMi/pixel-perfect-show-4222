@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { track, type Experience } from "@/lib/experiment";
 
 const KEY = "rose.paywall.variant";
+const AT = "rose.paywall.assignedAt";
+const D7 = "rose.paywall.d7";
 
 /** Sticky 50/50 assignment for the English paywall test. Returns "A" (control) or "B" (offer). */
 export function paywallVariant(): "A" | "B" {
@@ -13,11 +15,23 @@ export function paywallVariant(): "A" | "B" {
     if (v !== "A" && v !== "B") {
       v = Math.random() < 0.5 ? "A" : "B";
       localStorage.setItem(KEY, v);
+      localStorage.setItem(AT, String(Date.now()));
     }
     return v as "A" | "B";
   } catch {
     return "A";
   }
+}
+
+/** Fires once when someone in the test returns 7+ days after their group was assigned. */
+export function trackPaywallReturn() {
+  try {
+    const v = localStorage.getItem(KEY), at = Number(localStorage.getItem(AT));
+    if ((v !== "A" && v !== "B") || !at || localStorage.getItem(D7)) return;
+    if (Date.now() - at < 7 * 864e5) return;
+    localStorage.setItem(D7, "1");
+    track(v === "B" ? "paywall_b_d7_return" : "paywall_a_d7_return", "onboarding");
+  } catch { /* analytics never breaks the app */ }
 }
 
 const FEATURES = [
@@ -82,7 +96,10 @@ export function OfferVariantB({ experience, preview, onContinue }: {
             ? "One-time purchase of this full analysis. You won't be charged again and nothing renews."
             : `Subscription renews automatically at ${plan === "monthly" ? "$19.99 per month" : "$99.99 per year"} until you cancel. Cancel anytime before the renewal date to avoid being charged for the next period. Prices in USD; taxes may apply.`}
         </p>
-        <Button className="mt-4 w-full" size="lg" onClick={choose}>
+        <p className="mt-4 rounded-xl border border-border bg-secondary/60 p-3 text-xs font-semibold text-secondary-foreground">
+          Early preview: Rosea.AI Pro isn't on sale yet. Tapping below only tells us you're interested — you won't be asked to pay or charged.
+        </p>
+        <Button className="mt-3 w-full" size="lg" onClick={choose}>
           {plan === "onetime" ? "Get full analysis · $1.99" : `Start Pro ${plan === "monthly" ? "Monthly" : "Yearly"}`}
         </Button>
         {noted && <p role="status" className="mt-3 rounded-xl bg-secondary p-3 text-sm text-secondary-foreground">
@@ -90,7 +107,7 @@ export function OfferVariantB({ experience, preview, onContinue }: {
         </p>}
       </section>
 
-      <Button variant="ghost" className="mt-4 w-full" onClick={() => { track("paywall_b_dismissed", experience); onContinue(); }}>
+      <Button variant="ghost" className="mt-4 w-full" onClick={() => { track("paywall_b_dismissed", experience); track("offer_to_results_completed", experience); onContinue(); }}>
         <X className="mr-1 h-4 w-4" /> Continue with free results
       </Button>
     </div>
