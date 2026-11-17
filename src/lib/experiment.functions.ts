@@ -53,6 +53,12 @@ export const EVENTS = [
   "affiliate_clicked",
   "routine_saved",
   "results_emailed",
+  "paywall_a_assigned",
+  "paywall_b_viewed",
+  "paywall_b_monthly_clicked",
+  "paywall_b_yearly_clicked",
+  "paywall_b_onetime_clicked",
+  "paywall_b_dismissed",
 ] as const;
 
 export const trackEvent = createServerFn({ method: "POST" })
