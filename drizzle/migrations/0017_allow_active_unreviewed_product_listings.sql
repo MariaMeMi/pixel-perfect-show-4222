@@ -1,0 +1,1 @@
+ALTER POLICY "Active verified products are public" ON public.products USING (active AND verification_status IN ('verified', 'pending'));

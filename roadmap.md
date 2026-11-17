@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Show all 61 pending skincare/makeup listings without research or false verification; all 107 appear in All Products, unchecked labels/details verified on phone, seven catalog tests pass; existing 46-product recommendation set retained.
 - [x] Apply revised tagline “Your everyday companion for rosacea and sensitive skin.”; Welcome/Home verified at phone and desktop widths in EN/DE/RU, with guest continuation to onboarding checked.
 - [x] Add verified product library linked from skin/onboarding/routine results: all 46 public products queried in bounded database pages, preference ranking reuses routine scoring, filters/details/device favorites/comparison and EN/DE/RU mobile views browser-tested; routine-to-library flow and 12 rule tests pass. Existing recommendations and records preserved; missing product data stays unfilled.
 - [x] Shorten consumer onboarding to goals and essential follow-ups before the photo; photo, signup, email and results steps preserved. Four rule tests pass; mobile guest redness and all-goals paths verified through the photo screen.

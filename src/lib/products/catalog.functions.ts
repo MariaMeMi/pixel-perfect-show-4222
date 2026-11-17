@@ -15,7 +15,7 @@ export const getCatalog = createServerFn({ method: 'GET' }).handler(async () => 
   } } });
   const products: CatalogProduct[] = [];
   for (let start = 0; ; start += 100) {
-    const { data, error } = await db.from('products').select('*').eq('active', true).eq('verification_status', 'verified').order('id').range(start, start + 99);
+    const { data, error } = await db.from('products').select('*').eq('active', true).in('verification_status', ['verified', 'pending']).order('id').range(start, start + 99);
     if (error) throw new Error('Could not load products. Please try again.');
     products.push(...(data ?? []));
     if (!data || data.length < 100) break;

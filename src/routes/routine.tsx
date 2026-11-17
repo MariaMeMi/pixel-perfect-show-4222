@@ -36,7 +36,7 @@ export const DISCLAIMER = "Rose AI provides general skincare information and pro
 export function useProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   useEffect(() => {
-    supabase.from("products" as never).select("*").eq("active", true).then(({ data }) => setProducts((data ?? []) as unknown as Product[]));
+    supabase.from("products" as never).select("*").eq("active", true).eq("verification_status", "verified").then(({ data }) => setProducts((data ?? []) as unknown as Product[]));
   }, []);
   return products;
 }

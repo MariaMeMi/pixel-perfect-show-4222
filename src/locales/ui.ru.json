@@ -1381,5 +1381,9 @@
   "Discover products suited to your skin's needs": "Средства, которые подходят именно вашей коже",
   "💄 Find my skincare & makeup": "💄 Подобрать уход и макияж",
   "Answer a few quick questions and we'll match skincare and optional makeup to your skin's needs.": "Ответьте на несколько коротких вопросов — и мы подберём уход и, по желанию, макияж под потребности вашей кожи.",
-  "See my product matches": "Посмотреть подобранные средства"
+  "See my product matches": "Посмотреть подобранные средства",
+  "Details not checked": "Данные не проверены",
+  "Unreviewed listings are marked “Details not checked”. Their suitability has not been confirmed.": "Непроверенные средства отмечены «Данные не проверены». Их совместимость с потребностями кожи не подтверждена.",
+  "This product is not in the public catalog.": "Этого средства нет в открытом каталоге.",
+  "products": "средств"
 }
