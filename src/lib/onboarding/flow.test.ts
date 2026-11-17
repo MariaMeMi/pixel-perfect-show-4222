@@ -27,3 +27,14 @@ describe("short onboarding", () => {
     });
   });
 });
+import { GOALS, wantsProducts } from "./flow";
+describe("skincare & makeup goal", () => {
+  it("is the sixth goal, after Overall skin progress", () => {
+    expect(GOALS.map((g) => g.key)).toEqual(["redness", "dryness", "lines", "botox", "overall", "products"]);
+  });
+  it("can be chosen alongside other goals and adds no extra questions", () => {
+    const d = { ...emptyData(), goals: ["redness", "products"] as GoalKey[] };
+    expect(wantsProducts(d)).toBe(true);
+    expect(buildSteps(d)).toEqual(buildSteps({ ...emptyData(), goals: ["redness"] }));
+  });
+});
