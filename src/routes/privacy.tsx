@@ -17,7 +17,7 @@ export const Route = createFileRoute("/privacy")({
 const SECTIONS: [string, string][] = [
   [
     "Photos",
-    "Your photos are sent securely to our AI provider only to create your reading and are not stored on our servers. If you choose, a copy is kept on this device only (you can turn this off or delete photos anytime in Profile). Botox AI photos are never kept after the reading, except diary photos you add yourself, which stay on this device.",
+    "Your photos are sent securely to our AI provider only to create your reading and are not stored on our servers — unless you tick “Allow Rose AI to store my photo” during your skin check, in which case it is kept privately and you can delete it anytime in Profile. If you choose, a copy is also kept on this device (you can turn this off or delete photos anytime in Profile). Botox AI photos are never kept after the reading, except diary photos you add yourself, which stay on this device.",
   ],
   [
     "Results and check-ins",

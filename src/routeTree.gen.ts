@@ -31,12 +31,14 @@ import { Route as AuthenticatedClinicianRouteRouteImport } from './routes/_authe
 import { Route as ApiAnalyzeRouteImport } from './routes/api/analyze'
 import { Route as ApiBotoxRouteImport } from './routes/api/botox'
 import { Route as ApiRosieChatRouteImport } from './routes/api/rosie-chat'
+import { Route as ApiSkinPhotoRouteImport } from './routes/api/skin-photo'
 import { Route as ClinicianOnboardingRouteImport } from './routes/clinician.onboarding'
 import { Route as CommunityIndexRouteImport } from './routes/community.index'
 import { Route as CommunityGuidelinesRouteImport } from './routes/community.guidelines'
 import { Route as CommunityModerationRouteImport } from './routes/community.moderation'
 import { Route as CommunityNewRouteImport } from './routes/community.new'
 import { Route as ProductsIdRouteImport } from './routes/products_.$id'
+import { Route as AuthenticatedAdminPhotosRouteImport } from './routes/_authenticated/admin.photos'
 import { Route as AuthenticatedClinicianCasesRouteImport } from './routes/_authenticated/clinician/cases'
 import { Route as AuthenticatedClinicianDashboardRouteImport } from './routes/_authenticated/clinician/dashboard'
 import { Route as AuthenticatedClinicianPatientsRouteImport } from './routes/_authenticated/clinician/patients'
@@ -167,6 +169,11 @@ const ApiRosieChatRoute = ApiRosieChatRouteImport.update({
   path: '/api/rosie-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSkinPhotoRoute = ApiSkinPhotoRouteImport.update({
+  id: '/api/skin-photo',
+  path: '/api/skin-photo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ClinicianOnboardingRoute = ClinicianOnboardingRouteImport.update({
   id: '/clinician/onboarding',
   path: '/clinician/onboarding',
@@ -197,6 +204,12 @@ const ProductsIdRoute = ProductsIdRouteImport.update({
   path: '/products/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminPhotosRoute =
+  AuthenticatedAdminPhotosRouteImport.update({
+    id: '/admin/photos',
+    path: '/admin/photos',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedClinicianCasesRoute =
   AuthenticatedClinicianCasesRouteImport.update({
     id: '/cases',
@@ -327,12 +340,14 @@ export interface FileRoutesByFullPath {
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
+  '/api/skin-photo': typeof ApiSkinPhotoRoute
   '/clinician/onboarding': typeof ClinicianOnboardingRoute
   '/community/guidelines': typeof CommunityGuidelinesRoute
   '/community/moderation': typeof CommunityModerationRoute
   '/community/new': typeof CommunityNewRoute
   '/products/$id': typeof ProductsIdRoute
   '/community/': typeof CommunityIndexRoute
+  '/admin/photos': typeof AuthenticatedAdminPhotosRoute
   '/clinician/cases': typeof AuthenticatedClinicianCasesRoute
   '/clinician/dashboard': typeof AuthenticatedClinicianDashboardRoute
   '/clinician/patients': typeof AuthenticatedClinicianPatientsRoute
@@ -375,12 +390,14 @@ export interface FileRoutesByTo {
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
+  '/api/skin-photo': typeof ApiSkinPhotoRoute
   '/clinician/onboarding': typeof ClinicianOnboardingRoute
   '/community/guidelines': typeof CommunityGuidelinesRoute
   '/community/moderation': typeof CommunityModerationRoute
   '/community/new': typeof CommunityNewRoute
   '/products/$id': typeof ProductsIdRoute
   '/community': typeof CommunityIndexRoute
+  '/admin/photos': typeof AuthenticatedAdminPhotosRoute
   '/clinician/cases': typeof AuthenticatedClinicianCasesRoute
   '/clinician/dashboard': typeof AuthenticatedClinicianDashboardRoute
   '/clinician/patients': typeof AuthenticatedClinicianPatientsRoute
@@ -425,12 +442,14 @@ export interface FileRoutesById {
   '/api/analyze': typeof ApiAnalyzeRoute
   '/api/botox': typeof ApiBotoxRoute
   '/api/rosie-chat': typeof ApiRosieChatRoute
+  '/api/skin-photo': typeof ApiSkinPhotoRoute
   '/clinician/onboarding': typeof ClinicianOnboardingRoute
   '/community/guidelines': typeof CommunityGuidelinesRoute
   '/community/moderation': typeof CommunityModerationRoute
   '/community/new': typeof CommunityNewRoute
   '/products_/$id': typeof ProductsIdRoute
   '/community/': typeof CommunityIndexRoute
+  '/_authenticated/admin/photos': typeof AuthenticatedAdminPhotosRoute
   '/_authenticated/clinician/cases': typeof AuthenticatedClinicianCasesRoute
   '/_authenticated/clinician/dashboard': typeof AuthenticatedClinicianDashboardRoute
   '/_authenticated/clinician/patients': typeof AuthenticatedClinicianPatientsRoute
@@ -475,12 +494,14 @@ export interface FileRouteTypes {
     | '/api/analyze'
     | '/api/botox'
     | '/api/rosie-chat'
+    | '/api/skin-photo'
     | '/clinician/onboarding'
     | '/community/guidelines'
     | '/community/moderation'
     | '/community/new'
     | '/products/$id'
     | '/community/'
+    | '/admin/photos'
     | '/clinician/cases'
     | '/clinician/dashboard'
     | '/clinician/patients'
@@ -523,12 +544,14 @@ export interface FileRouteTypes {
     | '/api/analyze'
     | '/api/botox'
     | '/api/rosie-chat'
+    | '/api/skin-photo'
     | '/clinician/onboarding'
     | '/community/guidelines'
     | '/community/moderation'
     | '/community/new'
     | '/products/$id'
     | '/community'
+    | '/admin/photos'
     | '/clinician/cases'
     | '/clinician/dashboard'
     | '/clinician/patients'
@@ -572,12 +595,14 @@ export interface FileRouteTypes {
     | '/api/analyze'
     | '/api/botox'
     | '/api/rosie-chat'
+    | '/api/skin-photo'
     | '/clinician/onboarding'
     | '/community/guidelines'
     | '/community/moderation'
     | '/community/new'
     | '/products_/$id'
     | '/community/'
+    | '/_authenticated/admin/photos'
     | '/_authenticated/clinician/cases'
     | '/_authenticated/clinician/dashboard'
     | '/_authenticated/clinician/patients'
@@ -621,6 +646,7 @@ export interface RootRouteChildren {
   ApiAnalyzeRoute: typeof ApiAnalyzeRoute
   ApiBotoxRoute: typeof ApiBotoxRoute
   ApiRosieChatRoute: typeof ApiRosieChatRoute
+  ApiSkinPhotoRoute: typeof ApiSkinPhotoRoute
   ClinicianOnboardingRoute: typeof ClinicianOnboardingRoute
   CommunityGuidelinesRoute: typeof CommunityGuidelinesRoute
   CommunityModerationRoute: typeof CommunityModerationRoute
@@ -795,6 +821,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiRosieChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/skin-photo': {
+      id: '/api/skin-photo'
+      path: '/api/skin-photo'
+      fullPath: '/api/skin-photo'
+      preLoaderRoute: typeof ApiSkinPhotoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/clinician/onboarding': {
       id: '/clinician/onboarding'
       path: '/clinician/onboarding'
@@ -836,6 +869,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/products/$id'
       preLoaderRoute: typeof ProductsIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin/photos': {
+      id: '/_authenticated/admin/photos'
+      path: '/admin/photos'
+      fullPath: '/admin/photos'
+      preLoaderRoute: typeof AuthenticatedAdminPhotosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/clinician/cases': {
       id: '/_authenticated/clinician/cases'
@@ -1004,12 +1044,14 @@ const AuthenticatedClinicianRouteRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedClinicianRouteRoute: typeof AuthenticatedClinicianRouteRouteWithChildren
+  AuthenticatedAdminPhotosRoute: typeof AuthenticatedAdminPhotosRoute
   AuthenticatedHairAdminRoute: typeof AuthenticatedHairAdminRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedClinicianRouteRoute:
     AuthenticatedClinicianRouteRouteWithChildren,
+  AuthenticatedAdminPhotosRoute: AuthenticatedAdminPhotosRoute,
   AuthenticatedHairAdminRoute: AuthenticatedHairAdminRoute,
 }
 
@@ -1038,6 +1080,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAnalyzeRoute: ApiAnalyzeRoute,
   ApiBotoxRoute: ApiBotoxRoute,
   ApiRosieChatRoute: ApiRosieChatRoute,
+  ApiSkinPhotoRoute: ApiSkinPhotoRoute,
   ClinicianOnboardingRoute: ClinicianOnboardingRoute,
   CommunityGuidelinesRoute: CommunityGuidelinesRoute,
   CommunityModerationRoute: CommunityModerationRoute,

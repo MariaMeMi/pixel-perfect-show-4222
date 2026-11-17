@@ -264,7 +264,6 @@
   "← Home": "← Главная",
   "Privacy Policy — Rose AI": "Политика конфиденциальности — Rose AI",
   "How Rose AI handles your photos, email address and skin data.": "Как Rose AI обрабатывает ваши фотографии, адрес электронной почты и данные о коже.",
-  "Your photos are sent securely to our AI provider only to create your reading and are not stored on our servers. If you choose, a copy is kept on this device only (you can turn this off or delete photos anytime in Profile). Botox AI photos are never kept after the reading, except diary photos you add yourself, which stay on this device.": "Ваши фото безопасно передаются нашему ИИ-провайдеру только для проведения анализа и не сохраняются на наших серверах. По вашему желанию копия может сохраняться только на этом устройстве (вы можете отключить это или удалить фото в любой момент в Профиле). Фотографии для Botox AI никогда не сохраняются после анализа, за исключением фотографий для дневника, которые вы добавляете сами — они остаются на этом устройстве.",
   "Results and check-ins": "Результаты и наблюдения",
   "Your readings, check-ins and history are stored only on this device. We do not upload them to our servers.": "Ваши результаты, записи наблюдений и история хранятся только на этом устройстве. Мы не загружаем их на наши серверы.",
   "Email address": "Адрес электронной почты",
@@ -1381,5 +1380,8 @@
   "Unreviewed listings are marked “Details not checked”. Their suitability has not been confirmed.": "Непроверенные средства отмечены «Данные не проверены». Их совместимость с потребностями кожи не подтверждена.",
   "This product is not in the public catalog.": "Этого средства нет в открытом каталоге.",
   "products": "средств",
-  "You've reached today's limit. Please try again tomorrow — your baseline photo is still saved.": "Вы достигли дневного лимита. Попробуйте снова завтра — ваше исходное фото сохранено."
+  "You've reached today's limit. Please try again tomorrow — your baseline photo is still saved.": "Вы достигли дневного лимита. Попробуйте снова завтра — ваше исходное фото сохранено.",
+  "Allow Rose AI to store my photo to improve my results.": "Разрешить Rose AI сохранить моё фото, чтобы улучшать результаты.",
+  "Optional. Stored privately; you can delete it anytime in Profile.": "Необязательно. Хранится конфиденциально; удалить можно в любой момент в Профиле.",
+  "Your photos are sent securely to our AI provider only to create your reading and are not stored on our servers — unless you tick “Allow Rose AI to store my photo” during your skin check, in which case it is kept privately and you can delete it anytime in Profile. If you choose, a copy is also kept on this device (you can turn this off or delete photos anytime in Profile). Botox AI photos are never kept after the reading, except diary photos you add yourself, which stay on this device.": "Ваши фото надёжно отправляются нашему ИИ-провайдеру только для анализа и не хранятся на наших серверах — если только вы не отметите «Разрешить Rose AI сохранить моё фото» при проверке кожи; тогда оно хранится конфиденциально, и его можно удалить в любой момент в Профиле. По желанию копия также хранится на этом устройстве (это можно отключить или удалить фото в Профиле). Фото Botox AI не сохраняются после анализа, кроме фото дневника, которые вы добавляете сами и которые остаются на этом устройстве."
 }

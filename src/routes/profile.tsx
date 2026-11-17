@@ -9,6 +9,7 @@ import { plusOnSale } from "@/lib/plus-sale";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { deleteAccount } from "@/lib/account.functions";
+import { deviceKey } from "@/lib/device-key";
 import { clearHistory, deleteAllPhotos, defaultProfile, loadProfile, saveProfile } from "@/lib/storage";
 import type { Profile, TriggerKey } from "@/lib/types";
 
@@ -262,6 +263,12 @@ function ProfilePage() {
           onClick={() => {
             if (window.confirm(t("profile.confirmPhotos"))) {
               deleteAllPhotos();
+              void (async () => {
+                const { data } = await supabase.auth.getSession();
+                const headers: Record<string, string> = { "Content-Type": "application/json" };
+                if (data.session) headers["Authorization"] = `Bearer ${data.session.access_token}`;
+                await fetch("/api/skin-photo", { method: "DELETE", headers, body: JSON.stringify({ deviceKey: deviceKey() }) }).catch(() => undefined);
+              })();
               toast.success(t("profile.saved"));
             }
           }}

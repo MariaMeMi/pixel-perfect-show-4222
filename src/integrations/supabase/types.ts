@@ -1637,6 +1637,39 @@ export type Database = {
         }
         Relationships: []
       }
+      skin_photos: {
+        Row: {
+          created_at: string
+          device_hash: string
+          id: string
+          lang: string
+          path: string
+          score: number | null
+          summary: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          device_hash: string
+          id?: string
+          lang?: string
+          path: string
+          score?: number | null
+          summary?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          device_hash?: string
+          id?: string
+          lang?: string
+          path?: string
+          score?: number | null
+          summary?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean

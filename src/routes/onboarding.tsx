@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { catalogSearchDefaults } from "@/lib/products/catalog";
 import { track } from "@/lib/experiment";
 import { EmailGate } from "@/components/EmailGate";
+import { deviceKey } from "@/lib/device-key";
 import { ProOffer } from "@/components/paywall/ProOffer";
 import { useUnlockAnalysis } from "@/hooks/useUnlockAnalysis";
 import { usePlus } from "@/hooks/usePlus";
@@ -68,6 +69,7 @@ function Onboarding() {
   const [linePending, setLinePending] = useState(false);
   const [limitHit, setLimitHit] = useState(false);
   const [acctEmail, setAcctEmail] = useState<string>();
+  const [sharePhoto, setSharePhoto] = useState(false);
   const tracked = useRef(new Set<string>());
   const set = (p: Partial<OnboardingData>) => setD((x) => ({ ...x, ...p }));
   const once = (e: Parameters<typeof track>[0]) => { if (!tracked.current.has(e)) { tracked.current.add(e); track(e, "onboarding"); } };
@@ -169,6 +171,7 @@ function Onboarding() {
         track("baseline_photo_analysis_completed", "onboarding");
         track("analysis_completed", "redness");
         setRedRes(a as Analysis);
+        if (sharePhoto) void fetch("/api/skin-photo", { method: "POST", headers, body: JSON.stringify({ consent: true, image: photo, deviceKey: deviceKey(), score: a.score, summary: a.summary, lang }) }).catch(() => undefined);
         entryId = `baseline-${Date.now()}`;
         addEntry({ id: entryId, date, analysis: a as Analysis, photo: retainPhotos ? photo : undefined, feeling: undefined, triggers: [] });
       } else if (res.status === 429) { setLimitHit(true); toast.error("You've reached today's limit. Please try again tomorrow."); }
@@ -284,6 +287,10 @@ function Onboarding() {
     valid = !!photo;
     body = <Question title="Let's create your baseline 📸" hint="Your first photo gives Rose AI a starting point for comparing visible changes over time.">
       <BaselineCapture photo={photo} retainPhotos={retainPhotos} onStart={() => once("baseline_photo_started")} onPhoto={(u) => { setPhoto(u); once("baseline_photo_uploaded"); }} />
+      <label className="mt-5 flex items-start gap-3 rounded-2xl border border-border bg-card p-4 text-sm text-secondary-foreground">
+        <input type="checkbox" checked={sharePhoto} onChange={(e) => setSharePhoto(e.target.checked)} className="mt-0.5 h-5 w-5 shrink-0 accent-[oklch(0.63_0.13_16)]" />
+        <span>Allow Rose AI to store my photo to improve my results. <span className="text-muted-foreground">Optional. Stored privately; you can delete it anytime in Profile.</span></span>
+      </label>
     </Question>;
   } else if (step === "signup") {
     body = <SaveDay1
