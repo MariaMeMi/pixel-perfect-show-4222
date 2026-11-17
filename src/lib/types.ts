@@ -25,6 +25,9 @@ export type Analysis = {
   observations: string[];
   contributors: string[];
   tips: string[];
+  /** Set when the server withheld the paid part; resultId unlocks it after verified payment. */
+  locked?: boolean;
+  resultId?: string;
 };
 
 export type Entry = {

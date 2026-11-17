@@ -155,7 +155,23 @@ export const Route = createFileRoute("/api/analyze")({
         }
 
         try {
-          const parsed = JSON.parse(text);
+          const parsed = JSON.parse(text) as Record<string, unknown>;
+          // English results beyond the free preview are paid: withhold them unless the caller has verified paid access.
+          if (lang === "en") {
+            const { stripeEnvForHost, userHasPaidAccess, previewOf } = await import("@/lib/pro/paid-access.server");
+            const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+            const auth = request.headers.get("Authorization");
+            let paid = false;
+            if (auth?.startsWith("Bearer ")) {
+              const { data } = await supabaseAdmin.auth.getUser(auth.slice(7));
+              if (data.user) paid = await userHasPaidAccess(data.user.id, stripeEnvForHost(new URL(request.url).host));
+            }
+            if (!paid) {
+              const { data: row, error } = await supabaseAdmin.from("locked_analyses").insert({ kind: "redness", result: parsed as never }).select("id").single();
+              if (error || !row) return Response.json({ error: "The analysis service is unavailable right now." }, { status: 502 });
+              return Response.json({ ...previewOf(parsed), resultId: row.id });
+            }
+          }
           return Response.json(parsed);
         } catch {
           return Response.json({ error: "The analysis came back unreadable." }, { status: 502 });

@@ -1463,6 +1463,27 @@ export type Database = {
         }
         Relationships: []
       }
+      locked_analyses: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          result: Json
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind?: string
+          result: Json
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          result?: Json
+        }
+        Relationships: []
+      }
       payment_events: {
         Row: {
           amount_cents: number

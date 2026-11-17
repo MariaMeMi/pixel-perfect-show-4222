@@ -134,6 +134,13 @@
       "when": 1794917790005,
       "tag": "0018_pro_subscriptions",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1794934516813,
+      "tag": "0019_locked_analyses",
+      "breakpoints": true
     }
   ]
 }

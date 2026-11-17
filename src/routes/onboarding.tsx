@@ -13,6 +13,7 @@ import { catalogSearchDefaults } from "@/lib/products/catalog";
 import { track } from "@/lib/experiment";
 import { EmailGate } from "@/components/EmailGate";
 import { ProOffer } from "@/components/paywall/ProOffer";
+import { useUnlockAnalysis } from "@/hooks/useUnlockAnalysis";
 import { usePlus } from "@/hooks/usePlus";
 import { pricingGroup } from "@/lib/pro/pricing";
 
@@ -105,6 +106,10 @@ function Onboarding() {
     } catch { /* ignore */ }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const { unlocking } = useUnlockAnalysis(redRes, lang === "en" && plan.isPro, (full) => {
+    setRedRes(full);
+    try { const raw = sessionStorage.getItem(PAYWALL_KEY); if (raw) sessionStorage.setItem(PAYWALL_KEY, JSON.stringify({ ...JSON.parse(raw), redRes: full })); } catch { /* ignore */ }
+  });
   const fullShown = useRef(false);
   useEffect(() => {
     if (step !== "profile" || lang !== "en" || !plan.isPro || fullShown.current || !(redRes || lineRes)) return;
@@ -302,7 +307,7 @@ function Onboarding() {
       setI(steps.indexOf("profile"));
     }}
       results={redRes ? { score: redRes.score, summary: redRes.summary, ...(lang === "en" ? {} : { points: [...(redRes.observations ?? []), ...(redRes.tips ?? [])] }) } : lineRes ? { summary: lineRes.summary } : undefined} />;
-  } else if (step === "profile" && lang === "en" && plan.loading) {
+  } else if (step === "profile" && lang === "en" && (plan.loading || unlocking)) {
     body = <p className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Loading…</p>;
   } else if (step === "profile" && paywalled && (redRes || lineRes)) {
     const exp = d.goals.includes("redness") || !(wantsBotox(d) || d.goals.includes("lines")) ? "redness" : "botox_information";

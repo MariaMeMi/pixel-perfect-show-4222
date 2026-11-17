@@ -13,6 +13,7 @@ import type { Analysis, Entry, FeelingKey, TriggerKey } from "@/lib/types";
 import { EmailGate } from "@/components/EmailGate";
 import { hasProvidedEmail, noteReferredCheckin, track } from "@/lib/experiment";
 import { ProOffer } from "@/components/paywall/ProOffer";
+import { useUnlockAnalysis } from "@/hooks/useUnlockAnalysis";
 import { usePlus } from "@/hooks/usePlus";
 import { pricingGroup } from "@/lib/pro/pricing";
 
@@ -88,6 +89,14 @@ function ResultsPage() {
       track(pricingGroup() === "low" ? "pricing_low_full_results_viewed" : "pricing_premium_full_results_viewed", "redness");
   }, [gated, pending, lang, plan.isPro]);
 
+  const { unlocking } = useUnlockAnalysis(pending?.analysis, lang === "en" && plan.isPro, (full) => {
+    setPending((p) => {
+      if (!p) return p;
+      const next = { ...p, analysis: full };
+      try { window.sessionStorage.setItem("rosea.pending", JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+  });
   const baseline = useMemo(() => baselineScore(entries), [entries]);
 
   if (!pending || gated === null) return null;
@@ -102,7 +111,7 @@ function ResultsPage() {
         }}
       />
     );
-  if (lang === "en" && plan.loading) return null;
+  if (lang === "en" && (plan.loading || unlocking)) return null;
   if (lang === "en" && !plan.isPro) return (
     <ProOffer experience="redness" back="/results"
       preview={{ score: pending.analysis.score, summary: pending.analysis.summary, point: pending.analysis.observations?.[0] }} />
