@@ -76,7 +76,7 @@ export function BaselineCapture({ photo, retainPhotos, onStart, onPhoto }: { pho
       <div className="surface flex gap-3 p-4 text-xs leading-relaxed text-muted-foreground">
         <Lock className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
         <p>
-          Your photo is used to describe visible redness and to become Day 1 of your personal skin timeline. It is sent once for a reading and not stored on our servers.
+          Your photo is used to describe visible redness and to become Day 1 of your personal skin timeline. It is sent once for a reading and not stored on our servers unless you tick the box below.
           {retainPhotos ? " It stays saved only on this phone" : " Photo saving is off in Profile, so only the reading is kept"}, and you can delete it anytime in Profile → Photo privacy.
         </p>
       </div>
