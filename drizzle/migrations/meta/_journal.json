@@ -127,6 +127,13 @@
       "when": 1794889822232,
       "tag": "0017_allow_active_unreviewed_product_listings",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1794917790005,
+      "tag": "0018_pro_subscriptions",
+      "breakpoints": true
     }
   ]
 }

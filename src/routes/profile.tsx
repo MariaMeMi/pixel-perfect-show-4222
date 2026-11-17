@@ -128,6 +128,13 @@ function ProfilePage() {
         <h1 className="mt-2 text-[2rem] leading-tight text-foreground">{t("profile.title")}</h1>
       </header>
 
+      {lang === "en" && <Link to="/pro" className="surface-lift gradient-dawn flex items-center justify-between p-5">
+        <span>
+          <span className="block text-lg text-foreground">Rosea.AI Pro 🌹</span>
+          <span className="block text-xs text-muted-foreground">Full analysis, progress tracking & insights · Manage subscription</span>
+        </span>
+        <span className="text-sm font-medium text-primary">Open</span>
+      </Link>}
       {plusOnSale(lang) && <Link to="/plus" className="surface-lift gradient-dawn flex items-center justify-between p-5">
         <span>
           <span className="block text-lg text-foreground">Rosea Plus 🌹</span>

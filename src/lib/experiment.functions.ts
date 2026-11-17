@@ -63,6 +63,20 @@ export const EVENTS = [
   "offer_to_results_completed",
   "paywall_a_d7_return",
   "paywall_b_d7_return",
+  "pricing_low_offer_viewed",
+  "pricing_premium_offer_viewed",
+  "pricing_low_monthly_selected",
+  "pricing_low_yearly_selected",
+  "pricing_premium_monthly_selected",
+  "pricing_premium_yearly_selected",
+  "pricing_low_checkout_started",
+  "pricing_premium_checkout_started",
+  "pricing_low_paid",
+  "pricing_premium_paid",
+  "pricing_low_full_results_viewed",
+  "pricing_premium_full_results_viewed",
+  "pricing_low_d7_return",
+  "pricing_premium_d7_return",
 ] as const;
 
 export const trackEvent = createServerFn({ method: "POST" })

@@ -1,6 +1,4 @@
-import type { Lang } from "@/lib/i18n";
-
-/** Rosea Plus purchases are paused for English users while the Pro price test runs. */
-export function plusOnSale(lang: Lang | string): boolean {
-  return lang !== "en";
+/** The old Rosea Plus ($14.99/year) is retired in every language; existing buyers can still restore access. */
+export function plusOnSale(_lang: string): boolean {
+  return false;
 }
