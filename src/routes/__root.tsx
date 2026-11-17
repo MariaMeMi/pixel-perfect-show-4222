@@ -15,6 +15,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { I18nProvider } from "../lib/i18n";
 import { AppShell } from "../components/AppShell";
 import { Toaster } from "../components/ui/sonner";
+import { trackPaywallReturn } from "../components/paywall/OfferVariantB";
 
 function NotFoundComponent() {
   return (
@@ -123,6 +124,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useEffect(() => { trackPaywallReturn(); }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

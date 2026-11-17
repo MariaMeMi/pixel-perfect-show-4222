@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { HeartPulse, ImageOff, Languages, LogOut, RotateCcw, ShieldCheck, Trash2, UserX } from "lucide-react";
 import { toast } from "sonner";
 import { Chip } from "@/components/Chip";
+import { plusOnSale } from "@/lib/plus-sale";
 import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { deleteAccount } from "@/lib/account.functions";
@@ -63,7 +64,7 @@ const inputClass =
   "w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm text-foreground outline-none focus:border-primary/50";
 
 function ProfilePage() {
-  const { t, setLang } = useI18n();
+  const { t, setLang, lang } = useI18n();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const deleteAccountFn = useServerFn(deleteAccount);
@@ -127,13 +128,13 @@ function ProfilePage() {
         <h1 className="mt-2 text-[2rem] leading-tight text-foreground">{t("profile.title")}</h1>
       </header>
 
-      <Link to="/plus" className="surface-lift gradient-dawn flex items-center justify-between p-5">
+      {plusOnSale(lang) && <Link to="/plus" className="surface-lift gradient-dawn flex items-center justify-between p-5">
         <span>
           <span className="block text-lg text-foreground">Rosea Plus 🌹</span>
           <span className="block text-xs text-muted-foreground">Full skin history, comparisons & insights · Restore access</span>
         </span>
         <span className="text-sm font-medium text-primary">$14.99 / 1 year</span>
-      </Link>
+      </Link>}
 
 
       <section className="surface space-y-4 p-5">

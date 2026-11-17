@@ -273,6 +273,7 @@ function Onboarding() {
       if (lang === "en") {
         const v = paywallVariant();
         track(v === "B" ? "paywall_b_viewed" : "paywall_a_assigned", exp);
+        if (v === "A") track("paywall_a_results_completed", exp);
         if (v === "B") setOffer(true);
       }
       setI(steps.indexOf("profile"));
