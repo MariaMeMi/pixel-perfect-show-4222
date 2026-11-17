@@ -17,7 +17,6 @@ import { Route as JoinRouteImport } from './routes/join'
 import { Route as JourneyRouteImport } from './routes/journey'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as MyRoutineRouteImport } from './routes/my-routine'
-import { Route as OfferPreviewTmpRouteImport } from './routes/offer-preview-tmp'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PlusRouteImport } from './routes/plus'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -94,11 +93,6 @@ const LearnRoute = LearnRouteImport.update({
 const MyRoutineRoute = MyRoutineRouteImport.update({
   id: '/my-routine',
   path: '/my-routine',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OfferPreviewTmpRoute = OfferPreviewTmpRouteImport.update({
-  id: '/offer-preview-tmp',
-  path: '/offer-preview-tmp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -313,7 +307,6 @@ export interface FileRoutesByFullPath {
   '/journey': typeof JourneyRoute
   '/learn': typeof LearnRoute
   '/my-routine': typeof MyRoutineRoute
-  '/offer-preview-tmp': typeof OfferPreviewTmpRoute
   '/onboarding': typeof OnboardingRoute
   '/plus': typeof PlusRoute
   '/privacy': typeof PrivacyRoute
@@ -361,7 +354,6 @@ export interface FileRoutesByTo {
   '/journey': typeof JourneyRoute
   '/learn': typeof LearnRoute
   '/my-routine': typeof MyRoutineRoute
-  '/offer-preview-tmp': typeof OfferPreviewTmpRoute
   '/onboarding': typeof OnboardingRoute
   '/plus': typeof PlusRoute
   '/privacy': typeof PrivacyRoute
@@ -411,7 +403,6 @@ export interface FileRoutesById {
   '/journey': typeof JourneyRoute
   '/learn': typeof LearnRoute
   '/my-routine': typeof MyRoutineRoute
-  '/offer-preview-tmp': typeof OfferPreviewTmpRoute
   '/onboarding': typeof OnboardingRoute
   '/plus': typeof PlusRoute
   '/privacy': typeof PrivacyRoute
@@ -461,7 +452,6 @@ export interface FileRouteTypes {
     | '/journey'
     | '/learn'
     | '/my-routine'
-    | '/offer-preview-tmp'
     | '/onboarding'
     | '/plus'
     | '/privacy'
@@ -509,7 +499,6 @@ export interface FileRouteTypes {
     | '/journey'
     | '/learn'
     | '/my-routine'
-    | '/offer-preview-tmp'
     | '/onboarding'
     | '/plus'
     | '/privacy'
@@ -558,7 +547,6 @@ export interface FileRouteTypes {
     | '/journey'
     | '/learn'
     | '/my-routine'
-    | '/offer-preview-tmp'
     | '/onboarding'
     | '/plus'
     | '/privacy'
@@ -608,7 +596,6 @@ export interface RootRouteChildren {
   JourneyRoute: typeof JourneyRoute
   LearnRoute: typeof LearnRoute
   MyRoutineRoute: typeof MyRoutineRoute
-  OfferPreviewTmpRoute: typeof OfferPreviewTmpRoute
   OnboardingRoute: typeof OnboardingRoute
   PlusRoute: typeof PlusRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -695,13 +682,6 @@ declare module '@tanstack/react-router' {
       path: '/my-routine'
       fullPath: '/my-routine'
       preLoaderRoute: typeof MyRoutineRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/offer-preview-tmp': {
-      id: '/offer-preview-tmp'
-      path: '/offer-preview-tmp'
-      fullPath: '/offer-preview-tmp'
-      preLoaderRoute: typeof OfferPreviewTmpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -1025,7 +1005,6 @@ const rootRouteChildren: RootRouteChildren = {
   JourneyRoute: JourneyRoute,
   LearnRoute: LearnRoute,
   MyRoutineRoute: MyRoutineRoute,
-  OfferPreviewTmpRoute: OfferPreviewTmpRoute,
   OnboardingRoute: OnboardingRoute,
   PlusRoute: PlusRoute,
   PrivacyRoute: PrivacyRoute,
