@@ -38,6 +38,15 @@ export type Plan = {
 const has = (a: string[], s: string) => a.includes(s);
 
 export function buildPlan(a: Answers): Plan {
+  const plan = buildCorePlan(a);
+  if (plan.urgent || plan.priority === "BARRIER RESCUE MODE" || !plan.am.length) return plan;
+  return { ...plan, am: [...plan.am, MAKEUP_STEP] };
+}
+
+/** Optional complexion step — always after SPF, never replaces it. */
+export const MAKEUP_STEP: Step = { label: "Makeup (optional)", category: "complexion", optional: true, why: "Optional — if you like coverage, a gentle complexion product goes on after sunscreen. Fragrance-free picks rank first for redness-prone skin. Makeup never replaces your SPF." };
+
+function buildCorePlan(a: Answers): Plan {
   const urgentPicked = a.urgent.filter((u) => u !== "None of these");
   const redness = has(a.help, "Rosacea / redness") || a.diagnosis === "Yes" || ["Red / flushed", "Red AND dry"].includes(a.feel) || a.redness.some((r) => r !== "None");
   const sensitive = has(a.help, "Sensitive / reactive skin") || ["Very sensitive", "Products often sting or burn"].includes(a.sensitivity);
