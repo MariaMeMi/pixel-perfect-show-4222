@@ -11,7 +11,7 @@ import { useI18n } from "@/lib/i18n";
 import { addEntry, baselineScore, loadEntries, loadProfile } from "@/lib/storage";
 import type { Analysis, Entry, FeelingKey, TriggerKey } from "@/lib/types";
 import { EmailGate } from "@/components/EmailGate";
-import { noteReferredCheckin, track } from "@/lib/experiment";
+import { hasProvidedEmail, noteReferredCheckin, track } from "@/lib/experiment";
 import { ProOffer } from "@/components/paywall/ProOffer";
 import { usePlus } from "@/hooks/usePlus";
 import { pricingGroup } from "@/lib/pro/pricing";
@@ -75,8 +75,9 @@ function ResultsPage() {
     }
     setPending(JSON.parse(raw) as Pending);
     setEntries(loadEntries());
-    setGated(true);
-  }, [navigate]);
+    // English users returning from Pro checkout already gave their email for this reading.
+    setGated(!(lang === "en" && hasProvidedEmail()));
+  }, [navigate]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (gated === false && pending) track("results_viewed", "redness");
