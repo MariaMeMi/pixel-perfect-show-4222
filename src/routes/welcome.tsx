@@ -19,7 +19,7 @@ export const Route = createFileRoute("/welcome")({
       { title: "Welcome to Rose AI — sign up or sign in" },
       { name: "description", content: "Create your free Rose AI account or sign in to keep your skin baseline and follow your progress over time." },
       { property: "og:title", content: "Welcome to Rose AI — sign up or sign in" },
-      { property: "og:description", content: "Your everyday skin companion for rosacea." },
+      { property: "og:description", content: "Your everyday skin companion for rosacea and sensitive skin." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -118,7 +118,7 @@ function WelcomePage() {
           <p className="eyebrow">Rose AI</p>
           <h1 className="mt-2 font-display text-[2rem] leading-tight text-foreground">Welcome to Rose AI 🌹</h1>
           <p className="mt-3 text-sm leading-relaxed text-secondary-foreground">
-            Your everyday skin companion for rosacea. Create a free account to save your baseline and compare your skin over time — or sign in if you already have one.
+            Your everyday skin companion for rosacea and sensitive skin. Create a free account to save your baseline and compare your skin over time — or sign in if you already have one.
           </p>
         </div>
 
