@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { createOpenAI } from "@ai-sdk/openai";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { createAiRunIdFetch } from "@/lib/ai-run-id.server";
+import { sanitizeSkinContext, skinContextPrompt } from "@/lib/rosie/skin-context";
 
 const SYSTEM = `You are Rosie, the warm rose-blossom guide inside Rose AI, a wellness companion for recurring facial redness and skin tracking.
 
@@ -31,7 +32,7 @@ export const Route = createFileRoute("/api/rosie-chat")({
     handlers: {
       POST: async ({ request }) => {
         try {
-          const payload = (await request.json()) as { messages?: UIMessage[] };
+          const payload = (await request.json()) as { messages?: UIMessage[]; skinCheck?: unknown };
           if (!Array.isArray(payload.messages) || payload.messages.length > 100) {
             return Response.json({ message: "The conversation could not be read." }, { status: 400 });
           }
@@ -49,7 +50,7 @@ export const Route = createFileRoute("/api/rosie-chat")({
           });
           const result = streamText({
             model: openai.responses("openai/gpt-6-astra"),
-            system: SYSTEM,
+            system: (() => { const c = sanitizeSkinContext(payload.skinCheck); return c ? SYSTEM + "\n" + skinContextPrompt(c) : SYSTEM; })(),
             messages: await convertToModelMessages(payload.messages),
             maxRetries: 0,
             providerOptions: {

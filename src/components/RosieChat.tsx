@@ -11,6 +11,8 @@ import { Shimmer } from "@/components/ai-elements/shimmer";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { supabase } from "@/integrations/supabase/client";
+import { latestEntry, loadEntries } from "@/lib/storage";
+import { skinContextFromEntry } from "@/lib/rosie/skin-context";
 
 const LOCAL_KEY = "roseai.rosie.messages.v1";
 const GREETING: UIMessage = {
@@ -40,7 +42,7 @@ async function saveMessages(messages: UIMessage[]) {
 function RosieConversation({ initialMessages }: { initialMessages: UIMessage[] }) {
   const [input, setInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/rosie-chat", headers: async () => { const h = await aiHeaders(); delete h["Content-Type"]; return h; } }), []);
+  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/rosie-chat", headers: async () => { const h = await aiHeaders(); delete h["Content-Type"]; return h; }, body: () => ({ skinCheck: skinContextFromEntry(latestEntry(loadEntries())) }) }), []);
   const { messages, sendMessage, status, stop, error } = useChat({
     id: "rosie-one-conversation",
     messages: initialMessages,
