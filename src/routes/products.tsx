@@ -32,7 +32,7 @@ function ProductLibrary() {
   useEffect(() => setReady(true), []);
   function update(patch: Partial<typeof defaults>) { void navigate({ to: '/products', search: { ...filters, ...patch, page: patch.page ?? 1 }, replace: true }); }
   const options = (key: 'brand' | 'coverage' | 'finish') => [...new Set(products.map(p => p[key]).filter(Boolean))].sort();
-  const ranked = filters.view === 'all' ? [...products] : rankCatalog(products, preferences);
+  const ranked = filters.sort === 'match' ? rankCatalog(products, preferences) : [...products];
   const found = ranked.filter(p => {
     const skinText = `${p.best_for} ${p.concerns.join(' ')}`.toLowerCase();
     const skin = filters.skin === 'dry' ? 'dry' : filters.skin;
@@ -40,7 +40,7 @@ function ProductLibrary() {
     return (!filters.q || `${p.brand} ${p.name}`.toLowerCase().includes(filters.q.toLowerCase())) && (!filters.category || categoryName(p) === filters.category) && (!skin || skinText.includes(skin)) && (!concern || p.concerns.includes(concern) || (filters.concern === 'acne' && /blemish|acne|bump/i.test(skinText))) && (!filters.brand || p.brand === filters.brand) && (!filters.fragrance || p.fragrance_free === true) && (!filters.min || (p.approx_price !== null && p.approx_price >= Number(filters.min))) && (!filters.max || (p.approx_price !== null && p.approx_price <= Number(filters.max))) && (!filters.spf || (recordedSpf(p) ?? 0) >= Number(filters.spf)) && (!filters.coverage || p.coverage === filters.coverage) && (!filters.finish || p.finish === filters.finish) && (!filters.favorites || favorites.includes(p.id));
   });
   if (filters.sort === 'price') found.sort((a, b) => (a.approx_price ?? Infinity) - (b.approx_price ?? Infinity));
-  else if (filters.sort === 'brand' || (filters.view === 'all' && filters.sort === 'match')) found.sort((a, b) => a.brand.localeCompare(b.brand) || a.name.localeCompare(b.name));
+  else if (filters.sort === 'brand') found.sort((a, b) => a.brand.localeCompare(b.brand) || a.name.localeCompare(b.name));
   else if (filters.sort === 'category') found.sort((a, b) => categoryName(a).localeCompare(categoryName(b)) || a.brand.localeCompare(b.brand));
   const pages = Math.max(1, Math.ceil(found.length / 12));
   const page = Math.max(1, Math.min(pages, Math.floor(filters.page)));
@@ -66,7 +66,7 @@ function ProductLibrary() {
       <p className="col-span-2 text-xs leading-relaxed text-muted-foreground">Filters use recorded product information only. Missing prices, SPF or suitability data are not inferred.</p>
     </div>}
     <div className="flex items-end justify-between gap-4"><p className="text-xs text-muted-foreground" role="status">{found.length} / {products.length} <span>verified products</span></p><label className="text-xs text-foreground">Sort by<select aria-label="Sort by" value={filters.sort} onChange={e => update({ sort: e.target.value })} className="ml-2 rounded-md border border-border bg-card p-2"><option value="match">Best match</option><option value="price">Price</option><option value="brand">Brand</option><option value="category">Category</option></select></label></div>
-    {compare.length > 0 && <div className="flex items-center gap-2 border-y border-border py-3"><Button disabled={compare.length < 2} onClick={() => setComparing(true)}><Columns2 />Compare ({compare.length})</Button><Button variant="ghost" onClick={() => setCompare([])}>Clear comparison</Button></div>}
+    {compare.length > 0 && <div className="flex flex-wrap items-center gap-2 border-y border-border py-3"><Button disabled={compare.length < 2} onClick={() => setComparing(true)}><Columns2 />Compare ({compare.length})</Button><Button variant="ghost" onClick={() => setCompare([])}>Clear comparison</Button></div>}
     {!found.length && <p className="py-8 text-center text-muted-foreground">No products match these filters.</p>}
     <div className="grid gap-4">{showing.map(p => <article key={p.id} className="rounded-lg border border-border bg-card p-5"><ProductInfo product={p} preferences={preferences} favorite={favorites.includes(p.id)} onFavorite={() => toggleFavorite(p.id)} /><label className="mt-4 flex items-center gap-2 text-xs text-muted-foreground"><input aria-label={`Compare ${p.brand} ${p.name}`} type="checkbox" checked={compare.includes(p.id)} disabled={!compare.includes(p.id) && compare.length >= 3} onChange={() => setCompare(prev => prev.includes(p.id) ? prev.filter(id => id !== p.id) : [...prev, p.id])} />Compare</label></article>)}</div>
     <div className="flex items-center justify-between gap-3"><Button variant="outline" disabled={page <= 1} onClick={() => update({ page: page - 1 })}>Previous</Button><span className="text-xs text-muted-foreground">{page} / {pages}</span><Button variant="outline" disabled={page >= pages} onClick={() => update({ page: page + 1 })}>Next</Button></div>

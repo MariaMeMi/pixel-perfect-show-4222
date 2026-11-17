@@ -17,6 +17,7 @@ export function ProductInfo({ product: p, preferences, favorite, onFavorite, det
     <p className="mt-3 text-sm text-foreground">{p.approx_price !== null ? `≈ ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(p.approx_price)}` : 'Price not recorded'}</p>
     {p.purpose && <p className="mt-2 text-sm leading-relaxed text-secondary-foreground">{p.purpose}</p>}
     {p.best_for && <p className="mt-2 text-xs text-muted-foreground">{p.best_for}</p>}
+    {!detailed && p.concerns.length > 0 && <p className="mt-2 text-xs text-muted-foreground"><span className="font-semibold">Listed skin concerns</span>: {p.concerns.join(', ')}</p>}
     {reasons.length > 0 && <div className="mt-4 border-l-2 border-primary pl-3"><p className="text-xs font-semibold text-primary">Why this matches</p>{reasons.map(reason => <p key={reason} className="mt-1 text-xs text-secondary-foreground">{reason}</p>)}</div>}
     {warnings.length > 0 && <div className="mt-4 text-xs leading-relaxed text-muted-foreground"><p className="font-semibold text-foreground">Suitability cautions</p>{warnings.map(warning => <p key={warning} className="mt-1">{warning}</p>)}</div>}
     {detailed && <dl className="mt-5 space-y-4 text-sm">
