@@ -14,7 +14,7 @@ export const Route = createFileRoute('/products')({
     view: typeof s.view === 'string' ? s.view : defaults.view, q: typeof s.q === 'string' ? s.q : '', category: typeof s.category === 'string' ? s.category : '', skin: typeof s.skin === 'string' ? s.skin : '', concern: typeof s.concern === 'string' ? s.concern : '', brand: typeof s.brand === 'string' ? s.brand : '', min: typeof s.min === 'string' ? s.min : '', max: typeof s.max === 'string' ? s.max : '', fragrance: s.fragrance === true, spf: typeof s.spf === 'string' ? s.spf : '', coverage: typeof s.coverage === 'string' ? s.coverage : '', finish: typeof s.finish === 'string' ? s.finish : '', sort: typeof s.sort === 'string' ? s.sort : 'match', favorites: s.favorites === true, page: typeof s.page === 'number' && Number.isFinite(s.page) ? s.page : 1,
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(catalogQuery),
-  head: () => ({ meta: [{ title: 'Personalized Product Library — Rose AI' }, { name: 'description', content: 'Explore verified skincare, sunscreen and makeup, with personal matches, favorites and comparisons.' }, { property: 'og:title', content: 'Personalized Product Library — Rose AI' }, { property: 'og:description', content: 'Browse all verified skin products and compare their recorded benefits and ingredients.' }, { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary' }] }),
+  head: () => ({ meta: [{ title: 'Personalized Product Library — Rose AI' }, { name: 'description', content: 'Explore skincare, sunscreen and makeup, with checked matches and clearly labeled unreviewed listings.' }, { property: 'og:title', content: 'Personalized Product Library — Rose AI' }, { property: 'og:description', content: 'Browse skin products and compare their recorded details, favorites and ingredients.' }, { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary' }] }),
   errorComponent: CatalogError,
   notFoundComponent: () => <p>No products found.</p>,
   component: ProductLibrary,
@@ -32,7 +32,8 @@ function ProductLibrary() {
   useEffect(() => setReady(true), []);
   function update(patch: Partial<typeof defaults>) { void navigate({ to: '/products', search: { ...filters, ...patch, page: patch.page ?? 1 }, replace: true }); }
   const options = (key: 'brand' | 'coverage' | 'finish') => [...new Set(products.map(p => p[key]).filter(Boolean))].sort();
-  const ranked = filters.sort === 'match' ? rankCatalog(products, preferences) : [...products];
+  const eligible = filters.view === 'all' ? products : products.filter(p => p.verification_status === 'verified');
+  const ranked = filters.sort === 'match' ? rankCatalog(eligible, preferences) : [...eligible];
   const found = ranked.filter(p => {
     const skinText = `${p.best_for} ${p.concerns.join(' ')}`.toLowerCase();
     const skin = filters.skin === 'dry' ? 'dry' : filters.skin;
@@ -56,6 +57,7 @@ function ProductLibrary() {
     </div>
     {preferences.urgent && <p className="text-sm text-destructive">Please see a professional first. Browsing is not a treatment recommendation.</p>}
     {!preferences.tags.length && filters.view !== 'all' && <p className="text-xs text-muted-foreground">No saved preferences yet. All verified products are available.</p>}
+    {filters.view === 'all' && <p className="text-xs text-muted-foreground">Unreviewed listings are marked “Details not checked”. Their suitability has not been confirmed.</p>}
     <input aria-label="Search products" placeholder="Search products" value={filters.q} onChange={e => update({ q: e.target.value })} className="w-full rounded-md border border-border bg-card px-3 py-3 text-base text-foreground" />
     <div className="flex flex-wrap gap-2"><Button variant="outline" disabled={!ready} onClick={() => setOpen(!open)} aria-expanded={open}><SlidersHorizontal />Filters</Button><Button variant={filters.favorites ? 'default' : 'outline'} onClick={() => update({ favorites: !filters.favorites })}><Heart />Favorites</Button><Button variant="ghost" onClick={() => update(defaults)}>Clear filters</Button></div>
     {open && <div className="grid grid-cols-2 gap-3 border-y border-border py-4">
@@ -65,7 +67,7 @@ function ProductLibrary() {
       <label className="flex items-center gap-2 text-sm text-foreground"><input type="checkbox" checked={filters.fragrance} onChange={e => update({ fragrance: e.target.checked })} />Fragrance-free</label>
       <p className="col-span-2 text-xs leading-relaxed text-muted-foreground">Filters use recorded product information only. Missing prices, SPF or suitability data are not inferred.</p>
     </div>}
-    <div className="flex items-end justify-between gap-4"><p className="text-xs text-muted-foreground" role="status">{found.length} / {products.length} <span>verified products</span></p><label className="text-xs text-foreground">Sort by<select aria-label="Sort by" value={filters.sort} onChange={e => update({ sort: e.target.value })} className="ml-2 rounded-md border border-border bg-card p-2"><option value="match">Best match</option><option value="price">Price</option><option value="brand">Brand</option><option value="category">Category</option></select></label></div>
+    <div className="flex items-end justify-between gap-4"><p className="text-xs text-muted-foreground" role="status">{found.length} / {products.length} <span>products</span></p><label className="text-xs text-foreground">Sort by<select aria-label="Sort by" value={filters.sort} onChange={e => update({ sort: e.target.value })} className="ml-2 rounded-md border border-border bg-card p-2"><option value="match">Best match</option><option value="price">Price</option><option value="brand">Brand</option><option value="category">Category</option></select></label></div>
     {compare.length > 0 && <div className="flex flex-wrap items-center gap-2 border-y border-border py-3"><Button disabled={compare.length < 2} onClick={() => setComparing(true)}><Columns2 />Compare ({compare.length})</Button><Button variant="ghost" onClick={() => setCompare([])}>Clear comparison</Button></div>}
     {!found.length && <p className="py-8 text-center text-muted-foreground">No products match these filters.</p>}
     <div className="grid gap-4">{showing.map(p => <article key={p.id} className="rounded-lg border border-border bg-card p-5"><ProductInfo product={p} preferences={preferences} favorite={favorites.includes(p.id)} onFavorite={() => toggleFavorite(p.id)} /><label className="mt-4 flex items-center gap-2 text-xs text-muted-foreground"><input aria-label={`Compare ${p.brand} ${p.name}`} type="checkbox" checked={compare.includes(p.id)} disabled={!compare.includes(p.id) && compare.length >= 3} onChange={() => setCompare(prev => prev.includes(p.id) ? prev.filter(id => id !== p.id) : [...prev, p.id])} />Compare</label></article>)}</div>
