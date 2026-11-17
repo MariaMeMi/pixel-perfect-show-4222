@@ -10,10 +10,13 @@ export function PlanPicker({ group, interval, onChange }: { group: PricingGroup;
   const p = PRO_PRICES[group];
   const option = (id: Interval, title: string, price: string, note: string, badge?: string) => (
     <button type="button" onClick={() => onChange(id)} aria-pressed={interval === id}
-      className={`relative flex w-full items-center justify-between rounded-2xl border-2 p-4 text-left transition-colors ${interval === id ? "border-primary bg-primary/5" : "border-border bg-card"}`}>
+      className={`relative flex w-full items-center justify-between rounded-2xl border-2 p-4 text-left transition-colors ${interval === id ? "border-primary bg-primary/10 ring-2 ring-primary/30" : "border-border/60 bg-card"}`}>
+      <span className="flex items-center gap-3">
+      <span aria-hidden className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${interval === id ? "border-primary bg-primary" : "border-muted-foreground/40"}`}>{interval === id && <span className="h-2 w-2 rounded-full bg-primary-foreground" />}</span>
       <span>
         <span className="block font-semibold text-foreground">{title}</span>
         <span className="block text-xs text-muted-foreground">{note}</span>
+      </span>
       </span>
       <span className="text-right font-display text-xl text-foreground">{price}</span>
       {badge && <span className="absolute -top-2.5 right-4 rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold text-primary-foreground">{badge}</span>}

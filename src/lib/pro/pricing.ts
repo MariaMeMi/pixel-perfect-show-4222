@@ -27,7 +27,7 @@ export function priceInfo(id: string): { group: PricingGroup; interval: Interval
 
 /** "$5.00" monthly equivalent of a yearly price. */
 export function perMonth(cents: number) {
-  return `$${(Math.floor(cents / 12) / 100).toFixed(2)}`;
+  return `$${(Math.round(cents / 12) / 100).toFixed(2)}`;
 }
 
 export const PRO_FEATURES = [
@@ -39,7 +39,7 @@ export const PRO_FEATURES = [
 
 export function renewalTerms(interval: Interval, label: string) {
   const period = interval === "monthly" ? "month" : "year";
-  return `You'll be charged ${label} today. Your subscription renews automatically every ${period} at ${label} until you cancel. Cancel anytime in Profile → Manage subscription; you keep Pro until the end of the period you've paid for. No free trial. Prices in USD; taxes may apply.`;
+  return `You'll be charged ${label} today (plus any applicable tax). Your subscription renews automatically every ${period} at ${label} until you cancel. Cancel anytime in Profile → Manage subscription; you keep Pro until the end of the period you've paid for. No free trial. Prices in USD.`;
 }
 
 const GROUP_KEY = "rose.pricing.group";

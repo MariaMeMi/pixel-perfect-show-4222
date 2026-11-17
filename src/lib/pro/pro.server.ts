@@ -28,6 +28,10 @@ export async function upsertSubscription(sub: Stripe.Subscription, env: StripeEn
     updated_at: new Date().toISOString(),
   }, { onConflict: "stripe_subscription_id" });
   if (error) throw error;
+  // invoice.paid can arrive before the subscription event: fill in any payments recorded without a group.
+  await supabaseAdmin.from("payment_events")
+    .update({ user_id: userId, price_id: priceId, pricing_group: groupOf(priceId) })
+    .eq("stripe_subscription_id", sub.id).eq("pricing_group", "unknown");
 }
 
 async function subscriptionRow(subId: string | null | undefined) {
@@ -46,14 +50,16 @@ export async function recordPayment(inv: Stripe.Invoice, env: StripeEnv) {
   const subRef = parent?.subscription_details?.subscription;
   const subId = typeof subRef === "string" ? subRef : subRef?.id;
   const row = await subscriptionRow(subId);
+  const metaGroup = parent?.subscription_details?.metadata?.["pricing_group"];
   const priceId = row?.price_id ?? line?.price?.lookup_key ?? null;
+  const group = row?.pricing_group ?? (priceId ? groupOf(priceId) : metaGroup === "low" || metaGroup === "premium" ? metaGroup : "unknown");
   await supabaseAdmin.from("payment_events").upsert({
     stripe_object_id: inv.id,
     kind: "payment",
     user_id: row?.user_id ?? parent?.subscription_details?.metadata?.["userId"] ?? null,
     stripe_subscription_id: subId ?? null,
     price_id: priceId,
-    pricing_group: row?.pricing_group ?? groupOf(priceId),
+    pricing_group: group,
     amount_cents: inv.amount_paid,
     currency: inv.currency,
     environment: env,
@@ -65,7 +71,15 @@ export async function recordRefund(charge: Stripe.Charge, env: StripeEnv) {
   if (!charge.amount_refunded) return;
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const invRef = (charge as Stripe.Charge & { invoice?: string | { id: string } | null }).invoice;
-  const invId = typeof invRef === "string" ? invRef : invRef?.id;
+  let invId = typeof invRef === "string" ? invRef : invRef?.id;
+  const pi = typeof charge.payment_intent === "string" ? charge.payment_intent : charge.payment_intent?.id;
+  if (!invId && pi) {
+    // Newer Stripe API versions link charges to invoices through invoice payments.
+    const { createStripeClient } = await import("../stripe.server");
+    const list = await createStripeClient(env).invoicePayments.list({ payment: { type: "payment_intent", payment_intent: pi }, limit: 1 });
+    const inv = list.data[0]?.invoice;
+    invId = typeof inv === "string" ? inv : inv?.id;
+  }
   let paid: { user_id: string | null; price_id: string | null; pricing_group: string; stripe_subscription_id: string | null } | null = null;
   if (invId) {
     const { data } = await supabaseAdmin.from("payment_events").select("user_id, price_id, pricing_group, stripe_subscription_id").eq("stripe_object_id", invId).maybeSingle();
@@ -81,5 +95,5 @@ export async function recordRefund(charge: Stripe.Charge, env: StripeEnv) {
     amount_cents: charge.amount_refunded,
     currency: charge.currency,
     environment: env,
-  }, { onConflict: "stripe_object_id", ignoreDuplicates: true });
+  }, { onConflict: "stripe_object_id" });
 }
