@@ -32,7 +32,7 @@ type Plan = "monthly" | "yearly" | "onetime";
 /** Offer preview only: no payment is taken. Clicks are recorded as interest. */
 export function OfferVariantB({ experience, preview, onContinue }: {
   experience: Experience;
-  preview: { score?: number; summary?: string; point?: string };
+  preview: { score?: number | undefined; summary?: string | undefined; point?: string | undefined };
   onContinue: () => void;
 }) {
   const [plan, setPlan] = useState<Plan>("yearly");
