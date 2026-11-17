@@ -66,6 +66,7 @@ function Onboarding() {
   const paywalled = lang === "en" && !plan.isPro;
   const [activeLine, setActiveLine] = useState<LineArea>("forehead");
   const [linePending, setLinePending] = useState(false);
+  const [limitHit, setLimitHit] = useState(false);
   const [acctEmail, setAcctEmail] = useState<string>();
   const tracked = useRef(new Set<string>());
   const set = (p: Partial<OnboardingData>) => setD((x) => ({ ...x, ...p }));
@@ -170,7 +171,8 @@ function Onboarding() {
         setRedRes(a as Analysis);
         entryId = `baseline-${Date.now()}`;
         addEntry({ id: entryId, date, analysis: a as Analysis, photo: retainPhotos ? photo : undefined, feeling: undefined, triggers: [] });
-      } else toast.error("We couldn't read this photo, but your baseline photo is saved.");
+      } else if (res.status === 429) { setLimitHit(true); toast.error("You've reached today's limit. Please try again tomorrow."); }
+      else toast.error("We couldn't read this photo, but your baseline photo is saved.");
     } catch { toast.error("We couldn't read this photo, but your baseline photo is saved."); }
     setBuilt(1);
     // Redness results can be unlocked while the independent lines reading finishes.
@@ -348,7 +350,7 @@ function Onboarding() {
         <Button type="button" variant="link" onClick={() => navigate({ to: "/botox" })} className="h-auto px-0 text-sm">Open Botox AI →</Button>
       </section>}
       {linePending && <p className="mt-3 flex items-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Reading visible lines from your photo…</p>}
-      {!redRes && !lineRes && !linePending && <p className="mt-2 text-sm text-muted-foreground">We couldn't read your photo this time — your baseline photo is still saved.</p>}
+      {!redRes && !lineRes && !linePending && <p className="mt-2 text-sm text-muted-foreground">{limitHit ? "You've reached today's limit. Please try again tomorrow — your baseline photo is still saved." : "We couldn't read your photo this time — your baseline photo is still saved."}</p>}
       <p className="eyebrow mt-8">🌹 Your starting skin profile</p>
       <div className="surface mt-4 divide-y divide-border">
         {profileSections(d).map((s) => <div key={s.label} className="p-4"><p className="eyebrow">{s.label}</p><ul className="mt-1.5 space-y-0.5">{s.items.map((x) => <li key={x} className="text-[15px] text-foreground">{x}</li>)}</ul></div>)}
