@@ -37,6 +37,8 @@ function PlusPage() {
   const [checkout, setCheckout] = useState(false);
   const [busy, setBusy] = useState<"verify" | "restore" | null>(session_id ? "verify" : null);
   const [welcome, setWelcome] = useState(false);
+  const { lang } = useI18n();
+  const onSale = plusOnSale(lang);
 
   useEffect(() => {
     if (!session_id) return;
@@ -89,7 +91,7 @@ function PlusPage() {
         <div className="surface-lift gradient-dawn space-y-5 p-7">
           <div className="text-center">
             <h1 className="font-display text-[2rem] leading-tight text-foreground">Rosea Plus 🌹</h1>
-            <p className="mt-2 text-lg text-foreground">$14.99 <span className="text-sm text-muted-foreground">/ 1 year</span></p>
+            {onSale && <p className="mt-2 text-lg text-foreground">$14.99 <span className="text-sm text-muted-foreground">/ 1 year</span></p>}
           </div>
           <ul className="space-y-2.5">
             {FEATURES.map((f) => (
@@ -98,11 +100,13 @@ function PlusPage() {
               </li>
             ))}
           </ul>
-          <p className="text-xs text-muted-foreground">One-time payment. No automatic renewal.</p>
+          {onSale && <p className="text-xs text-muted-foreground">One-time payment. No automatic renewal.</p>}
 
           {busy === "verify" ? (
             <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Confirming your payment…</p>
-          ) : plus.loading ? null : !plus.signedIn ? (
+          ) : plus.loading ? null : !onSale ? (
+            <p className="rounded-xl bg-secondary p-3 text-center text-sm text-secondary-foreground">New purchases aren't available right now. If you already bought Rosea Plus, use Restore access below.</p>
+          ) : !plus.signedIn ? (
             <Link to="/welcome" className="block w-full rounded-full gradient-rose py-4 text-center text-sm font-semibold text-primary-foreground">Sign in to unlock Rosea Plus</Link>
           ) : checkout ? (
             <div className="overflow-hidden rounded-2xl bg-card">
