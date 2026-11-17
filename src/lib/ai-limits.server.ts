@@ -5,6 +5,9 @@ export const AI_LIMITS = {
   rosie: [{ max: 30, seconds: 86_400 }, { max: 300, seconds: 2_592_000 }],
 } as const;
 
+// Owner test accounts skip the caps so product testing is never blocked.
+const UNLIMITED_USER_IDS = new Set(["81795335-cfd9-4645-aed1-bf88d5e22742"]);
+
 export type AiFeature = keyof typeof AI_LIMITS;
 
 async function sha256(text: string) {
@@ -30,6 +33,7 @@ async function callerKey(request: Request) {
 export async function enforceAiLimit(request: Request, feature: AiFeature): Promise<Response | null> {
   try {
     const { admin, key } = await callerKey(request);
+    if (key.startsWith("u:") && UNLIMITED_USER_IDS.has(key.slice(2))) return null;
     for (const w of AI_LIMITS[feature]) {
       const { data, error } = await admin.rpc("forum_consume_limit", {
         k: `ai:${feature}:${w.seconds}:${key}`,

@@ -30,3 +30,4 @@
 - [x] Hide Rosea Plus purchase for English users during Pro price test
 - [ ] Activate live Pro payments — waiting for Mary's approval
 - [x] Paywall appears right after photo + email in onboarding and Rosacea AI; verified phone/desktop
+- [x] Remove AI usage limits for Mary's own account (testing)
