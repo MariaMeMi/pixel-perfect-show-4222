@@ -2,9 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { categoryName, isPublicProduct, recordedSpf, rankCatalog, matchingReasons, noPreferences, type CatalogProduct } from './catalog';
 import { pickProducts } from '@/lib/routine/engine';
 const product = (patch: Partial<CatalogProduct>): CatalogProduct => ({ id: 'a', name: 'Cream', brand: 'Brand', category: 'moisturizer', subcategory: '', active: true, verification_status: 'verified', concerns: [], price_tier: 1, approx_price: null, fragrance_free: null, rank: 1, sponsored: false, purpose: '', best_for: '', why: '', key_ingredients: [], image_url: null, normal_url: null, affiliate_url: null, created_at: '', verification_note: '', irritation_notes: '', shades: [], finish: '', coverage: '', normalized_key: null, ...patch });
-describe('verified product library', () => {
-  it('allows only active verified products', () => {
-    expect([product({}), product({ id: 'b', active: false }), product({ id: 'c', verification_status: 'pending' })].filter(isPublicProduct).map(p => p.id)).toEqual(['a']);
+describe('product library', () => {
+  it('allows active unreviewed listings without exposing excluded or inactive products', () => {
+    expect([product({}), product({ id: 'b', active: false }), product({ id: 'c', verification_status: 'pending' }), product({ id: 'd', verification_status: 'excluded' })].filter(isPublicProduct).map(p => p.id)).toEqual(['a', 'c']);
+  });
+  it('does not claim an unreviewed listing matches sensitive skin', () => {
+    expect(matchingReasons(product({ verification_status: 'pending', fragrance_free: true, concerns: ['sensitive'] }), { ...noPreferences, sensitive: true, tags: ['sensitive'], budget: 3 })).toEqual([]);
   });
   it('ranking retains every verified product, including nonmatches', () => {
     const rows = [product({ id: 'other' }), product({ id: 'match', concerns: ['redness'] })];

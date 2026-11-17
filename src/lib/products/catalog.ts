@@ -27,13 +27,13 @@ export function recordedSpf(p: Pick<CatalogProduct, 'name'>) {
   const match = p.name.match(/\bSPF\s*(\d{1,3})\b/i);
   return match ? Number(match[1]) : null;
 }
-export function isPublicProduct(p: Pick<CatalogProduct, 'active' | 'verification_status'>) { return p.active && p.verification_status === 'verified'; }
+export function isPublicProduct(p: Pick<CatalogProduct, 'active' | 'verification_status'>) { return p.active && ['verified', 'pending'].includes(p.verification_status); }
 export function rankCatalog(rows: CatalogProduct[], preferences: Preferences) {
   if (preferences.urgent) return [...rows].sort((a, b) => a.brand.localeCompare(b.brand) || a.name.localeCompare(b.name));
   return [...rows].sort((a, b) => Number(a.sponsored) - Number(b.sponsored) || productMatchScore(b, preferences.tags, preferences.budget) - productMatchScore(a, preferences.tags, preferences.budget) || a.id.localeCompare(b.id));
 }
 export function matchingReasons(p: CatalogProduct, preferences: Preferences) {
-  if (preferences.urgent) return [];
+  if (preferences.urgent || p.verification_status !== 'verified') return [];
   const reasons: string[] = [];
   if (preferences.sensitive && p.fragrance_free === true) reasons.push('Fragrance-free formula for your sensitivity preference.');
   for (const [tag, text] of [['redness', 'Listed for redness-prone skin.'], ['dryness', 'Listed for dryness support.'], ['sensitive', 'Listed for sensitive skin.'], ['lines', 'Listed for fine-line concerns.'], ['barrier', 'Listed for barrier support.']]) {

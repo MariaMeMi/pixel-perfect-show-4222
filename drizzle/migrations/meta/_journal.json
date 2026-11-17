@@ -120,6 +120,13 @@
       "when": 1794872502928,
       "tag": "0016_expand_product_catalog",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1794889822232,
+      "tag": "0017_allow_active_unreviewed_product_listings",
+      "breakpoints": true
     }
   ]
 }

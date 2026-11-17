@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { categoryName, cautions, matchingReasons, recordedSpf, safeProductUrl, type CatalogProduct, type Preferences } from '@/lib/products/catalog';
 
 export function ProductInfo({ product: p, preferences, favorite, onFavorite, detailed = false }: { product: CatalogProduct; preferences: Preferences; favorite: boolean; onFavorite: () => void; detailed?: boolean }) {
+  const checked = p.verification_status === 'verified';
   const reasons = matchingReasons(p, preferences);
   const warnings = cautions(p, preferences);
   const image = safeProductUrl(p.image_url);
@@ -14,6 +15,7 @@ export function ProductInfo({ product: p, preferences, favorite, onFavorite, det
       <div className="min-w-0 flex-1"><p className="eyebrow break-words">{p.brand}</p><h2 className="mt-1 break-words font-display text-xl leading-tight text-foreground">{p.name}</h2><p className="mt-2 text-xs text-muted-foreground">{categoryName(p)}</p></div>
       <Button variant="ghost" size="icon" aria-label={favorite ? 'Remove from Favorites' : 'Save to Favorites'} title={favorite ? 'Remove from Favorites' : 'Save to Favorites'} aria-pressed={favorite} onClick={onFavorite}><Heart className={favorite ? 'fill-primary text-primary' : 'text-muted-foreground'} /></Button>
     </div>
+    {!checked && <p className="mt-3 text-xs font-semibold text-muted-foreground">Details not checked</p>}
     <p className="mt-3 text-sm text-foreground">{p.approx_price !== null ? `≈ ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(p.approx_price)}` : 'Price not recorded'}</p>
     {p.purpose && <p className="mt-2 text-sm leading-relaxed text-secondary-foreground">{p.purpose}</p>}
     {p.best_for && <p className="mt-2 text-xs text-muted-foreground">{p.best_for}</p>}
