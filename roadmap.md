@@ -28,3 +28,4 @@
 - [x] Add "Meet others with rosacea" to the first-results screen so finished onboarding leads into the community; guest walkthrough browser-verified through to the community page.
 - [ ] Make community forum photos private: the forum photo storage rule currently lets anyone download any forum photo; bind reads to the uploader (or serve only short-lived signed URLs) and re-verify that photos still display for readers. Chosen to publish first with this open; bucket currently holds no files.
 - [x] Hide Rosea Plus purchase for English users during Pro price test
+- [ ] Activate live Pro payments — waiting for Mary's approval
