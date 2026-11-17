@@ -95,5 +95,5 @@ export async function recordRefund(charge: Stripe.Charge, env: StripeEnv) {
     amount_cents: charge.amount_refunded,
     currency: charge.currency,
     environment: env,
-  }, { onConflict: "stripe_object_id", ignoreDuplicates: true });
+  }, { onConflict: "stripe_object_id" });
 }
