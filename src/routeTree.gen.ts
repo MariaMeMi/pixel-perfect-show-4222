@@ -20,6 +20,7 @@ import { Route as MyRoutineRouteImport } from './routes/my-routine'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PlusRouteImport } from './routes/plus'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ProductsRouteImport } from './routes/products'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as ResultsRouteImport } from './routes/results'
@@ -34,6 +35,7 @@ import { Route as CommunityIndexRouteImport } from './routes/community.index'
 import { Route as CommunityGuidelinesRouteImport } from './routes/community.guidelines'
 import { Route as CommunityModerationRouteImport } from './routes/community.moderation'
 import { Route as CommunityNewRouteImport } from './routes/community.new'
+import { Route as ProductsIdRouteImport } from './routes/products_.$id'
 import { Route as AuthenticatedClinicianCasesRouteImport } from './routes/_authenticated/clinician/cases'
 import { Route as AuthenticatedClinicianDashboardRouteImport } from './routes/_authenticated/clinician/dashboard'
 import { Route as AuthenticatedClinicianPatientsRouteImport } from './routes/_authenticated/clinician/patients'
@@ -108,6 +110,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProductsRoute = ProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -177,6 +184,11 @@ const CommunityModerationRoute = CommunityModerationRouteImport.update({
 const CommunityNewRoute = CommunityNewRouteImport.update({
   id: '/community/new',
   path: '/community/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductsIdRoute = ProductsIdRouteImport.update({
+  id: '/products_/$id',
+  path: '/products/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedClinicianCasesRoute =
@@ -298,6 +310,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/plus': typeof PlusRoute
   '/privacy': typeof PrivacyRoute
+  '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
@@ -311,6 +324,7 @@ export interface FileRoutesByFullPath {
   '/community/guidelines': typeof CommunityGuidelinesRoute
   '/community/moderation': typeof CommunityModerationRoute
   '/community/new': typeof CommunityNewRoute
+  '/products/$id': typeof ProductsIdRoute
   '/community/': typeof CommunityIndexRoute
   '/clinician/cases': typeof AuthenticatedClinicianCasesRoute
   '/clinician/dashboard': typeof AuthenticatedClinicianDashboardRoute
@@ -343,6 +357,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/plus': typeof PlusRoute
   '/privacy': typeof PrivacyRoute
+  '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
@@ -356,6 +371,7 @@ export interface FileRoutesByTo {
   '/community/guidelines': typeof CommunityGuidelinesRoute
   '/community/moderation': typeof CommunityModerationRoute
   '/community/new': typeof CommunityNewRoute
+  '/products/$id': typeof ProductsIdRoute
   '/community': typeof CommunityIndexRoute
   '/clinician/cases': typeof AuthenticatedClinicianCasesRoute
   '/clinician/dashboard': typeof AuthenticatedClinicianDashboardRoute
@@ -390,6 +406,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/plus': typeof PlusRoute
   '/privacy': typeof PrivacyRoute
+  '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
@@ -403,6 +420,7 @@ export interface FileRoutesById {
   '/community/guidelines': typeof CommunityGuidelinesRoute
   '/community/moderation': typeof CommunityModerationRoute
   '/community/new': typeof CommunityNewRoute
+  '/products_/$id': typeof ProductsIdRoute
   '/community/': typeof CommunityIndexRoute
   '/_authenticated/clinician/cases': typeof AuthenticatedClinicianCasesRoute
   '/_authenticated/clinician/dashboard': typeof AuthenticatedClinicianDashboardRoute
@@ -437,6 +455,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/plus'
     | '/privacy'
+    | '/products'
     | '/profile'
     | '/progress'
     | '/results'
@@ -450,6 +469,7 @@ export interface FileRouteTypes {
     | '/community/guidelines'
     | '/community/moderation'
     | '/community/new'
+    | '/products/$id'
     | '/community/'
     | '/clinician/cases'
     | '/clinician/dashboard'
@@ -482,6 +502,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/plus'
     | '/privacy'
+    | '/products'
     | '/profile'
     | '/progress'
     | '/results'
@@ -495,6 +516,7 @@ export interface FileRouteTypes {
     | '/community/guidelines'
     | '/community/moderation'
     | '/community/new'
+    | '/products/$id'
     | '/community'
     | '/clinician/cases'
     | '/clinician/dashboard'
@@ -528,6 +550,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/plus'
     | '/privacy'
+    | '/products'
     | '/profile'
     | '/progress'
     | '/results'
@@ -541,6 +564,7 @@ export interface FileRouteTypes {
     | '/community/guidelines'
     | '/community/moderation'
     | '/community/new'
+    | '/products_/$id'
     | '/community/'
     | '/_authenticated/clinician/cases'
     | '/_authenticated/clinician/dashboard'
@@ -575,6 +599,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   PlusRoute: typeof PlusRoute
   PrivacyRoute: typeof PrivacyRoute
+  ProductsRoute: typeof ProductsRoute
   ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
   ResultsRoute: typeof ResultsRoute
@@ -587,6 +612,7 @@ export interface RootRouteChildren {
   CommunityGuidelinesRoute: typeof CommunityGuidelinesRoute
   CommunityModerationRoute: typeof CommunityModerationRoute
   CommunityNewRoute: typeof CommunityNewRoute
+  ProductsIdRoute: typeof ProductsIdRoute
   CommunityIndexRoute: typeof CommunityIndexRoute
   CommunityCategorySlugRoute: typeof CommunityCategorySlugRoute
   CommunityEditIdRoute: typeof CommunityEditIdRoute
@@ -677,6 +703,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products': {
+      id: '/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof ProductsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -775,6 +808,13 @@ declare module '@tanstack/react-router' {
       path: '/community/new'
       fullPath: '/community/new'
       preLoaderRoute: typeof CommunityNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products_/$id': {
+      id: '/products_/$id'
+      path: '/products/$id'
+      fullPath: '/products/$id'
+      preLoaderRoute: typeof ProductsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/clinician/cases': {
@@ -968,6 +1008,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   PlusRoute: PlusRoute,
   PrivacyRoute: PrivacyRoute,
+  ProductsRoute: ProductsRoute,
   ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
   ResultsRoute: ResultsRoute,
@@ -980,6 +1021,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommunityGuidelinesRoute: CommunityGuidelinesRoute,
   CommunityModerationRoute: CommunityModerationRoute,
   CommunityNewRoute: CommunityNewRoute,
+  ProductsIdRoute: ProductsIdRoute,
   CommunityIndexRoute: CommunityIndexRoute,
   CommunityCategorySlugRoute: CommunityCategorySlugRoute,
   CommunityEditIdRoute: CommunityEditIdRoute,

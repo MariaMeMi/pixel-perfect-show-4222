@@ -300,6 +300,7 @@ function ResultsPage() {
       <Button type="button" variant="outline" onClick={() => save("/routine")} className="h-auto w-full rounded-full py-4 text-sm">
         Save &amp; build my routine
       </Button>
+      <Button asChild variant="outline" className="h-auto w-full py-4"><Link to="/products" search={{}}>Explore All Products</Link></Button>
     </div>
   );
 }
