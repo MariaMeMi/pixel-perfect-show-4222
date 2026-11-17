@@ -7,6 +7,8 @@ import { EmbeddedCheckout, EmbeddedCheckoutProvider } from "@stripe/react-stripe
 import { getStripe, getStripeEnvironment } from "@/lib/stripe";
 import { createPlusCheckout, restorePlusAccess, verifyPlusCheckout } from "@/lib/plus.functions";
 import { usePlus } from "@/hooks/usePlus";
+import { useI18n } from "@/lib/i18n";
+import { plusOnSale } from "@/lib/plus-sale";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 
 export const Route = createFileRoute("/plus")({
