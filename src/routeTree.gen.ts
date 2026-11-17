@@ -20,6 +20,7 @@ import { Route as MyRoutineRouteImport } from './routes/my-routine'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PlusRouteImport } from './routes/plus'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ProRouteImport } from './routes/pro'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgressRouteImport } from './routes/progress'
@@ -108,6 +109,11 @@ const PlusRoute = PlusRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProRoute = ProRouteImport.update({
+  id: '/pro',
+  path: '/pro',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsRoute = ProductsRouteImport.update({
@@ -310,6 +316,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/plus': typeof PlusRoute
   '/privacy': typeof PrivacyRoute
+  '/pro': typeof ProRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -357,6 +364,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/plus': typeof PlusRoute
   '/privacy': typeof PrivacyRoute
+  '/pro': typeof ProRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -406,6 +414,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/plus': typeof PlusRoute
   '/privacy': typeof PrivacyRoute
+  '/pro': typeof ProRoute
   '/products': typeof ProductsRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -455,6 +464,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/plus'
     | '/privacy'
+    | '/pro'
     | '/products'
     | '/profile'
     | '/progress'
@@ -502,6 +512,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/plus'
     | '/privacy'
+    | '/pro'
     | '/products'
     | '/profile'
     | '/progress'
@@ -550,6 +561,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/plus'
     | '/privacy'
+    | '/pro'
     | '/products'
     | '/profile'
     | '/progress'
@@ -599,6 +611,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   PlusRoute: typeof PlusRoute
   PrivacyRoute: typeof PrivacyRoute
+  ProRoute: typeof ProRoute
   ProductsRoute: typeof ProductsRoute
   ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
@@ -703,6 +716,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro': {
+      id: '/pro'
+      path: '/pro'
+      fullPath: '/pro'
+      preLoaderRoute: typeof ProRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/products': {
@@ -1008,6 +1028,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   PlusRoute: PlusRoute,
   PrivacyRoute: PrivacyRoute,
+  ProRoute: ProRoute,
   ProductsRoute: ProductsRoute,
   ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
