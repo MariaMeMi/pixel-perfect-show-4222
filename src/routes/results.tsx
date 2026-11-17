@@ -12,6 +12,9 @@ import { addEntry, baselineScore, loadEntries, loadProfile } from "@/lib/storage
 import type { Analysis, Entry, FeelingKey, TriggerKey } from "@/lib/types";
 import { EmailGate } from "@/components/EmailGate";
 import { noteReferredCheckin, track } from "@/lib/experiment";
+import { ProOffer } from "@/components/paywall/ProOffer";
+import { usePlus } from "@/hooks/usePlus";
+import { pricingGroup } from "@/lib/pro/pricing";
 
 export const Route = createFileRoute("/results")({
   head: () => ({
@@ -53,8 +56,9 @@ const TRIGGERS: TriggerKey[] = [
 type Pending = { analysis: Analysis; photo: string; date: string };
 
 function ResultsPage() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const navigate = useNavigate();
+  const plan = usePlus();
   const [pending, setPending] = useState<Pending | null>(null);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [step, setStep] = useState<"results" | "checkin">("results");
@@ -78,6 +82,11 @@ function ResultsPage() {
     if (gated === false && pending) track("results_viewed", "redness");
   }, [gated, pending]);
 
+  useEffect(() => {
+    if (gated === false && pending && lang === "en" && plan.isPro)
+      track(pricingGroup() === "low" ? "pricing_low_full_results_viewed" : "pricing_premium_full_results_viewed", "redness");
+  }, [gated, pending, lang, plan.isPro]);
+
   const baseline = useMemo(() => baselineScore(entries), [entries]);
 
   if (!pending || gated === null) return null;
@@ -88,10 +97,15 @@ function ResultsPage() {
         results={{
           score: pending.analysis.score,
           summary: pending.analysis.summary,
-          points: [...(pending.analysis.observations ?? []), ...(pending.analysis.tips ?? [])],
+          ...(lang === "en" ? {} : { points: [...(pending.analysis.observations ?? []), ...(pending.analysis.tips ?? [])] }),
         }}
       />
     );
+  if (lang === "en" && plan.loading) return null;
+  if (lang === "en" && !plan.isPro) return (
+    <ProOffer experience="redness" back="/results"
+      preview={{ score: pending.analysis.score, summary: pending.analysis.summary, point: pending.analysis.observations?.[0] }} />
+  );
   const a = pending.analysis;
 
   const changeText = !baseline
