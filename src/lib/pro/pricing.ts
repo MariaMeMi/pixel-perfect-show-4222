@@ -27,7 +27,7 @@ export function priceInfo(id: string): { group: PricingGroup; interval: Interval
 
 /** "$5.00" monthly equivalent of a yearly price. */
 export function perMonth(cents: number) {
-  return `$${(Math.floor(cents / 12) / 100).toFixed(2)}`;
+  return `$${(Math.round(cents / 12) / 100).toFixed(2)}`;
 }
 
 export const PRO_FEATURES = [
