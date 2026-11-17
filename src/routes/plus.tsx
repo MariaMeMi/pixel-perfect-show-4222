@@ -107,7 +107,7 @@ function PlusPage() {
           {busy === "verify" ? (
             <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Confirming your payment…</p>
           ) : plus.loading ? null : !onSale ? (
-            <p className="rounded-xl bg-secondary p-3 text-center text-sm text-secondary-foreground">New purchases aren't available right now. If you already bought Rosea Plus, use Restore access below.</p>
+            <p className="rounded-xl bg-secondary p-3 text-center text-sm text-secondary-foreground">New purchases aren't available right now. If you already bought Rosea Plus, {plus.signedIn ? "use Restore access below." : <><Link to="/welcome" className="underline">sign in</Link> to get your access back.</>}</p>
           ) : !plus.signedIn ? (
             <Link to="/welcome" className="block w-full rounded-full gradient-rose py-4 text-center text-sm font-semibold text-primary-foreground">Sign in to unlock Rosea Plus</Link>
           ) : checkout ? (
