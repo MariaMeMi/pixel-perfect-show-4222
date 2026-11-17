@@ -15,7 +15,8 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { I18nProvider } from "../lib/i18n";
 import { AppShell } from "../components/AppShell";
 import { Toaster } from "../components/ui/sonner";
-import { trackPaywallReturn } from "../components/paywall/OfferVariantB";
+import { takeD7Return } from "../lib/pro/pricing";
+import { track } from "../lib/experiment";
 
 function NotFoundComponent() {
   return (
@@ -124,7 +125,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  useEffect(() => { trackPaywallReturn(); }, []);
+  useEffect(() => { const g = takeD7Return(); if (g) track(g === "low" ? "pricing_low_d7_return" : "pricing_premium_d7_return", "onboarding"); }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
