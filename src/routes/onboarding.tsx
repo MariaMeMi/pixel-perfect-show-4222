@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { catalogSearchDefaults } from "@/lib/products/catalog";
 import { track } from "@/lib/experiment";
 import { EmailGate } from "@/components/EmailGate";
+import { OfferVariantB, paywallVariant } from "@/components/paywall/OfferVariantB";
 import { RESUME_KEY, SaveDay1 } from "@/components/onboarding/SaveDay1";
 import { useI18n } from "@/lib/i18n";
 import { addEntry, loadProfile } from "@/lib/storage";
@@ -56,6 +57,7 @@ function Onboarding() {
   const [built, setBuilt] = useState(0);
   const [redRes, setRedRes] = useState<Analysis>();
   const [lineRes, setLineRes] = useState<LineRes>();
+  const [offer, setOffer] = useState(false);
   const [activeLine, setActiveLine] = useState<LineArea>("forehead");
   const [linePending, setLinePending] = useState(false);
   const [acctEmail, setAcctEmail] = useState<string>();
@@ -266,8 +268,20 @@ function Onboarding() {
     </div>;
   } else if (step === "gate") {
      const exp = d.goals.includes("redness") || !(wantsBotox(d) || d.goals.includes("lines")) ? "redness" : "botox_information";
-    body = <EmailGate experience={exp} defaultEmail={acctEmail} onDone={() => { track("results_viewed", exp); setI(steps.indexOf("profile")); }}
+    body = <EmailGate experience={exp} defaultEmail={acctEmail} onDone={() => {
+      track("results_viewed", exp);
+      if (lang === "en") {
+        const v = paywallVariant();
+        track(v === "B" ? "paywall_b_viewed" : "paywall_a_assigned", exp);
+        if (v === "B") setOffer(true);
+      }
+      setI(steps.indexOf("profile"));
+    }}
       results={redRes ? { score: redRes.score, summary: redRes.summary, points: [...(redRes.observations ?? []), ...(redRes.tips ?? [])] } : lineRes ? { summary: lineRes.summary } : undefined} />;
+  } else if (step === "profile" && offer && lang === "en") {
+    const exp = d.goals.includes("redness") || !(wantsBotox(d) || d.goals.includes("lines")) ? "redness" : "botox_information";
+    body = <OfferVariantB experience={exp} onContinue={() => { setOffer(false); window.scrollTo(0, 0); }}
+      preview={redRes ? { score: redRes.score, summary: redRes.summary, point: redRes.observations?.[0] } : { summary: lineRes?.summary }} />;
   } else if (step === "profile") {
     body = <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
       <p className="eyebrow">Your first results</p>
