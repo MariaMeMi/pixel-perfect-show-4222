@@ -10,7 +10,7 @@ import { categoryNames, categoryName, recordedSpf, rankCatalog } from '@/lib/pro
 
 const defaults = { view: 'recommended', q: '', category: '', skin: '', concern: '', brand: '', min: '', max: '', fragrance: false, spf: '', coverage: '', finish: '', sort: 'match', favorites: false, page: 1 };
 export const Route = createFileRoute('/products')({
-  validateSearch: (s: Record<string, unknown>) => ({
+  validateSearch: (s: Partial<typeof defaults>) => ({
     view: typeof s.view === 'string' ? s.view : defaults.view, q: typeof s.q === 'string' ? s.q : '', category: typeof s.category === 'string' ? s.category : '', skin: typeof s.skin === 'string' ? s.skin : '', concern: typeof s.concern === 'string' ? s.concern : '', brand: typeof s.brand === 'string' ? s.brand : '', min: typeof s.min === 'string' ? s.min : '', max: typeof s.max === 'string' ? s.max : '', fragrance: s.fragrance === true, spf: typeof s.spf === 'string' ? s.spf : '', coverage: typeof s.coverage === 'string' ? s.coverage : '', finish: typeof s.finish === 'string' ? s.finish : '', sort: typeof s.sort === 'string' ? s.sort : 'match', favorites: s.favorites === true, page: typeof s.page === 'number' && Number.isFinite(s.page) ? s.page : 1,
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(catalogQuery),
