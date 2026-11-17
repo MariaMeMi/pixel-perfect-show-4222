@@ -6,6 +6,7 @@ import { Chip } from "@/components/Chip";
 import { FaceMap } from "@/components/FaceMap";
 import { ScoreRing } from "@/components/ScoreRing";
 import { Button } from "@/components/ui/button";
+import { catalogSearchDefaults } from "@/lib/products/catalog";
 import { useI18n } from "@/lib/i18n";
 import { addEntry, baselineScore, loadEntries, loadProfile } from "@/lib/storage";
 import type { Analysis, Entry, FeelingKey, TriggerKey } from "@/lib/types";
@@ -300,6 +301,7 @@ function ResultsPage() {
       <Button type="button" variant="outline" onClick={() => save("/routine")} className="h-auto w-full rounded-full py-4 text-sm">
         Save &amp; build my routine
       </Button>
+      <Button asChild variant="outline" className="h-auto w-full py-4"><Link to="/products" search={catalogSearchDefaults}>Explore All Products</Link></Button>
     </div>
   );
 }
