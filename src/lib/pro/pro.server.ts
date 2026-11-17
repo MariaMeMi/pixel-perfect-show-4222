@@ -28,6 +28,10 @@ export async function upsertSubscription(sub: Stripe.Subscription, env: StripeEn
     updated_at: new Date().toISOString(),
   }, { onConflict: "stripe_subscription_id" });
   if (error) throw error;
+  // invoice.paid can arrive before the subscription event: fill in any payments recorded without a group.
+  await supabaseAdmin.from("payment_events")
+    .update({ user_id: userId, price_id: priceId, pricing_group: groupOf(priceId) })
+    .eq("stripe_subscription_id", sub.id).eq("pricing_group", "unknown");
 }
 
 async function subscriptionRow(subId: string | null | undefined) {
@@ -46,14 +50,16 @@ export async function recordPayment(inv: Stripe.Invoice, env: StripeEnv) {
   const subRef = parent?.subscription_details?.subscription;
   const subId = typeof subRef === "string" ? subRef : subRef?.id;
   const row = await subscriptionRow(subId);
+  const metaGroup = parent?.subscription_details?.metadata?.["pricing_group"];
   const priceId = row?.price_id ?? line?.price?.lookup_key ?? null;
+  const group = row?.pricing_group ?? (priceId ? groupOf(priceId) : metaGroup === "low" || metaGroup === "premium" ? metaGroup : "unknown");
   await supabaseAdmin.from("payment_events").upsert({
     stripe_object_id: inv.id,
     kind: "payment",
     user_id: row?.user_id ?? parent?.subscription_details?.metadata?.["userId"] ?? null,
     stripe_subscription_id: subId ?? null,
     price_id: priceId,
-    pricing_group: row?.pricing_group ?? groupOf(priceId),
+    pricing_group: group,
     amount_cents: inv.amount_paid,
     currency: inv.currency,
     environment: env,
