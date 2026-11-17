@@ -21,7 +21,7 @@ import type { LineArea, LineLevel } from "@/lib/botox";
 import {
   BOTOX_AREAS, BOTOX_PRODUCTS, BOTOX_WHEN, DIAGNOSED, DRY_EXPERIENCE, DRY_USING, GOALS, INFLUENCES, LINE_AREAS,
   LINE_DOING, NONE_TRIED, NOT_SURE, ONBOARDING_KEY, RATINGS, STOP_REASONS, SYMPTOMS, TREATMENTS, UNDERSTAND,
-  buildSteps, closingLine, emptyData, profileSections, toggle, wantsBotox,
+  buildSteps, closingLine, emptyData, profileSections, toggle, wantsBotox, wantsProducts,
   type GoalKey, type OnboardingData, type StepId, type TreatmentResult,
 } from "@/lib/onboarding/flow";
 
@@ -313,6 +313,11 @@ function Onboarding() {
       </div>
       <p className="mt-5 text-sm text-muted-foreground">{closingLine(d)}</p>
       <p className="mt-3 text-xs text-muted-foreground">Rose AI organizes what you record. It doesn't diagnose any condition or replace a qualified professional.</p>
+      {wantsProducts(d) && <section className="surface mt-6 p-5">
+        <p className="eyebrow">💄 Find my skincare & makeup</p>
+        <p className="mt-1.5 text-sm text-muted-foreground">Answer a few quick questions and we'll match skincare and optional makeup to your skin's needs.</p>
+        <Button type="button" onClick={() => navigate({ to: "/routine" })} className="mt-4 h-auto w-full rounded-full gradient-rose py-4 text-sm font-semibold text-primary-foreground">See my product matches</Button>
+      </section>}
       <div className="mt-6 flex flex-col gap-2">
          <Button type="button" onClick={() => navigate({ to: "/routine" })} className="h-auto w-full rounded-full gradient-rose py-4 text-sm text-primary-foreground">Build My Routine</Button>
          <Button type="button" variant="outline" onClick={() => navigate({ to: "/progress" })} className="h-auto w-full rounded-full py-3.5 text-sm">Start my skin timeline</Button>

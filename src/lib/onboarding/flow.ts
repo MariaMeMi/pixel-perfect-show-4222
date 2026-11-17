@@ -3,7 +3,7 @@
 
 export const ONBOARDING_KEY = "rosea.onboarding.v2";
 
-export type GoalKey = "redness" | "dryness" | "lines" | "botox" | "overall";
+export type GoalKey = "redness" | "dryness" | "lines" | "botox" | "overall" | "products";
 
 export type Rating = "much_better" | "little_better" | "no_change" | "little_worse" | "much_worse" | "not_sure";
 export type TreatmentResult = { stillUsing?: boolean; rating?: Rating; stopReasons: string[] };
@@ -46,7 +46,11 @@ export const GOALS: { key: GoalKey; icon: string; title: string; text: string }[
   { key: "lines", icon: "〰️", title: "Fine lines & wrinkles", text: "Track visible changes in lines and wrinkles" },
   { key: "botox", icon: "💉", title: "Botox progress", text: "Follow visible changes before and after treatment" },
   { key: "overall", icon: "✨", title: "Overall skin progress", text: "Build a visual history of how your skin changes" },
+  { key: "products", icon: "💄", title: "Find my skincare & makeup", text: "Discover products suited to your skin's needs" },
 ];
+
+/** True when the user asked for product discovery — results screen leads with the routine/product builder. */
+export const wantsProducts = (d: OnboardingData) => d.goals.includes("products");
 
 export const DIAGNOSED = ["Yes, by a dermatologist", "Yes, by another healthcare professional", "No", "I'm not sure"];
 export const SYMPTOMS = ["Persistent redness", "Flushing that comes and goes", "Visible blood vessels", "Bumps or pimples", "Burning or stinging", "Dryness / tightness", "Itching", "Swelling", "Eye irritation / dryness", "Thickening of the skin", "Something else"];
