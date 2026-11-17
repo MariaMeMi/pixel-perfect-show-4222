@@ -105,7 +105,7 @@ function ProPage() {
   return <div className="animate-rise mx-auto max-w-md space-y-6"><PaymentTestModeBanner />{body}</div>;
 }
 
-function Checkout({ plan, back, signedIn, hasSubscription, onManage }: { plan?: string; back?: Search["back"]; signedIn: boolean; hasSubscription: boolean; onManage: () => void }) {
+function Checkout({ plan, back, signedIn, hasSubscription, onManage }: { plan?: string | undefined; back?: Search["back"] | undefined; signedIn: boolean; hasSubscription: boolean; onManage: () => void }) {
   const navigate = useNavigate();
   const createFn = useServerFn(createProCheckout);
   const group = plan ? priceInfo(plan)!.group : pricingGroup();
@@ -140,7 +140,7 @@ function Checkout({ plan, back, signedIn, hasSubscription, onManage }: { plan?: 
   </div>;
 }
 
-function SignIn({ plan, back }: { plan: string; back?: Search["back"] }) {
+function SignIn({ plan, back }: { plan: string; back?: Search["back"] | undefined }) {
   const [mode, setMode] = useState<"choose" | "signin" | "signup" | "sent">("choose");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
