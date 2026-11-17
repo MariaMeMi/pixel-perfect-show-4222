@@ -39,7 +39,7 @@ export const PRO_FEATURES = [
 
 export function renewalTerms(interval: Interval, label: string) {
   const period = interval === "monthly" ? "month" : "year";
-  return `You'll be charged ${label} today (plus any applicable tax). Your subscription renews automatically every ${period} at ${label} until you cancel. Cancel anytime in Profile → Manage subscription; you keep Pro until the end of the period you've paid for. No free trial. Prices in USD; taxes may apply.`;
+  return `You'll be charged ${label} today (plus any applicable tax). Your subscription renews automatically every ${period} at ${label} until you cancel. Cancel anytime in Profile → Manage subscription; you keep Pro until the end of the period you've paid for. No free trial. Prices in USD.`;
 }
 
 const GROUP_KEY = "rose.pricing.group";
