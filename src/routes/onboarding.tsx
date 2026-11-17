@@ -12,7 +12,11 @@ import { Button } from "@/components/ui/button";
 import { catalogSearchDefaults } from "@/lib/products/catalog";
 import { track } from "@/lib/experiment";
 import { EmailGate } from "@/components/EmailGate";
-import { OfferVariantB, paywallVariant } from "@/components/paywall/OfferVariantB";
+import { ProOffer } from "@/components/paywall/ProOffer";
+import { usePlus } from "@/hooks/usePlus";
+import { pricingGroup } from "@/lib/pro/pricing";
+
+const PAYWALL_KEY = "rose.onboarding.paywall";
 import { RESUME_KEY, SaveDay1 } from "@/components/onboarding/SaveDay1";
 import { useI18n } from "@/lib/i18n";
 import { addEntry, loadProfile } from "@/lib/storage";
@@ -57,7 +61,8 @@ function Onboarding() {
   const [built, setBuilt] = useState(0);
   const [redRes, setRedRes] = useState<Analysis>();
   const [lineRes, setLineRes] = useState<LineRes>();
-  const [offer, setOffer] = useState(false);
+  const plan = usePlus();
+  const paywalled = lang === "en" && !plan.isPro;
   const [activeLine, setActiveLine] = useState<LineArea>("forehead");
   const [linePending, setLinePending] = useState(false);
   const [acctEmail, setAcctEmail] = useState<string>();
@@ -86,6 +91,26 @@ function Onboarding() {
     setI((n) => Math.min(n + 1, steps.length - 1));
   };
   const back = () => setI((n) => Math.max(0, n - 1));
+
+  // Back from Pro checkout: restore the analysis kept on this tab.
+  useEffect(() => {
+    if (sessionStorage.getItem(RESUME_KEY)) return;
+    const raw = sessionStorage.getItem(PAYWALL_KEY);
+    if (!raw) return;
+    try {
+      const saved = JSON.parse(raw) as { d: OnboardingData; redRes?: Analysis; lineRes?: LineRes };
+      if (!saved.redRes && !saved.lineRes) return;
+      setD(saved.d); if (saved.redRes) setRedRes(saved.redRes); if (saved.lineRes) setLineRes(saved.lineRes);
+      setI(buildSteps(saved.d).indexOf("profile"));
+    } catch { /* ignore */ }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const fullShown = useRef(false);
+  useEffect(() => {
+    if (step !== "profile" || lang !== "en" || !plan.isPro || fullShown.current || !(redRes || lineRes)) return;
+    fullShown.current = true;
+    track(pricingGroup() === "low" ? "pricing_low_full_results_viewed" : "pricing_premium_full_results_viewed", "onboarding");
+  }, [step, lang, plan.isPro, redRes, lineRes]);
 
   /* ---------- baseline: reuse the existing redness reading, then save as Day 1 ---------- */
   // Resume after a full-page Google/Apple redirect
@@ -271,16 +296,17 @@ function Onboarding() {
     body = <EmailGate experience={exp} defaultEmail={acctEmail} onDone={() => {
       track("results_viewed", exp);
       if (lang === "en") {
-        const v = paywallVariant();
-        track(v === "B" ? "paywall_b_viewed" : "paywall_a_assigned", exp);
-        if (v === "B") setOffer(true);
+        // Keep the results on this tab so they can be shown after checkout returns here.
+        try { sessionStorage.setItem(PAYWALL_KEY, JSON.stringify({ d, redRes, lineRes })); } catch { /* ignore */ }
       }
       setI(steps.indexOf("profile"));
     }}
-      results={redRes ? { score: redRes.score, summary: redRes.summary, points: [...(redRes.observations ?? []), ...(redRes.tips ?? [])] } : lineRes ? { summary: lineRes.summary } : undefined} />;
-  } else if (step === "profile" && offer && lang === "en") {
+      results={redRes ? { score: redRes.score, summary: redRes.summary, ...(lang === "en" ? {} : { points: [...(redRes.observations ?? []), ...(redRes.tips ?? [])] }) } : lineRes ? { summary: lineRes.summary } : undefined} />;
+  } else if (step === "profile" && lang === "en" && plan.loading) {
+    body = <p className="flex items-center justify-center gap-2 py-16 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" /> Loading…</p>;
+  } else if (step === "profile" && paywalled && (redRes || lineRes)) {
     const exp = d.goals.includes("redness") || !(wantsBotox(d) || d.goals.includes("lines")) ? "redness" : "botox_information";
-    body = <OfferVariantB experience={exp} onContinue={() => { setOffer(false); window.scrollTo(0, 0); }}
+    body = <ProOffer experience={exp} back="/onboarding"
       preview={redRes ? { score: redRes.score, summary: redRes.summary, point: redRes.observations?.[0] } : { summary: lineRes?.summary }} />;
   } else if (step === "profile") {
     body = <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
