@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { PRO_FEATURES, PRO_PRICES, perMonth, pricingGroup, type PricingGroup } from "@/lib/pro/pricing";
 import {
   ArrowRight, Camera, ChevronDown, FlaskConical, HeartHandshake, Layers,
   LineChart, Menu, Microscope, NotebookPen, ScanFace, ShieldCheck, Sparkles, Sprout, X,
@@ -32,6 +33,7 @@ const NAV = [
   ["How It Works", "#how"],
   ["Features", "#features"],
   ["Our Story", "#story"],
+  ["Pricing", "#pricing"],
   ["FAQ", "#faq"],
 ] as const;
 
@@ -49,6 +51,52 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 
 function H2({ children }: { children: React.ReactNode }) {
   return <h2 className={`${serif} text-4xl font-semibold leading-tight text-site-slate md:text-5xl`}>{children}</h2>;
+}
+
+function PricingSection() {
+  // Same sticky 50/50 price group as the app, so the site never shows a different price than checkout.
+  const [group, setGroup] = useState<PricingGroup>("low");
+  useEffect(() => setGroup(pricingGroup()), []);
+  const p = PRO_PRICES[group];
+  const plans = [
+    { name: "Monthly", price: p.monthly.label, note: "per month, cancel anytime", tag: null as string | null },
+    { name: "Yearly", price: p.yearly.label, note: `${perMonth(p.yearly.cents)}/month, billed yearly`, tag: "Best value" as string | null },
+  ];
+  return (
+    <section id="pricing" className="scroll-mt-20 bg-site-blush/40 py-20">
+      <div className="mx-auto max-w-5xl px-5 text-center">
+        <Eyebrow>Pricing</Eyebrow>
+        <H2>Start free. Upgrade when you're ready.</H2>
+        <p className="mx-auto mt-5 max-w-2xl text-lg text-site-ink/75">
+          Your first skin check is free. Rosea.AI Pro unlocks your full analysis and everything below.
+        </p>
+        <div className="mt-12 grid gap-5 text-left md:grid-cols-2">
+          {plans.map((plan) => (
+            <article key={plan.name} className={`relative rounded-3xl border bg-site-ivory p-8 ${plan.tag ? "border-site-rose shadow-[0_20px_50px_-20px_var(--site-rose)]" : "border-site-slate/10"}`}>
+              {plan.tag && (
+                <span className="absolute -top-3 left-8 rounded-full bg-site-rose px-3 py-1 text-xs font-semibold uppercase tracking-wider text-site-ivory">{plan.tag}</span>
+              )}
+              <h3 className={`${serif} text-2xl font-semibold text-site-slate`}>{plan.name}</h3>
+              <p className="mt-3"><span className={`${serif} text-5xl font-semibold text-site-slate`}>{plan.price}</span></p>
+              <p className="mt-1 text-sm text-site-ink/70">{plan.note}</p>
+              <ul className="mt-6 space-y-2.5 text-site-ink/80">
+                {PRO_FEATURES.map((f) => (
+                  <li key={f} className="flex items-start gap-2.5">
+                    <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-site-rose" />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <Cta className="mt-8 w-full">Try Rosea.AI <ArrowRight className="h-4 w-4" /></Cta>
+            </article>
+          ))}
+        </div>
+        <p className="mx-auto mt-8 max-w-2xl text-sm text-site-slate/75">
+          Subscriptions renew automatically until you cancel. Cancel anytime in the app — you keep Pro until the end of the paid period. No free trial. Prices in USD, plus any applicable tax.
+        </p>
+      </div>
+    </section>
+  );
 }
 
 function Header() {
@@ -318,6 +366,9 @@ function SitePage() {
             </p>
           </div>
         </section>
+
+        {/* Pricing */}
+        <PricingSection />
 
         {/* FAQ */}
         <section id="faq" className="mx-auto max-w-3xl scroll-mt-20 px-5 py-20">
