@@ -6,6 +6,7 @@ import {
   LineChart, Menu, Microscope, NotebookPen, ScanFace, ShieldCheck, Sparkles, Sprout, X,
 } from "lucide-react";
 import portrait from "@/assets/mary-portrait.jpg.asset.json";
+import phoneScreen from "@/assets/app-phone-screen.png.asset.json";
 
 const APP_URL = "https://xrosacea.com";
 const serif = "font-['Cormorant_Garamond',serif]";
@@ -22,6 +23,8 @@ export const Route = createFileRoute("/site")({
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESC },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: `${APP_URL}${phoneScreen.url}` },
+      { name: "twitter:image", content: `${APP_URL}${phoneScreen.url}` },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "keywords", content: "rosacea skincare, sensitive skin skincare, skincare ingredient checker, AI skincare analysis, rosacea skin tracker, personalized skincare recommendations" },
     ],
@@ -123,42 +126,27 @@ function Header() {
   );
 }
 
-function Phone({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function Phone({ children, className = "", full = false }: { children: React.ReactNode; className?: string; full?: boolean }) {
   return (
-    <div className={`relative mx-auto w-[260px] rounded-[2.4rem] border-[10px] border-site-slate bg-site-ivory p-4 shadow-[0_30px_60px_-25px_var(--site-slate)] ${className}`}>
-      <div className="mx-auto mb-3 h-1.5 w-16 rounded-full bg-site-slate/20" />
-      {children}
+    <div className={`relative mx-auto w-[260px] rounded-[2.4rem] border-[10px] border-site-slate bg-site-slate shadow-[0_30px_60px_-25px_var(--site-slate)] ${className}`}>
+      <div className="mx-auto mb-2 mt-1 h-1.5 w-16 rounded-full bg-site-ivory/25" />
+      <div className={`overflow-hidden rounded-[1.45rem] bg-site-ivory ${full ? "" : "p-4 pb-5"}`}>
+        {children}
+      </div>
     </div>
   );
 }
 
 function AnalysisMockup() {
   return (
-    <Phone>
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-site-blue">Today's skin check</p>
-      <div className="mt-3 flex items-center gap-3">
-        <div className="relative grid h-20 w-20 place-items-center rounded-full" style={{ background: "conic-gradient(var(--site-blue) 0 72%, var(--site-paleblue) 72% 100%)" }}>
-          <div className="grid h-16 w-16 place-items-center rounded-full bg-site-ivory">
-            <span className={`${serif} text-2xl font-semibold text-site-slate`}>72</span>
-          </div>
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-site-slate">Calmer than last week</p>
-          <p className="text-[11px] text-site-ink/70">Photo-based observation</p>
-        </div>
-      </div>
-      <div className="mt-4 space-y-2">
-        {[["Visible redness", "Mild · cheeks", "bg-site-rose"], ["Dryness", "Low", "bg-site-blue"], ["Routine", "On track", "bg-site-sage"]].map(([a, b, c]) => (
-          <div key={a} className="flex items-center justify-between rounded-xl bg-site-paleblue/70 px-3 py-2">
-            <span className="flex items-center gap-2 text-xs font-medium text-site-slate"><span className={`h-2 w-2 rounded-full ${c}`} />{a}</span>
-            <span className="text-[11px] text-site-ink/70">{b}</span>
-          </div>
-        ))}
-      </div>
-      <div className="mt-4 rounded-xl border border-site-sage/40 bg-site-ivory p-3">
-        <p className="text-[11px] font-semibold text-site-sage">Gentle tip</p>
-        <p className="text-[11px] text-site-ink/80">A fragrance-free moisturizer may feel soothing today.</p>
-      </div>
+    <Phone full className="w-[268px]">
+      <img
+        src={phoneScreen.url}
+        alt="Rosea.AI skin check screen: redness score 40 out of 100, a summary of visible redness, and a breakdown of where redness shows most"
+        width={768}
+        height={1556}
+        className="block w-full"
+      />
     </Phone>
   );
 }
