@@ -43,18 +43,18 @@ const NAV = [
 
 function Cta({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <a href={APP_URL} className={`inline-flex items-center justify-center gap-2 rounded-full bg-site-cta px-6 py-3 text-sm font-semibold text-site-ivory shadow-[0_10px_30px_-12px_var(--site-cta)] transition hover:brightness-110 ${className}`}>
+    <a href={APP_URL} className={`inline-flex items-center justify-center gap-2 rounded-full bg-site-cta px-7 py-3.5 text-base font-semibold text-site-ivory shadow-[0_10px_30px_-12px_var(--site-cta)] transition hover:brightness-110 ${className}`}>
       {children}
     </a>
   );
 }
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
-  return <p className="text-xs font-semibold uppercase tracking-[0.22em] text-site-rose">{children}</p>;
+  return <p className="text-sm font-semibold uppercase tracking-[0.22em] text-site-rose">{children}</p>;
 }
 
 function H2({ children }: { children: React.ReactNode }) {
-  return <h2 className={`${serif} text-4xl font-semibold leading-tight text-site-slate md:text-5xl`}>{children}</h2>;
+  return <h2 className={`${serif} text-4xl font-semibold leading-tight text-site-slate md:text-6xl`}>{children}</h2>;
 }
 
 function PricingSection() {
@@ -71,7 +71,7 @@ function PricingSection() {
       <div className="mx-auto max-w-5xl px-5 text-center">
         <Eyebrow>Pricing</Eyebrow>
         <H2>Start free. Upgrade when you're ready.</H2>
-        <p className="mx-auto mt-5 max-w-2xl text-lg text-site-ink/75">
+        <p className="mx-auto mt-5 max-w-2xl text-xl text-site-ink/75">
           Your first skin check is free. Rosea.AI Pro unlocks your full analysis and everything below.
         </p>
         <div className="mt-12 grid gap-5 text-left md:grid-cols-2">
@@ -82,7 +82,7 @@ function PricingSection() {
               )}
               <h3 className={`${serif} text-2xl font-semibold text-site-slate`}>{plan.name}</h3>
               <p className="mt-3"><span className={`${serif} text-5xl font-semibold text-site-slate`}>{plan.price}</span></p>
-              <p className="mt-1 text-sm text-site-ink/70">{plan.note}</p>
+              <p className="mt-1 text-base text-site-ink/70">{plan.note}</p>
               <ul className="mt-6 space-y-2.5 text-site-ink/80">
                 {PRO_FEATURES.map((f) => (
                   <li key={f} className="flex items-start gap-2.5">
@@ -95,7 +95,7 @@ function PricingSection() {
             </article>
           ))}
         </div>
-        <p className="mx-auto mt-8 max-w-2xl text-sm text-site-slate/75">
+        <p className="mx-auto mt-8 max-w-2xl text-base text-site-slate/75">
           Subscriptions renew automatically until you cancel. Cancel anytime in the app — you keep Pro until the end of the paid period. No free trial. Prices in USD, plus any applicable tax.
         </p>
       </div>
@@ -110,8 +110,8 @@ function Header() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
         <a href="#top" className={`${serif} text-2xl font-semibold text-site-slate`}>Rosea<span className="text-site-rose">.AI</span></a>
         <nav className="hidden items-center gap-8 md:flex" aria-label="Main">
-          {NAV.map(([l, h]) => <a key={h} href={h} className="text-sm font-medium text-site-slate/80 hover:text-site-slate">{l}</a>)}
-          <Cta className="px-5 py-2">Try for Free</Cta>
+          {NAV.map(([l, h]) => <a key={h} href={h} className="text-base font-medium text-site-slate/80 hover:text-site-slate">{l}</a>)}
+          <Cta className="px-5 py-2 text-sm">Try for Free</Cta>
         </nav>
         <button className="md:hidden text-site-slate" aria-label={open ? "Close menu" : "Open menu"} onClick={() => setOpen(!open)}>
           {open ? <X /> : <Menu />}
@@ -214,14 +214,14 @@ function SitePage() {
             <div className="absolute inset-0 hidden bg-gradient-to-r from-site-slate/90 via-site-slate/55 to-transparent md:block" aria-hidden="true" />
             <div className="relative mx-auto flex max-w-6xl items-center px-5 py-14 md:min-h-[86vh] md:items-end md:pb-32 md:pt-24">
               <div className="max-w-xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-site-rose md:text-site-blush">Rosea.AI — Your personal skin companion</p>
-                <h1 className={`${serif} mt-5 text-5xl font-semibold leading-[1.05] text-site-slate md:text-6xl md:text-site-ivory`}>Your skin is unique. Your skincare should be too.</h1>
-                <p className="mt-6 max-w-lg text-lg leading-relaxed text-site-ink/80 md:text-site-ivory/85">Discover skincare products, explore ingredients, and track your skin's changes with an AI-powered companion designed for rosacea-prone and sensitive skin.</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-site-rose md:text-site-blush">Rosea.AI — Your personal skin companion</p>
+                <h1 className={`${serif} mt-5 text-5xl font-semibold leading-[1.05] text-site-slate md:text-6xl lg:text-7xl md:text-site-ivory`}>Your skin is unique. Your skincare should be too.</h1>
+                <p className="mt-6 max-w-lg text-lg leading-relaxed text-site-ink/80 md:text-xl md:text-site-ivory/85">Discover skincare products, explore ingredients, and track your skin's changes with an AI-powered companion designed for rosacea-prone and sensitive skin.</p>
                 <div className="mt-8 flex flex-wrap gap-3">
                   <Cta>Try Rosea.AI for Free <ArrowRight className="h-4 w-4" /></Cta>
-                  <a href="#how" className="inline-flex items-center rounded-full border border-site-slate/25 px-6 py-3 text-sm font-semibold text-site-slate hover:bg-site-ivory/60 md:border-site-ivory/50 md:text-site-ivory md:hover:bg-site-ivory/10">See How It Works</a>
+                  <a href="#how" className="inline-flex items-center rounded-full border border-site-slate/25 px-7 py-3.5 text-base font-semibold text-site-slate hover:bg-site-ivory/60 md:border-site-ivory/50 md:text-site-ivory md:hover:bg-site-ivory/10">See How It Works</a>
                 </div>
-                <p className="mt-6 text-sm italic text-site-slate/70 md:text-site-ivory/75">Understand your skin. Less guessing, better skincare.</p>
+                <p className="mt-6 text-base italic text-site-slate/70 md:text-site-ivory/75">Understand your skin. Less guessing, better skincare.</p>
               </div>
             </div>
           </div>
@@ -231,7 +231,7 @@ function SitePage() {
         <section className="mx-auto max-w-6xl px-5 py-20">
           <div className="max-w-2xl">
             <H2>Sensitive skin shouldn't mean endless guesswork.</H2>
-            <p className="mt-5 text-lg text-site-ink/75">Finding skincare that works for rosacea-prone skin can feel overwhelming. With so many products, ingredients, and possible triggers, understanding your skin is not always easy.</p>
+            <p className="mt-5 text-xl text-site-ink/75">Finding skincare that works for rosacea-prone skin can feel overwhelming. With so many products, ingredients, and possible triggers, understanding your skin is not always easy.</p>
           </div>
           <div className="mt-12 grid gap-5 md:grid-cols-3">
             {[[Layers, "Too many skincare products", "Shelves full of promises, and no clear way to know what suits reactive skin.", "border-t-site-rose"],
@@ -242,7 +242,7 @@ function SitePage() {
                 <article key={t as string} className={`rounded-3xl border border-site-slate/10 border-t-4 ${c} bg-site-ivory p-7 shadow-sm`}>
                   <I className="h-6 w-6 text-site-slate" strokeWidth={1.5} />
                   <h3 className={`${serif} mt-4 text-2xl font-semibold text-site-slate`}>{t as string}</h3>
-                  <p className="mt-2 text-site-ink/70">{d as string}</p>
+                  <p className="mt-2 text-site-ink/70 md:text-lg">{d as string}</p>
                 </article>
               );
             })}
@@ -256,7 +256,7 @@ function SitePage() {
               <div>
                 <Eyebrow>How it works</Eyebrow>
                 <div className="mt-3"><H2>A smarter way to understand your skin.</H2></div>
-                <p className="mt-5 max-w-lg text-lg text-site-ink/75">A real skin check in the app: a redness score, a plain-language summary, and where redness shows most.</p>
+                <p className="mt-5 max-w-lg text-xl text-site-ink/75">A real skin check in the app: a redness score, a plain-language summary, and where redness shows most.</p>
               </div>
               <AnalysisMockup />
             </div>
@@ -272,7 +272,7 @@ function SitePage() {
                       <I className="h-6 w-6 text-site-blue" strokeWidth={1.5} />
                     </div>
                     <h3 className={`${serif} mt-6 text-2xl font-semibold text-site-slate`}>{t as string}</h3>
-                    <p className="mt-2 text-site-ink/75">{d as string}</p>
+                    <p className="mt-2 text-site-ink/75 md:text-lg">{d as string}</p>
                   </article>
                 );
               })}
@@ -289,7 +289,7 @@ function SitePage() {
           <div className="relative mx-auto max-w-6xl px-5">
             <Eyebrow>AI-powered discovery</Eyebrow>
             <div className="mt-3 max-w-2xl"><H2>Skincare decisions, backed by better information.</H2></div>
-            <p className="mt-5 max-w-2xl text-lg text-site-ink/75">Explore products and ingredients with your skin's sensitivities and preferences in mind.</p>
+            <p className="mt-5 max-w-2xl text-xl text-site-ink/75">Explore products and ingredients with your skin's sensitivities and preferences in mind.</p>
             <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {[[Microscope, "Ingredient analysis", "See which ingredients are commonly discussed as potential irritants."],
                 [Sparkles, "Personalized product discovery", "Browse products filtered by your goals and preferences."],
@@ -300,12 +300,12 @@ function SitePage() {
                   <article key={t as string} className="rounded-3xl border border-site-blue/30 bg-site-ivory/90 p-6">
                     <I className="h-6 w-6 text-site-blue" strokeWidth={1.5} />
                     <h3 className="mt-4 font-semibold text-site-slate">{t as string}</h3>
-                    <p className="mt-2 text-sm text-site-ink/70">{d as string}</p>
+                    <p className="mt-2 text-base text-site-ink/70">{d as string}</p>
                   </article>
                 );
               })}
             </div>
-            <p className="mt-8 text-sm text-site-slate/70">Suggestions are informational. No tool can guarantee a product will be safe or effective for your skin — patch-test new products.</p>
+            <p className="mt-8 text-base text-site-slate/70">Suggestions are informational. No tool can guarantee a product will be safe or effective for your skin — patch-test new products.</p>
           </div>
         </section>
 
@@ -315,11 +315,11 @@ function SitePage() {
           <div className="order-1 md:order-2">
             <Eyebrow>Progress tracking</Eyebrow>
             <div className="mt-3"><H2>Your skin changes. Now you can follow the journey.</H2></div>
-            <p className="mt-5 text-lg text-site-ink/75">Keep your skin photos, symptoms, and routines organized in one place. Compare changes over time and explore possible connections between your daily habits and your skin.</p>
+            <p className="mt-5 text-xl text-site-ink/75">Keep your skin photos, symptoms, and routines organized in one place. Compare changes over time and explore possible connections between your daily habits and your skin.</p>
             <ul className="mt-6 space-y-3">
               {[[LineChart, "Skin progress timeline", "text-site-blue"], [Camera, "Photo comparisons", "text-site-blue"], [HeartHandshake, "Symptom tracking", "text-site-rose"], [NotebookPen, "Possible trigger journal", "text-site-sage"]].map(([Icon, t, c]) => {
                 const I = Icon as typeof LineChart;
-                return <li key={t as string} className="flex items-center gap-3 font-medium text-site-slate"><I className={`h-5 w-5 ${c}`} strokeWidth={1.5} />{t as string}</li>;
+                return <li key={t as string} className="flex items-center gap-3 text-lg font-medium text-site-slate"><I className={`h-5 w-5 ${c}`} strokeWidth={1.5} />{t as string}</li>;
               })}
             </ul>
           </div>
@@ -337,14 +337,14 @@ function SitePage() {
             <div className="text-left">
               <Eyebrow>Meet our founder</Eyebrow>
               <h2 className={`${serif} mt-4 text-4xl font-semibold leading-tight text-site-slate md:text-[3.25rem]`}>Born From Experience. Built With Purpose.</h2>
-              <div className="mt-6 space-y-4 text-base leading-relaxed text-site-slate md:text-lg">
+              <div className="mt-6 space-y-4 text-lg leading-relaxed text-site-slate md:text-xl">
                 <p>After years of living with rosacea, Mary founded Rosea.AI to make understanding sensitive skin and finding suitable skincare less overwhelming.</p>
                 <p>Drawing on her personal journey, background in psychology, and passion for evidence-informed skincare, she's building the tool she wishes she'd had years ago — with the belief that everyone deserves to feel more confident in their own skin.</p>
               </div>
               <span className="mt-8 block h-px w-16 bg-site-rose" aria-hidden="true" />
               <p className={`${serif} mt-5 text-2xl font-semibold text-site-slate`}>Mary</p>
-              <p className="text-sm text-site-slate/70">Founder &amp; CEO, Rosea.AI</p>
-              <Link to="/our-story" className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-site-slate underline decoration-site-rose underline-offset-4 hover:text-site-cta">Read My Story <ArrowRight className="h-4 w-4" /></Link>
+              <p className="text-base text-site-slate/70">Founder &amp; CEO, Rosea.AI</p>
+              <Link to="/our-story" className="mt-6 inline-flex items-center gap-1.5 text-base font-semibold text-site-slate underline decoration-site-rose underline-offset-4 hover:text-site-cta">Read My Story <ArrowRight className="h-4 w-4" /></Link>
             </div>
           </div>
         </section>
@@ -353,7 +353,7 @@ function SitePage() {
         <section className="bg-gradient-to-b from-site-ivory to-site-paleblue py-20">
           <div className="mx-auto max-w-6xl px-5 text-center">
             <H2>Science-led. Skin-centered.</H2>
-            <p className="mx-auto mt-5 max-w-2xl text-lg text-site-ink/75">We believe skincare should be informed by evidence, personalized to individual needs, and approached with compassion.</p>
+            <p className="mx-auto mt-5 max-w-2xl text-xl text-site-ink/75">We believe skincare should be informed by evidence, personalized to individual needs, and approached with compassion.</p>
             <div className="mt-12 grid gap-5 text-left md:grid-cols-3">
               {[["Evidence-informed education", "Content draws on published skincare guidance, explained in plain language."],
                 ["Transparent AI technology", "We explain what the AI observes and where its limits are."],
@@ -365,7 +365,7 @@ function SitePage() {
                 </article>
               ))}
             </div>
-            <p className="mx-auto mt-10 max-w-2xl rounded-2xl border border-site-slate/15 bg-site-ivory/80 px-5 py-4 text-sm text-site-slate">
+            <p className="mx-auto mt-10 max-w-2xl rounded-2xl border border-site-slate/15 bg-site-ivory/80 px-5 py-4 text-base text-site-slate">
               Rosea.AI is not a medical diagnostic tool and does not replace professional dermatology care.
             </p>
           </div>
@@ -380,10 +380,10 @@ function SitePage() {
           <div className="mt-10 divide-y divide-site-slate/10 rounded-3xl border border-site-slate/10 bg-site-ivory">
             {FAQS.map(([q, a]) => (
               <details key={q} className="group px-6 py-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-site-slate">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-semibold text-site-slate">
                   {q}<ChevronDown className="h-5 w-5 shrink-0 transition group-open:rotate-180" />
                 </summary>
-                <p className="mt-3 leading-relaxed text-site-ink/75">{a}</p>
+                <p className="mt-3 text-lg leading-relaxed text-site-ink/75">{a}</p>
               </details>
             ))}
           </div>
@@ -393,13 +393,13 @@ function SitePage() {
         <section className="px-5 pb-20">
           <div className="mx-auto max-w-5xl rounded-[2.5rem] bg-gradient-to-br from-site-rose to-site-blush px-6 py-16 text-center">
             <h2 className={`${serif} text-4xl font-semibold text-site-slate md:text-5xl`}>Your skin journey deserves more clarity.</h2>
-            <p className="mx-auto mt-5 max-w-xl text-lg text-site-slate/85">Start understanding your skin, exploring skincare, and tracking your progress with Rosea.AI.</p>
+            <p className="mx-auto mt-5 max-w-xl text-xl text-site-slate/85">Start understanding your skin, exploring skincare, and tracking your progress with Rosea.AI.</p>
             <Cta className="mt-8">Start for Free <ArrowRight className="h-4 w-4" /></Cta>
-            <p className="mt-4 text-sm text-site-slate/75">Your personal skincare companion.</p>
+            <p className="mt-4 text-base text-site-slate/75">Your personal skincare companion.</p>
           </div>
         </section>
       </main>
-      <footer className="border-t border-site-slate/10 px-5 py-8 text-center text-sm text-site-slate/70">
+      <footer className="border-t border-site-slate/10 px-5 py-8 text-center text-base text-site-slate/70">
         © {new Date().getFullYear()} Rosea.AI · <a href={`${APP_URL}/privacy`} className="underline">Privacy</a> · Not a medical device.
       </footer>
     </div>
