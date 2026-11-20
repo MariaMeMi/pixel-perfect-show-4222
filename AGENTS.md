@@ -32,3 +32,4 @@
 - Product library reads active verified and pending listings in bounded public read-only pages; its Recommended view includes only verified rows and reuses routine scoring, while favorites/preferences stay on-device to preserve guest privacy.
 - English Rosacea AI results for non-paying callers return only the free preview; the full result is kept server-side in locked_analyses and released by unlockAnalysis after a server paid-access check (environment derived from host, not the browser), so the paywall is not frontend-only.
 - Skin-check photos are stored server-side only with explicit per-check consent (private skin-check-photos bucket, server-only skin_photos table); guests delete via a hashed device key, owner review checks verified user id server-side, because photos are sensitive data.
+- Marketing site lives at /site (outside the app shell) with its own site-* color tokens; CTAs link to the app domain so the site can move to its own domain later.

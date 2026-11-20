@@ -34,7 +34,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     return () => { cancelled = true; };
   }, [isOnboarding]);
 
-  if (pathname.startsWith('/hair')) return <>{children}</>;
+  if (pathname.startsWith('/hair') || pathname === '/site') return <>{children}</>;
 
   if (pathname.startsWith('/clinician'))
     return (

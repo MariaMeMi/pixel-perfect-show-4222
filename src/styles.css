@@ -268,3 +268,27 @@
 @utility animate-rise {
   animation: rosea-rise 0.5s ease-out both;
 }
+
+/* Rosea.AI marketing site palette (/site) */
+:root {
+  --site-ivory: #FFF9F6;
+  --site-blush: #F9E8EE;
+  --site-rose: #C77B8B;
+  --site-blue: #7FAFC4;
+  --site-paleblue: #EAF3F8;
+  --site-sage: #91A99A;
+  --site-slate: #304D61;
+  --site-cta: #C4144B;
+  --site-ink: #2A2F36;
+}
+@theme inline {
+  --color-site-ivory: var(--site-ivory);
+  --color-site-blush: var(--site-blush);
+  --color-site-rose: var(--site-rose);
+  --color-site-blue: var(--site-blue);
+  --color-site-paleblue: var(--site-paleblue);
+  --color-site-sage: var(--site-sage);
+  --color-site-slate: var(--site-slate);
+  --color-site-cta: var(--site-cta);
+  --color-site-ink: var(--site-ink);
+}

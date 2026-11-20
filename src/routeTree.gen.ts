@@ -26,6 +26,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as ResultsRouteImport } from './routes/results'
 import { Route as RoutineRouteImport } from './routes/routine'
+import { Route as SiteRouteImport } from './routes/site'
 import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as AuthenticatedClinicianRouteRouteImport } from './routes/_authenticated/clinician/route'
 import { Route as ApiAnalyzeRouteImport } from './routes/api/analyze'
@@ -141,6 +142,11 @@ const ResultsRoute = ResultsRouteImport.update({
 const RoutineRoute = RoutineRouteImport.update({
   id: '/routine',
   path: '/routine',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SiteRoute = SiteRouteImport.update({
+  id: '/site',
+  path: '/site',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WelcomeRoute = WelcomeRouteImport.update({
@@ -335,6 +341,7 @@ export interface FileRoutesByFullPath {
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
   '/routine': typeof RoutineRoute
+  '/site': typeof SiteRoute
   '/welcome': typeof WelcomeRoute
   '/clinician': typeof AuthenticatedClinicianRouteRouteWithChildren
   '/api/analyze': typeof ApiAnalyzeRoute
@@ -385,6 +392,7 @@ export interface FileRoutesByTo {
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
   '/routine': typeof RoutineRoute
+  '/site': typeof SiteRoute
   '/welcome': typeof WelcomeRoute
   '/clinician': typeof AuthenticatedClinicianRouteRouteWithChildren
   '/api/analyze': typeof ApiAnalyzeRoute
@@ -437,6 +445,7 @@ export interface FileRoutesById {
   '/progress': typeof ProgressRoute
   '/results': typeof ResultsRoute
   '/routine': typeof RoutineRoute
+  '/site': typeof SiteRoute
   '/welcome': typeof WelcomeRoute
   '/_authenticated/clinician': typeof AuthenticatedClinicianRouteRouteWithChildren
   '/api/analyze': typeof ApiAnalyzeRoute
@@ -489,6 +498,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/results'
     | '/routine'
+    | '/site'
     | '/welcome'
     | '/clinician'
     | '/api/analyze'
@@ -539,6 +549,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/results'
     | '/routine'
+    | '/site'
     | '/welcome'
     | '/clinician'
     | '/api/analyze'
@@ -590,6 +601,7 @@ export interface FileRouteTypes {
     | '/progress'
     | '/results'
     | '/routine'
+    | '/site'
     | '/welcome'
     | '/_authenticated/clinician'
     | '/api/analyze'
@@ -642,6 +654,7 @@ export interface RootRouteChildren {
   ProgressRoute: typeof ProgressRoute
   ResultsRoute: typeof ResultsRoute
   RoutineRoute: typeof RoutineRoute
+  SiteRoute: typeof SiteRoute
   WelcomeRoute: typeof WelcomeRoute
   ApiAnalyzeRoute: typeof ApiAnalyzeRoute
   ApiBotoxRoute: typeof ApiBotoxRoute
@@ -784,6 +797,13 @@ declare module '@tanstack/react-router' {
       path: '/routine'
       fullPath: '/routine'
       preLoaderRoute: typeof RoutineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/site': {
+      id: '/site'
+      path: '/site'
+      fullPath: '/site'
+      preLoaderRoute: typeof SiteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/welcome': {
@@ -1076,6 +1096,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProgressRoute: ProgressRoute,
   ResultsRoute: ResultsRoute,
   RoutineRoute: RoutineRoute,
+  SiteRoute: SiteRoute,
   WelcomeRoute: WelcomeRoute,
   ApiAnalyzeRoute: ApiAnalyzeRoute,
   ApiBotoxRoute: ApiBotoxRoute,
