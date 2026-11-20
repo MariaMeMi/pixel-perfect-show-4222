@@ -209,7 +209,7 @@ function SitePage() {
               src={heroPortrait.url}
               alt=""
               aria-hidden="true"
-              className="absolute inset-0 hidden h-full w-full object-cover object-[72%_top] md:block"
+              className="absolute inset-0 hidden h-full w-full object-contain object-right md:block"
             />
             <div className="absolute inset-0 hidden bg-gradient-to-r from-site-slate/90 via-site-slate/55 to-transparent md:block" aria-hidden="true" />
             <div className="relative mx-auto flex max-w-6xl items-center px-5 py-14 md:min-h-[86vh] md:items-end md:pb-32 md:pt-24">
