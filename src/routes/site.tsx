@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import portrait from "@/assets/mary-portrait.jpg.asset.json";
 import phoneScreen from "@/assets/app-phone-screen.png.asset.json";
+import heroPortrait from "@/assets/mary-hero.png.asset.json";
 
 const APP_URL = "https://xrosacea.com";
 const serif = "font-['Cormorant_Garamond',serif]";
@@ -212,7 +213,18 @@ function SitePage() {
             <div className="relative">
               <div className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-site-blue/30" />
               <div className="absolute left-1/2 top-1/2 h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-site-blue/40" />
-              <AnalysisMockup />
+              <div className="relative flex items-center justify-center gap-6">
+                <figure className="hidden w-[196px] shrink-0 overflow-hidden rounded-[1.75rem] border border-site-slate/10 shadow-[0_25px_55px_-28px_var(--site-slate)] lg:block">
+                  <img
+                    src={heroPortrait.url}
+                    alt="Mary, founder of Rosea.AI"
+                    width={710}
+                    height={841}
+                    className="block h-full w-full object-cover"
+                  />
+                </figure>
+                <AnalysisMockup />
+              </div>
             </div>
           </div>
         </section>
