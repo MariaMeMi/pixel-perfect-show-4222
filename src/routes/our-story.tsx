@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Camera } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import portrait from "@/assets/mary-portrait.jpg.asset.json";
 
 const serif = "font-['Cormorant_Garamond',serif]";
 const TITLE = "Our Story — Mary, founder of Rosea.AI";
@@ -31,8 +32,8 @@ function OurStory() {
       <main className="mx-auto max-w-3xl px-5 py-16">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-site-rose">Our story</p>
         <h1 className={`${serif} mt-4 text-5xl font-semibold leading-tight text-site-slate`}>Born From Experience. Built With Purpose.</h1>
-        <figure className="relative mt-10 aspect-[16/10] overflow-hidden rounded-[2rem] bg-site-blush">
-          <div className="absolute inset-0 grid place-items-center text-site-slate/50"><div className="text-center"><Camera className="mx-auto h-8 w-8" strokeWidth={1.25} /><p className="mt-2 text-sm">Portrait of Mary</p></div></div>
+        <figure className="relative mx-auto mt-10 aspect-[4/5] max-w-md overflow-hidden rounded-[2rem] bg-site-blush">
+          <img src={portrait.url} alt="Mary, founder of Rosea.AI" className="absolute inset-0 h-full w-full object-cover object-top" />
         </figure>
         <div className="mt-10 space-y-5 text-lg leading-relaxed">
           <p>I've lived with rosacea since my teenage years. I know how frustrating unpredictable redness, sensitive skin, and endless product experimentation can be — and how deeply it can affect your confidence.</p>

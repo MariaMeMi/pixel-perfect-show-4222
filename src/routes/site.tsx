@@ -4,6 +4,7 @@ import {
   ArrowRight, Camera, ChevronDown, FlaskConical, HeartHandshake, Layers,
   LineChart, Menu, Microscope, NotebookPen, ScanFace, ShieldCheck, Sparkles, Sprout, X,
 } from "lucide-react";
+import portrait from "@/assets/mary-portrait.jpg.asset.json";
 
 const APP_URL = "https://xrosacea.com";
 const serif = "font-['Cormorant_Garamond',serif]";
@@ -278,9 +279,7 @@ function SitePage() {
             <div className="relative">
               <div className="absolute -left-4 -top-4 h-2/3 w-2/3 rounded-[2rem] bg-site-paleblue" aria-hidden="true" />
               <figure className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-site-blush">
-                <div className="absolute inset-0 grid place-items-center text-center text-site-slate/50">
-                  <div><Camera className="mx-auto h-8 w-8" strokeWidth={1.25} /><p className="mt-2 text-sm">Portrait of Mary, founder of Rosea.AI</p></div>
-                </div>
+                <img src={portrait.url} alt="Mary, founder of Rosea.AI" className="absolute inset-0 h-full w-full object-cover object-top" />
               </figure>
             </div>
             <div className="text-left">
