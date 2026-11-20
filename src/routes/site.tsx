@@ -212,7 +212,7 @@ function SitePage() {
               className="absolute inset-0 hidden h-full w-full object-cover object-[72%_top] md:block"
             />
             <div className="absolute inset-0 hidden bg-gradient-to-r from-site-slate/90 via-site-slate/55 to-transparent md:block" aria-hidden="true" />
-            <div className="relative mx-auto flex max-w-6xl items-center px-5 py-14 md:min-h-[86vh] md:py-24">
+            <div className="relative mx-auto flex max-w-6xl items-center px-5 py-14 md:min-h-[86vh] md:items-end md:pb-32 md:pt-24">
               <div className="max-w-xl">
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-site-rose md:text-site-blush">Rosea.AI — Your personal skin companion</p>
                 <h1 className={`${serif} mt-5 text-5xl font-semibold leading-[1.05] text-site-slate md:text-6xl md:text-site-ivory`}>Your skin is unique. Your skincare should be too.</h1>
