@@ -195,35 +195,33 @@ function SitePage() {
     <div id="top" className="min-h-screen scroll-smooth bg-site-ivory text-site-ink">
       <Header />
       <main>
-        {/* Hero */}
-        <section className="relative overflow-hidden bg-site-blush">
-          <div className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-site-paleblue blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-site-ivory blur-3xl" />
-          <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 md:grid-cols-2 md:py-24">
-            <div>
-              <Eyebrow>Rosea.AI — Your personal skin companion</Eyebrow>
-              <h1 className={`${serif} mt-5 text-5xl font-semibold leading-[1.05] text-site-slate md:text-6xl`}>Your skin is unique. Your skincare should be too.</h1>
-              <p className="mt-6 max-w-lg text-lg leading-relaxed text-site-ink/80">Discover skincare products, explore ingredients, and track your skin's changes with an AI-powered companion designed for rosacea-prone and sensitive skin.</p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Cta>Try Rosea.AI for Free <ArrowRight className="h-4 w-4" /></Cta>
-                <a href="#how" className="inline-flex items-center rounded-full border border-site-slate/25 px-6 py-3 text-sm font-semibold text-site-slate hover:bg-site-ivory/60">See How It Works</a>
-              </div>
-              <p className="mt-6 text-sm italic text-site-slate/70">Understand your skin. Less guessing, better skincare.</p>
-            </div>
-            <div className="relative">
-              <div className="absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-site-blue/30" />
-              <div className="absolute left-1/2 top-1/2 h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-site-blue/40" />
-              <div className="relative flex items-center justify-center gap-6">
-                <figure className="hidden w-[196px] shrink-0 overflow-hidden rounded-[1.75rem] border border-site-slate/10 shadow-[0_25px_55px_-28px_var(--site-slate)] lg:block">
-                  <img
-                    src={heroPortrait.url}
-                    alt="Mary, founder of Rosea.AI"
-                    width={710}
-                    height={841}
-                    className="block h-full w-full object-cover"
-                  />
-                </figure>
-                <AnalysisMockup />
+        {/* Hero — full-bleed founder photo with overlaid text, Curology-style */}
+        <section className="relative bg-site-slate">
+          <div className="relative h-[58vh] min-h-[380px] md:hidden">
+            <img
+              src={heroPortrait.url}
+              alt="Mary, founder of Rosea.AI"
+              className="absolute inset-0 h-full w-full object-cover object-top"
+            />
+          </div>
+          <div className="relative bg-site-blush md:bg-transparent">
+            <img
+              src={heroPortrait.url}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 hidden h-full w-full object-cover object-[72%_top] md:block"
+            />
+            <div className="absolute inset-0 hidden bg-gradient-to-r from-site-slate/90 via-site-slate/55 to-transparent md:block" aria-hidden="true" />
+            <div className="relative mx-auto flex max-w-6xl items-center px-5 py-14 md:min-h-[86vh] md:py-24">
+              <div className="max-w-xl">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-site-rose md:text-site-blush">Rosea.AI — Your personal skin companion</p>
+                <h1 className={`${serif} mt-5 text-5xl font-semibold leading-[1.05] text-site-slate md:text-6xl md:text-site-ivory`}>Your skin is unique. Your skincare should be too.</h1>
+                <p className="mt-6 max-w-lg text-lg leading-relaxed text-site-ink/80 md:text-site-ivory/85">Discover skincare products, explore ingredients, and track your skin's changes with an AI-powered companion designed for rosacea-prone and sensitive skin.</p>
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <Cta>Try Rosea.AI for Free <ArrowRight className="h-4 w-4" /></Cta>
+                  <a href="#how" className="inline-flex items-center rounded-full border border-site-slate/25 px-6 py-3 text-sm font-semibold text-site-slate hover:bg-site-ivory/60 md:border-site-ivory/50 md:text-site-ivory md:hover:bg-site-ivory/10">See How It Works</a>
+                </div>
+                <p className="mt-6 text-sm italic text-site-slate/70 md:text-site-ivory/75">Understand your skin. Less guessing, better skincare.</p>
               </div>
             </div>
           </div>
@@ -254,8 +252,14 @@ function SitePage() {
         {/* How */}
         <section id="how" className="scroll-mt-20 border-y border-site-slate/10 bg-site-ivory py-20">
           <div className="mx-auto max-w-6xl px-5">
-            <Eyebrow>How it works</Eyebrow>
-            <div className="mt-3"><H2>A smarter way to understand your skin.</H2></div>
+            <div className="grid items-center gap-10 md:grid-cols-2">
+              <div>
+                <Eyebrow>How it works</Eyebrow>
+                <div className="mt-3"><H2>A smarter way to understand your skin.</H2></div>
+                <p className="mt-5 max-w-lg text-lg text-site-ink/75">A real skin check in the app: a redness score, a plain-language summary, and where redness shows most.</p>
+              </div>
+              <AnalysisMockup />
+            </div>
             <div className="mt-12 grid gap-5 md:grid-cols-3">
               {[[ScanFace, "01", "Explore Your Skin", "Use AI-powered tools to explore visible skin characteristics and build awareness of changes over time."],
                 [Sparkles, "02", "Discover Your Skincare", "Explore personalized product suggestions and ingredient information to make more informed skincare decisions."],
