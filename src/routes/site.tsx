@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import portrait from "@/assets/mary-portrait.jpg.asset.json";
 import phoneScreen from "@/assets/app-phone-screen.png.asset.json";
+import banner from "@/assets/mary-banner.png.asset.json";
 
 const APP_URL = "https://xrosacea.com";
 const serif = "font-['Cormorant_Garamond',serif]";
@@ -54,6 +55,30 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 
 function H2({ children }: { children: React.ReactNode }) {
   return <h2 className={`${serif} text-4xl font-semibold leading-tight text-site-slate md:text-5xl`}>{children}</h2>;
+}
+
+// Full-width band using the founder photo's empty backdrop space for the story line.
+function StoryBand() {
+  const copy = (
+    <div className="max-w-md">
+      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-site-ivory/70">Our story</p>
+      <p className={`${serif} mt-4 text-3xl font-semibold leading-snug text-site-ivory md:text-4xl`}>The tool Mary wishes she’d had years ago.</p>
+      <p className="mt-4 leading-relaxed text-site-ivory/85">After years of living with rosacea, she set out to make understanding sensitive skin and finding suitable skincare less overwhelming.</p>
+      <Link to="/our-story" className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-site-ivory underline decoration-site-blush underline-offset-4 hover:text-site-blush">Read My Story <ArrowRight className="h-4 w-4" /></Link>
+    </div>
+  );
+  return (
+    <section className="bg-site-slate">
+      <div className="md:hidden">
+        <img src={banner.url} width={1870} height={841} alt="Mary, founder of Rosea.AI" className="h-60 w-full object-cover object-right" />
+        <div className="px-5 py-10">{copy}</div>
+      </div>
+      <div className="relative hidden md:block">
+        <img src={banner.url} width={1870} height={841} alt="Mary, founder of Rosea.AI" className="block w-full" />
+        <div className="absolute inset-y-0 left-0 flex w-[46%] items-center px-10 lg:px-16">{copy}</div>
+      </div>
+    </section>
+  );
 }
 
 function PricingSection() {
@@ -308,6 +333,8 @@ function SitePage() {
             </ul>
           </div>
         </section>
+
+        <StoryBand />
 
         {/* Founder */}
         <section id="story" className="scroll-mt-20 bg-site-ivory py-16 md:py-24">
