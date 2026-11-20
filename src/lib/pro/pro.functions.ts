@@ -26,6 +26,22 @@ async function resolveCustomer(stripe: ReturnType<typeof createStripeClient>, us
   return created.id;
 }
 
+/** Promo code shown in the "Do you have a promo code?" field at checkout. */
+const PROMO = { code: "ROSEA", couponId: "rosea_promo_100_once", percentOff: 100, duration: "once" as const };
+
+/** Idempotently makes sure the ROSEA coupon + promotion code exist in this Stripe environment. */
+async function ensurePromoCode(stripe: ReturnType<typeof createStripeClient>) {
+  try {
+    const existing = await stripe.promotionCodes.list({ code: PROMO.code, active: true, limit: 1 });
+    if (existing.data[0]) return;
+    try { await stripe.coupons.retrieve(PROMO.couponId); }
+    catch { await stripe.coupons.create({ id: PROMO.couponId, percent_off: PROMO.percentOff, duration: PROMO.duration, name: PROMO.code }); }
+    await stripe.promotionCodes.create({ code: PROMO.code, promotion: { type: "coupon", coupon: PROMO.couponId } });
+  } catch (e) {
+    console.error("ensurePromoCode failed", e);
+  }
+}
+
 /** Starts an embedded subscription checkout for one of the four Pro prices. Charged immediately, no trial. */
 export const createProCheckout = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -45,6 +61,7 @@ export const createProCheckout = createServerFn({ method: "POST" })
       const prices = await stripe.prices.list({ lookup_keys: [data.priceId] });
       const price = prices.data[0];
       if (!price) return { error: "Price not found" };
+      await ensurePromoCode(stripe);
       const customer = await resolveCustomer(stripe, context.userId, email);
       const meta = { userId: context.userId, product: "rosea_pro", pricing_group: info.group };
       const session = await stripe.checkout.sessions.create({
@@ -56,6 +73,7 @@ export const createProCheckout = createServerFn({ method: "POST" })
         metadata: meta,
         subscription_data: { metadata: meta },
         managed_payments: { enabled: true },
+        allow_promotion_codes: true,
       } as Parameters<typeof stripe.checkout.sessions.create>[0]);
       return { clientSecret: session.client_secret ?? "" };
     } catch (e) {
