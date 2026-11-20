@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import {
-  ArrowRight, BookOpen, Camera, ChevronDown, FlaskConical, HeartHandshake, Layers,
+  ArrowRight, Camera, ChevronDown, FlaskConical, HeartHandshake, Layers,
   LineChart, Menu, Microscope, NotebookPen, ScanFace, ShieldCheck, Sparkles, Sprout, X,
 } from "lucide-react";
 
@@ -273,25 +273,27 @@ function SitePage() {
         </section>
 
         {/* Founder */}
-        <section id="story" className="scroll-mt-20 bg-site-blush py-20">
-          <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 md:grid-cols-[1fr_1.3fr]">
-            <figure className="mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-[2rem] border border-site-rose/30 bg-site-ivory">
-              <div className="grid h-full place-items-center text-center text-site-slate/50">
-                <div><Camera className="mx-auto h-8 w-8" strokeWidth={1.25} /><p className="mt-2 text-sm">Founder photo</p></div>
-              </div>
-            </figure>
-            <div>
+        <section id="story" className="scroll-mt-20 grid bg-site-blush md:grid-cols-2">
+          <div className="flex items-center justify-center px-6 py-16 text-center md:px-12 md:py-24">
+            <div className="max-w-md">
               <Eyebrow>Our story</Eyebrow>
-              <div className="mt-3"><H2>Built by someone who understands rosacea.</H2></div>
+              <h2 className={`${serif} mt-4 text-4xl font-semibold leading-tight text-site-slate md:text-5xl`}>Meet Our Founder</h2>
+              <p className="mt-3 text-lg italic text-site-rose">Built by someone who understands rosacea.</p>
               <div className="mt-6 space-y-4 text-lg leading-relaxed text-site-ink/80">
                 <p>I've lived with rosacea since my teenage years. I know how frustrating unpredictable redness, sensitive skin, and endless product experimentation can be — and how deeply it can affect your confidence.</p>
-                <p>After years of learning to manage my skin, I wanted to create something that made this journey feel less overwhelming.</p>
-                <p>That's why I started Rosea.AI.</p>
+                <p>After years of learning to manage my skin, I wanted to create something that made this journey feel less overwhelming. That's why I started Rosea.AI.</p>
               </div>
-              <p className={`${serif} mt-6 text-2xl italic text-site-rose`}>— Mary, founder</p>
-              <a href={APP_URL} className="mt-6 inline-flex items-center gap-2 rounded-full border border-site-slate/25 px-6 py-3 text-sm font-semibold text-site-slate hover:bg-site-ivory/60">Our Story <BookOpen className="h-4 w-4" /></a>
+              <span className="mx-auto mt-8 block h-10 w-px bg-site-rose/50" aria-hidden="true" />
+              <p className="mt-4 text-lg font-semibold text-site-slate">Mary</p>
+              <p className="text-site-ink/75">Founder of Rosea.AI</p>
+              <a href={APP_URL} className="mt-6 inline-block text-sm font-semibold text-site-slate underline underline-offset-4 hover:text-site-cta">Our Story</a>
             </div>
           </div>
+          <figure className="relative min-h-[420px] bg-site-ivory md:min-h-[640px]">
+            <div className="absolute inset-0 grid place-items-center text-center text-site-slate/50">
+              <div><Camera className="mx-auto h-8 w-8" strokeWidth={1.25} /><p className="mt-2 text-sm">Founder photo</p></div>
+            </div>
+          </figure>
         </section>
 
         {/* Science */}
