@@ -18,6 +18,7 @@ import { Route as JourneyRouteImport } from './routes/journey'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as MyRoutineRouteImport } from './routes/my-routine'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as OurStoryRouteImport } from './routes/our-story'
 import { Route as PlusRouteImport } from './routes/plus'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProRouteImport } from './routes/pro'
@@ -102,6 +103,11 @@ const MyRoutineRoute = MyRoutineRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OurStoryRoute = OurStoryRouteImport.update({
+  id: '/our-story',
+  path: '/our-story',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlusRoute = PlusRouteImport.update({
@@ -333,6 +339,7 @@ export interface FileRoutesByFullPath {
   '/learn': typeof LearnRoute
   '/my-routine': typeof MyRoutineRoute
   '/onboarding': typeof OnboardingRoute
+  '/our-story': typeof OurStoryRoute
   '/plus': typeof PlusRoute
   '/privacy': typeof PrivacyRoute
   '/pro': typeof ProRoute
@@ -384,6 +391,7 @@ export interface FileRoutesByTo {
   '/learn': typeof LearnRoute
   '/my-routine': typeof MyRoutineRoute
   '/onboarding': typeof OnboardingRoute
+  '/our-story': typeof OurStoryRoute
   '/plus': typeof PlusRoute
   '/privacy': typeof PrivacyRoute
   '/pro': typeof ProRoute
@@ -437,6 +445,7 @@ export interface FileRoutesById {
   '/learn': typeof LearnRoute
   '/my-routine': typeof MyRoutineRoute
   '/onboarding': typeof OnboardingRoute
+  '/our-story': typeof OurStoryRoute
   '/plus': typeof PlusRoute
   '/privacy': typeof PrivacyRoute
   '/pro': typeof ProRoute
@@ -490,6 +499,7 @@ export interface FileRouteTypes {
     | '/learn'
     | '/my-routine'
     | '/onboarding'
+    | '/our-story'
     | '/plus'
     | '/privacy'
     | '/pro'
@@ -541,6 +551,7 @@ export interface FileRouteTypes {
     | '/learn'
     | '/my-routine'
     | '/onboarding'
+    | '/our-story'
     | '/plus'
     | '/privacy'
     | '/pro'
@@ -593,6 +604,7 @@ export interface FileRouteTypes {
     | '/learn'
     | '/my-routine'
     | '/onboarding'
+    | '/our-story'
     | '/plus'
     | '/privacy'
     | '/pro'
@@ -646,6 +658,7 @@ export interface RootRouteChildren {
   LearnRoute: typeof LearnRoute
   MyRoutineRoute: typeof MyRoutineRoute
   OnboardingRoute: typeof OnboardingRoute
+  OurStoryRoute: typeof OurStoryRoute
   PlusRoute: typeof PlusRoute
   PrivacyRoute: typeof PrivacyRoute
   ProRoute: typeof ProRoute
@@ -741,6 +754,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/our-story': {
+      id: '/our-story'
+      path: '/our-story'
+      fullPath: '/our-story'
+      preLoaderRoute: typeof OurStoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/plus': {
@@ -1088,6 +1108,7 @@ const rootRouteChildren: RootRouteChildren = {
   LearnRoute: LearnRoute,
   MyRoutineRoute: MyRoutineRoute,
   OnboardingRoute: OnboardingRoute,
+  OurStoryRoute: OurStoryRoute,
   PlusRoute: PlusRoute,
   PrivacyRoute: PrivacyRoute,
   ProRoute: ProRoute,

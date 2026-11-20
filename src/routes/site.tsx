@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   ArrowRight, Camera, ChevronDown, FlaskConical, HeartHandshake, Layers,
@@ -273,27 +273,29 @@ function SitePage() {
         </section>
 
         {/* Founder */}
-        <section id="story" className="scroll-mt-20 grid bg-site-blush md:grid-cols-2">
-          <div className="flex items-center justify-center px-6 py-16 text-center md:px-12 md:py-24">
-            <div className="max-w-md">
-              <Eyebrow>Our story</Eyebrow>
-              <h2 className={`${serif} mt-4 text-4xl font-semibold leading-tight text-site-slate md:text-5xl`}>Meet Our Founder</h2>
-              <p className="mt-3 text-lg italic text-site-rose">Built by someone who understands rosacea.</p>
-              <div className="mt-6 space-y-4 text-lg leading-relaxed text-site-ink/80">
-                <p>I've lived with rosacea since my teenage years. I know how frustrating unpredictable redness, sensitive skin, and endless product experimentation can be — and how deeply it can affect your confidence.</p>
-                <p>After years of learning to manage my skin, I wanted to create something that made this journey feel less overwhelming. That's why I started Rosea.AI.</p>
+        <section id="story" className="scroll-mt-20 bg-site-ivory py-16 md:py-24">
+          <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 md:grid-cols-[45fr_55fr] md:gap-16">
+            <div className="relative">
+              <div className="absolute -left-4 -top-4 h-2/3 w-2/3 rounded-[2rem] bg-site-paleblue" aria-hidden="true" />
+              <figure className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-site-blush">
+                <div className="absolute inset-0 grid place-items-center text-center text-site-slate/50">
+                  <div><Camera className="mx-auto h-8 w-8" strokeWidth={1.25} /><p className="mt-2 text-sm">Portrait of Mary, founder of Rosea.AI</p></div>
+                </div>
+              </figure>
+            </div>
+            <div className="text-left">
+              <Eyebrow>Meet our founder</Eyebrow>
+              <h2 className={`${serif} mt-4 text-4xl font-semibold leading-tight text-site-slate md:text-[3.25rem]`}>Born From Experience. Built With Purpose.</h2>
+              <div className="mt-6 space-y-4 text-base leading-relaxed text-site-slate md:text-lg">
+                <p>After years of living with rosacea, Mary founded Rosea.AI to make understanding sensitive skin and finding suitable skincare less overwhelming.</p>
+                <p>Drawing on her personal journey, background in psychology, and passion for evidence-informed skincare, she's building the tool she wishes she'd had years ago — with the belief that everyone deserves to feel more confident in their own skin.</p>
               </div>
-              <span className="mx-auto mt-8 block h-10 w-px bg-site-rose/50" aria-hidden="true" />
-              <p className="mt-4 text-lg font-semibold text-site-slate">Mary</p>
-              <p className="text-site-ink/75">Founder of Rosea.AI</p>
-              <a href={APP_URL} className="mt-6 inline-block text-sm font-semibold text-site-slate underline underline-offset-4 hover:text-site-cta">Our Story</a>
+              <span className="mt-8 block h-px w-16 bg-site-rose" aria-hidden="true" />
+              <p className={`${serif} mt-5 text-2xl font-semibold text-site-slate`}>Mary</p>
+              <p className="text-sm text-site-slate/70">Founder &amp; CEO, Rosea.AI</p>
+              <Link to="/our-story" className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-site-slate underline decoration-site-rose underline-offset-4 hover:text-site-cta">Read My Story <ArrowRight className="h-4 w-4" /></Link>
             </div>
           </div>
-          <figure className="relative min-h-[420px] bg-site-ivory md:min-h-[640px]">
-            <div className="absolute inset-0 grid place-items-center text-center text-site-slate/50">
-              <div><Camera className="mx-auto h-8 w-8" strokeWidth={1.25} /><p className="mt-2 text-sm">Founder photo</p></div>
-            </div>
-          </figure>
         </section>
 
         {/* Science */}
